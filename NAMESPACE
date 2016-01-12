@@ -2,5 +2,6 @@
 
 export(grib_close)
 export(grib_open)
+useDynLib(rGRIB,isNullPointer)
 useDynLib(rGRIB,rgrib_close)
 useDynLib(rGRIB,rgrib_open)

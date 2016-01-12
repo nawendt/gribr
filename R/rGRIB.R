@@ -25,7 +25,11 @@ grib_open <- function(file,mode,gribDefinitionPath){
 
 grib_close <- function(gribObj) {
   if (is.grib(gribObj)) {
-    invisible(.Call("rgrib_close",gribObj$gribHandle))
+    if (!is.null.externalptr(gribObj$gribHandle)) {
+      return(invisible(.Call("rgrib_close",gribObj$gribHandle)))
+    } else {
+      stop("GRIB object is already closed")
+    }
   } else {
     stop("Object is not of class 'grib'")
   }
@@ -40,5 +44,15 @@ is.grib <- function(obj) {
     return(TRUE)
   } else {
     return(FALSE)
+  }
+}
+
+#' @useDynLib rGRIB isNullPointer
+
+is.null.externalptr <- function(pointer) {
+  if (is(pointer, "externalptr")) {
+    return(.Call("isNullPointer", pointer))
+  } else {
+    stop("Input is not of class 'externalptr'")
   }
 }
