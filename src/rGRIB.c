@@ -59,8 +59,8 @@ SEXP rgrib_close(SEXP R_gribHandle) {
   if (h == NULL) {
     warning("rGRIB: rgrib_close: grib handle already closed");
   } else {
-    //R_ClearExternalPtr(R_gribHandle);
     grib_handle_delete(h);
+    R_ClearExternalPtr(R_gribHandle);
   }
 
   return R_NilValue;
@@ -70,4 +70,8 @@ static void handleFinalizer(SEXP ptr)
 {
   if(!R_ExternalPtrAddr(ptr)) return;
   R_ClearExternalPtr(ptr);
+}
+
+SEXP isNullPointer(SEXP R_ptr) {
+  return ScalarLogical(!R_ExternalPtrAddr(R_ptr));
 }
