@@ -1,0 +1,2 @@
+PKG_CFLAGS=-I/usr/local/include
+PKG_LIBS=-L/usr/local/lib -lgrib_api

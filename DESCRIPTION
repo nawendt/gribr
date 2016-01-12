@@ -1,0 +1,11 @@
+Package: rGRIB
+Type: Package
+Title: Read and Write GRIB Files
+Version: 0.0.0.9000
+Date: 2015-12-25
+Author: Nathan Wendt
+Maintainer: Nathan Wendt <nawendt@ou.edu>
+Description: R interface for GRIB files using ECMWF GRIB API
+License: Apache License 2.0
+LazyData: TRUE
+RoxygenNote: 5.0.1
