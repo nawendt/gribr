@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <wordexp.h>
 #include <grib_api.h>
 
 #include <R.h>
