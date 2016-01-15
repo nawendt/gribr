@@ -18,20 +18,18 @@ gribFilterList = list(
 #' @export
 #' @useDynLib rGRIB rgrib_open
 
-grib_open <- function(file,mode,gribDefinitionPath){
+grib_open <- function(file,mode){
 
-  if (!missing(gribDefinitionPath)) {
-    Sys.setenv(GRIB_DEFINITION_PATH = path.expand(gribDefinitionPath))
-  }
+#  if (!missing(gribDefinitionPath)) {
+#    Sys.setenv(GRIB_DEFINITION_PATH = path.expand(gribDefinitionPath))
+#  }
 
   handle <- .Call("rgrib_open",path.expand(file),mode)
   if (class(handle) != "externalptr") {
     stop("Problem retrieving grib handle")
   }
 
-  fileName <- basename(file)
-
-  gribObj <- list(fileName = fileName, gribHandle = handle)
+  gribObj <- list(file = path.expand(file), handle = handle)
   class(gribObj) <- "grib"
 
   return(gribObj)
@@ -42,8 +40,8 @@ grib_open <- function(file,mode,gribDefinitionPath){
 
 grib_close <- function(gribObj) {
   if (is.grib(gribObj)) {
-    if (!is.null.externalptr(gribObj$gribHandle)) {
-      return(invisible(.Call("rgrib_close",gribObj$gribHandle)))
+    if (!is.null.externalptr(gribObj$handle)) {
+      return(invisible(.Call("rgrib_close",gribObj$handle)))
     } else {
       stop("GRIB object is closed or unavailable")
     }
@@ -52,26 +50,24 @@ grib_close <- function(gribObj) {
   }
 }
 
-#' @export
-#' @useDynLib rGRIB rgrib_ls
-grib_ls <- function(gribObj,filter="none",nameSpace="") {
-  if (is.grib(gribObj)) {
-    if (!is.null.externalptr(gribObj$gribHandle)) {
-      if (is.null(nameSpace)) {
-        # the c function that uses this parameter
-        # will accept the null string in order to
-        # print all keys, allow NULL to be input
-        # as well
-        nameSpace <- ""
-      }
-      .Call("rgrib_ls",gribObj$gribHandle,as.integer(gribFilterList[filter]),nameSpace)
-    } else {
-      stop("GRIB object is closed or unavailable")
-    }
-  } else {
-    stop("Object is not of class 'grib'")
-  }
-}
+# grib_ls <- function(gribObj,filter="none",nameSpace="") {
+#   if (is.grib(gribObj)) {
+#     if (!is.null.externalptr(gribObj$gribHandle)) {
+#       if (is.null(nameSpace)) {
+#         # the c function that uses this parameter
+#         # will accept the null string in order to
+#         # print all keys, allow NULL to be input
+#         # as well
+#         nameSpace <- ""
+#       }
+#       .Call("rgrib_ls",gribObj$gribHandle,as.integer(gribFilterList[filter]),nameSpace)
+#     } else {
+#       stop("GRIB object is closed or unavailable")
+#     }
+#   } else {
+#     stop("Object is not of class 'grib'")
+#   }
+# }
 
 #######################
 #    PRIVATE FUNCS
