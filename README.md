@@ -1,3 +1,9 @@
 # rGRIB
+GRIB interface for R using ECMWF GRIB API
 #### Purpose
-GRIB interface for R
+
+####
+
+####Contact
+[Nathan Wendt](mailto:nawendt@ou.edu])
+
