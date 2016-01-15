@@ -1,3 +1,3 @@
 # rGRIB
-## Purpose
+#### Purpose
 GRIB interface for R
