@@ -70,8 +70,7 @@ SEXP rgrib_ls(SEXP R_gribHandle, SEXP R_filter, SEXP R_nameSpace){
       error("Unable to create keys iterator");
     }
 
-    while(grib_keys_iterator_next(keyIter))
-    {
+    while(grib_keys_iterator_next(keyIter)) {
       const char* name = grib_keys_iterator_get_name(keyIter);
       vlen=MAX_VAL_LEN;
       bzero(value,vlen);
