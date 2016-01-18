@@ -9,13 +9,13 @@
 #define MAX_KEY_LEN  255
 #define MAX_VAL_LEN  1024
 
-static void fileFinalizer(SEXP ptr);
+static void file_finalizer(SEXP ptr);
 
 /*
  * OPENING
  */
 
-SEXP rgrib_open(SEXP R_fileName, SEXP R_mode) {
+SEXP R_grib_open(SEXP R_fileName, SEXP R_mode) {
 
   const char *p_fileName, *p_mode;
   SEXP R_fileHandle;
@@ -27,11 +27,10 @@ SEXP rgrib_open(SEXP R_fileName, SEXP R_mode) {
 
   if(input == NULL) {
     error("%s(%d): unable to open file %s",__FILE__,__LINE__,p_fileName);
-    //error("Unable to open file %s",p_fileName);
   }
 
   R_fileHandle = PROTECT(R_MakeExternalPtr(input,install("gribFile"),R_NilValue));
-  R_RegisterCFinalizerEx(R_fileHandle, fileFinalizer, TRUE);
+  R_RegisterCFinalizerEx(R_fileHandle, file_finalizer, TRUE);
 
   UNPROTECT(1);
   return R_fileHandle;
@@ -48,35 +47,48 @@ SEXP rgrib_open(SEXP R_fileName, SEXP R_mode) {
  * CLOSING
  */
 
-SEXP rgrib_close(SEXP R_fileHandle) {
+void R_grib_close(SEXP R_fileHandle) {
 
   int err;
   FILE *file;
   file = R_ExternalPtrAddr(R_fileHandle);
 
   if (file == NULL) {
-    warning("grib file already closed");
+    error("grib file already closed");
   } else {
     err = fclose(file);
     if (err) {
-      error("%s(%d): unable to close file %s",__FILE__,__LINE__);
+      error("%s(%d): unable to close file",__FILE__,__LINE__);
     }
     R_ClearExternalPtr(R_fileHandle);
   }
-  return R_NilValue;
+}
+
+SEXP R_grib_length(SEXP R_fileHandle) {
+
+  int n, err;
+  FILE *file;
+  file = R_ExternalPtrAddr(R_fileHandle);
+
+  err = grib_count_in_file(0,file,&n);
+  if (err) {
+    error("%s(%d): unable to count messages; GRIB ERROR %3d",__FILE__,__LINE__,err);
+  } else {
+    return ScalarInteger(n);
+  }
 }
 
 /*
  * HELPER FUNCTIONS
  */
 
-static void fileFinalizer(SEXP ptr)
+static void file_finalizer(SEXP ptr)
 {
   if(!R_ExternalPtrAddr(ptr)) return;
   R_ClearExternalPtr(ptr);
 }
 
-SEXP isNullPointer(SEXP R_ptr) {
+SEXP R_is_null_ptr (SEXP R_ptr) {
   return ScalarLogical(!R_ExternalPtrAddr(R_ptr));
 }
 
