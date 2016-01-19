@@ -40,7 +40,27 @@ SEXP R_grib_open(SEXP R_fileName, SEXP R_mode) {
  * OPERATIONS
  */
 
+SEXP R_grib_ls() {
+  SEXP result;
+  SEXP names;
 
+  result = PROTECT(allocVector(VECSXP, 4));
+  SET_VECTOR_ELT(result, 0, ScalarInteger(25));
+  SET_VECTOR_ELT(result, 1, ScalarLogical(1));
+  SET_VECTOR_ELT(result, 2, ScalarReal(5.5));
+  SET_VECTOR_ELT(result, 3, mkString("test"));
+
+  names = PROTECT(allocVector(STRSXP, 4));
+  SET_STRING_ELT(names, 0, mkChar("junk"));
+  SET_STRING_ELT(names, 1, mkChar("stuff"));
+  SET_STRING_ELT(names, 2, mkChar("things"));
+  SET_STRING_ELT(names, 3, mkChar("crap"));
+
+  namesgets(result, names);
+
+  UNPROTECT(2);
+  return result;
+}
 
 
 /*
@@ -66,7 +86,7 @@ void R_grib_close(SEXP R_fileHandle) {
 
 SEXP R_grib_length(SEXP R_fileHandle) {
 
-  int n, err;
+  int err, n;
   FILE *file;
   file = R_ExternalPtrAddr(R_fileHandle);
 

@@ -14,7 +14,6 @@ gribFilterList = list(
 
 #' @export
 #' @useDynLib rGRIB R_grib_open
-
 grib_open <- function(file,mode) {
 
 #  if (!missing(gribDefinitionPath)) {
@@ -35,7 +34,6 @@ grib_open <- function(file,mode) {
 
 #' @export
 #' @useDynLib rGRIB R_grib_close
-
 grib_close <- function(gribObj) {
   if (is_grib(gribObj)) {
     if (!is_null_ptr(gribObj$handle)) {
@@ -46,6 +44,12 @@ grib_close <- function(gribObj) {
   } else {
     stop("Object is not of class 'grib'")
   }
+}
+
+#' @export
+#' @useDynLib rGRIB R_grib_ls
+grib_ls <- function() {
+  .Call("R_grib_ls")
 }
 
 # grib_ls <- function(gribObj,filter="none",nameSpace="") {
