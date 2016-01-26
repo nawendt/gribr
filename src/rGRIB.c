@@ -40,6 +40,7 @@ SEXP R_grib_open(SEXP R_fileName, SEXP R_mode) {
  * OPERATIONS
  */
 
+/* OLD TEST
 SEXP R_grib_ls() {
   SEXP result;
   SEXP names;
@@ -61,7 +62,72 @@ SEXP R_grib_ls() {
   UNPROTECT(2);
   return result;
 }
+*/
 
+SEXP R_grib_list(SEXP R_fileHandle, SEXP R_filter, SEXP R_nameSpace ) {
+  int err,n,messageCount;
+  FILE *file = NULL;
+  grib_handle *h = NULL;
+  const char *nameSpace;
+  unsigned long filter;
+  char value[MAX_VAL_LEN];
+  char *keyString
+  size_t valueLength=MAX_VAL_LEN;
+
+  filter = (unsigned long)INTEGER(R_filter);
+  nameSpace = CHAR(STRING_ELT(R_nameSpace,0));
+
+  file = R_ExternalPtrAddr(R_fileHandle);
+  if (file == NULL) {
+    error("%s(%d): grib file not opened", __FILE__ ,__LINE__);
+  }
+
+  err = grib_count_in_file(0, file, &n);
+  if (err) {
+    error("%s(%d): unable to count messages; GRIB ERROR %3d", __FILE__, __LINE__, err);
+  }
+  SEXP R_grib_vec = PROTECT(allocVector(STRSXP, n));
+
+  h = grib_handle_new_from_file(0, file, &err);
+  if (h == NULL) {
+    error("%s(%d): unable to create grib handle: GRIB ERROR %3d", __FILE__, __LINE__, err);
+  }
+
+  while((h = grib_handle_new_from_file(0, file, &err)) != NULL) {
+    grib_keys_iterator* keyIter=NULL;
+    messageCount++;
+    if(h == NULL) {
+      error("%s(%d): unable to create grib handle: GRIB ERROR %3d", __FILE__, __LINE__, err);
+    }
+
+    keyIter=grib_keys_iterator_new(h, filter, nameSpace);
+    if (keyIter == NULL) {
+      error("%s(%d): unable to create key iterator", __FILE__, __LINE__);
+    }
+
+    while(grib_keys_iterator_next(keyIter)) {
+      /* not right... needs to build string and THEN insert into R char vec
+       *  WORK ON THIS
+       */
+      const char* keyName = grib_keys_iterator_get_name(keyIter);
+      valueLength = MAX_VAL_LEN;
+      bzero(value, valueLength);
+      err = grib_get_string(h, keyName, value, &valueLength);
+      if (err) {
+        SET_VECTOR_ELT(R_grib_vec, messageCount - 1, R_NaString);
+      } else {
+        sprintf(keyString,)
+        SET_VECTOR_ELT(R_grib_vec, messageCount - 1, mkChar())
+      }
+      printf("%s = %s\n",keyName,value);
+    }
+
+    grib_keys_iterator_delete(keyIter);
+    grib_handle_delete(h);
+  }
+
+
+}
 
 /*
  * CLOSING
