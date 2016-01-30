@@ -2,11 +2,16 @@
 #' @useDynLib rGRIB R_grib_length
 length.grib <- function(x) {
   .Call("R_grib_length", x$handle)
+  #x$length
 }
 
 #' @export
-#' @useDynLib rGRIB R_grib_length
 print.grib <- function(x, ...) {
   cat("GRIB FILE: ", x$file, "\n")
-  cat("Total Messages: ", .Call("R_grib_length", x$handle), "\n")
+  if (is_null_ptr(x$handle)) {
+    cat("Status: closed\n")
+  } else {
+    cat("Status: open\n")
+    cat("Total Messages: ", .Call("R_grib_length", x$handle), "\n")
+  }
 }
