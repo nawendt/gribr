@@ -1,32 +1,26 @@
-#######################
-#     GLOBAL VARS
-#######################
-gribFilterList = list(
-  none      = 0,
-  readonly  = bitwShiftL(1,0),
-  optional  = bitwShiftL(1,1),
-  edition   = bitwShiftL(1,2),
-  coded     = bitwShiftL(1,3),
-  computed  = bitwShiftL(1,4),
-  duplicate = bitwShiftL(1,5),
-  func      = bitwShiftL(1,6)
-)
+.onUnload <- function (libpath = find.package("rGRIB")) {
+  library.dynam.unload("rGRIB", libpath)
+}
 
 #' @export
 #' @useDynLib rGRIB R_grib_open
-grib_open <- function(file,mode) {
+#' @useDynLib rGRIB R_grib_length
+grib_open <- function(file, mode) {
 
 #  if (!missing(gribDefinitionPath)) {
 #    Sys.setenv(GRIB_DEFINITION_PATH = path.expand(gribDefinitionPath))
 #  }
 
-  handle <- .Call("R_grib_open",path.expand(file),mode)
+  handle <- .Call("R_grib_open", path.expand(file), mode)
   if (class(handle) != "externalptr") {
     stop("Problem retrieving grib handle")
   }
 
   # class definition for rGRIB package
-  gribObj <- list(file = path.expand(file), handle = handle)
+  gribObj <-  list(file = path.expand(file)
+                   ,handle = handle
+                   #,length = as.integer(.Call("R_grib_length", handle))
+                   )
   class(gribObj) <- "grib"
 
   gribObj
@@ -37,7 +31,8 @@ grib_open <- function(file,mode) {
 grib_close <- function(gribObj) {
   if (is_grib(gribObj)) {
     if (!is_null_ptr(gribObj$handle)) {
-      .Call("R_grib_close",gribObj$handle)
+      invisible(.Call("R_grib_close", gribObj$handle))
+      cat(gribObj$file, "closed\n")
     } else {
       stop("GRIB object is closed or unavailable")
     }
@@ -47,12 +42,22 @@ grib_close <- function(gribObj) {
 }
 
 #' @export
-#' @useDynLib rGRIB R_grib_ls
-grib_ls <- function() {
-  .Call("R_grib_ls")
+#' @useDynLib rGRIB R_grib_list
+grib_list <- function(R_gribObj) {
+  .Call("R_grib_list", R_gribObj$handle,0, "ls")
 }
 
 # grib_ls <- function(gribObj,filter="none",nameSpace="") {
+#   gribFilterList = list(
+#     none      = 0,
+#     readonly  = bitwShiftL(1,0),
+#     optional  = bitwShiftL(1,1),
+#     edition   = bitwShiftL(1,2),
+#     coded     = bitwShiftL(1,3),
+#     computed  = bitwShiftL(1,4),
+#     duplicate = bitwShiftL(1,5),
+#     func      = bitwShiftL(1,6)
+#     )
 #   if (is.grib(gribObj)) {
 #     if (!is.null.externalptr(gribObj$gribHandle)) {
 #       if (is.null(nameSpace)) {

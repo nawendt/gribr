@@ -6,8 +6,10 @@
 #include <R.h>
 #include <Rinternals.h>
 
-#define MAX_KEY_LEN  255
-#define MAX_VAL_LEN  1024
+#define MAX_KEY_LEN     255
+#define MAX_VAL_LEN     1024
+#define NA_KEY_LEN      8
+#define DEFAULT_CONTEXT 0
 
 static void file_finalizer(SEXP ptr);
 
@@ -29,7 +31,7 @@ SEXP R_grib_open(SEXP R_fileName, SEXP R_mode) {
     error("%s(%d): unable to open file %s",__FILE__,__LINE__,p_fileName);
   }
 
-  R_fileHandle = PROTECT(R_MakeExternalPtr(input,install("gribFile"),R_NilValue));
+  R_fileHandle = PROTECT(R_MakeExternalPtr(input,R_NilValue,R_NilValue));
   R_RegisterCFinalizerEx(R_fileHandle, file_finalizer, TRUE);
 
   UNPROTECT(1);
@@ -65,16 +67,16 @@ SEXP R_grib_ls() {
 */
 
 SEXP R_grib_list(SEXP R_fileHandle, SEXP R_filter, SEXP R_nameSpace ) {
-  int err,n,messageCount;
+  int err,n,messageCount = 0;
   FILE *file = NULL;
   grib_handle *h = NULL;
-  const char *nameSpace;
-  unsigned long filter;
+  const char *nameSpace = NULL;
+  char keyString[MAX_VAL_LEN];
+  int filter;
   char value[MAX_VAL_LEN];
-  char *keyString
   size_t valueLength=MAX_VAL_LEN;
 
-  filter = (unsigned long)INTEGER(R_filter);
+  filter = asInteger(R_filter);
   nameSpace = CHAR(STRING_ELT(R_nameSpace,0));
 
   file = R_ExternalPtrAddr(R_fileHandle);
@@ -82,20 +84,21 @@ SEXP R_grib_list(SEXP R_fileHandle, SEXP R_filter, SEXP R_nameSpace ) {
     error("%s(%d): grib file not opened", __FILE__ ,__LINE__);
   }
 
-  err = grib_count_in_file(0, file, &n);
+  err = grib_count_in_file(DEFAULT_CONTEXT, file, &n);
   if (err) {
     error("%s(%d): unable to count messages; GRIB ERROR %3d", __FILE__, __LINE__, err);
   }
   SEXP R_grib_vec = PROTECT(allocVector(STRSXP, n));
 
-  h = grib_handle_new_from_file(0, file, &err);
+  h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err);
   if (h == NULL) {
     error("%s(%d): unable to create grib handle: GRIB ERROR %3d", __FILE__, __LINE__, err);
   }
 
-  while((h = grib_handle_new_from_file(0, file, &err)) != NULL) {
+  while((h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err)) != NULL) {
     grib_keys_iterator* keyIter=NULL;
-    messageCount++;
+    //keyString = "";
+
     if(h == NULL) {
       error("%s(%d): unable to create grib handle: GRIB ERROR %3d", __FILE__, __LINE__, err);
     }
@@ -105,58 +108,60 @@ SEXP R_grib_list(SEXP R_fileHandle, SEXP R_filter, SEXP R_nameSpace ) {
       error("%s(%d): unable to create key iterator", __FILE__, __LINE__);
     }
 
+    bzero(keyString,MAX_VAL_LEN);
     while(grib_keys_iterator_next(keyIter)) {
-      /* not right... needs to build string and THEN insert into R char vec
-       *  WORK ON THIS
-       */
-      const char* keyName = grib_keys_iterator_get_name(keyIter);
       valueLength = MAX_VAL_LEN;
+      const char *keyName = grib_keys_iterator_get_name(keyIter);
       bzero(value, valueLength);
       err = grib_get_string(h, keyName, value, &valueLength);
       if (err) {
-        SET_VECTOR_ELT(R_grib_vec, messageCount - 1, R_NaString);
+        strncat(keyString," NA:NA ",NA_KEY_LEN);
       } else {
-        sprintf(keyString,)
-        SET_VECTOR_ELT(R_grib_vec, messageCount - 1, mkChar())
+        strncat(keyString,value,valueLength);
       }
-      printf("%s = %s\n",keyName,value);
     }
+
+    SET_STRING_ELT(R_grib_vec, messageCount, mkChar(keyString));
 
     grib_keys_iterator_delete(keyIter);
     grib_handle_delete(h);
+    messageCount++;
   }
-
-
+  UNPROTECT(1);
+  return R_grib_vec;
 }
 
 /*
  * CLOSING
  */
 
-void R_grib_close(SEXP R_fileHandle) {
+SEXP R_grib_close(SEXP R_fileHandle) {
 
   int err;
-  FILE *file;
+  FILE *file = NULL;
   file = R_ExternalPtrAddr(R_fileHandle);
 
   if (file == NULL) {
     error("grib file already closed");
   } else {
     err = fclose(file);
+    file = NULL;
     if (err) {
       error("%s(%d): unable to close file",__FILE__,__LINE__);
     }
     R_ClearExternalPtr(R_fileHandle);
   }
+  return R_NilValue;
 }
 
 SEXP R_grib_length(SEXP R_fileHandle) {
 
   int err, n;
-  FILE *file;
+  FILE *file = NULL;
   file = R_ExternalPtrAddr(R_fileHandle);
 
-  err = grib_count_in_file(0,file,&n);
+  err = grib_count_in_file(DEFAULT_CONTEXT,file,&n);
+  file = NULL;
   if (err) {
     error("%s(%d): unable to count messages; GRIB ERROR %3d",__FILE__,__LINE__,err);
   } else {
