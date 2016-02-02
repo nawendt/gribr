@@ -17,9 +17,8 @@ grib_open <- function(file, mode) {
   }
 
   # class definition for rGRIB package
-  gribObj <-  list(file = path.expand(file)
-                   ,handle = handle
-                   #,length = as.integer(.Call("R_grib_length", handle))
+  gribObj <-  list(file = path.expand(file),
+                   handle = handle
                    )
   class(gribObj) <- "grib"
 
@@ -44,7 +43,7 @@ grib_close <- function(gribObj) {
 #' @export
 #' @useDynLib rGRIB R_grib_list
 grib_list <- function(R_gribObj) {
-  .Call("R_grib_list", R_gribObj$handle,0, "ls")
+  .Call("R_grib_list", R_gribObj$handle,0, "parameter")
 }
 
 # grib_ls <- function(gribObj,filter="none",nameSpace="") {
