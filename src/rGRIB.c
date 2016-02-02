@@ -67,7 +67,9 @@ SEXP R_grib_ls() {
 */
 
 SEXP R_grib_list(SEXP R_fileHandle, SEXP R_filter, SEXP R_nameSpace ) {
-  int err,n,messageCount = 0;
+  int err,n;
+  R_len_t floc;
+  size_t messageCount = 0;
   FILE *file = NULL;
   grib_handle *h = NULL;
   const char *nameSpace = NULL;
@@ -90,14 +92,10 @@ SEXP R_grib_list(SEXP R_fileHandle, SEXP R_filter, SEXP R_nameSpace ) {
   }
   SEXP R_grib_vec = PROTECT(allocVector(STRSXP, n));
 
-  h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err);
-  if (h == NULL) {
-    error("%s(%d): unable to create grib handle: GRIB ERROR %3d", __FILE__, __LINE__, err);
-  }
-
+  /* The grib handle is our GRIB message iterator. Each time we call new_from_file,
+     we are advancing to the next message in the file. */
   while((h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err)) != NULL) {
     grib_keys_iterator* keyIter=NULL;
-    //keyString = "";
 
     if(h == NULL) {
       error("%s(%d): unable to create grib handle: GRIB ERROR %3d", __FILE__, __LINE__, err);
@@ -121,12 +119,15 @@ SEXP R_grib_list(SEXP R_fileHandle, SEXP R_filter, SEXP R_nameSpace ) {
       }
     }
 
-    SET_STRING_ELT(R_grib_vec, messageCount, mkChar(keyString));
+    SET_STRING_ELT(R_grib_vec, messageCount++, mkChar(keyString));
 
     grib_keys_iterator_delete(keyIter);
     grib_handle_delete(h);
-    messageCount++;
+
   }
+  /* Be kind, please rewind. Without this the next call of grib_list will fail */
+  //rewind(file);
+
   UNPROTECT(1);
   return R_grib_vec;
 }
