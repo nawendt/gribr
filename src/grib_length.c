@@ -14,7 +14,7 @@ SEXP R_grib_length(SEXP R_fileHandle) {
   err = grib_count_in_file(DEFAULT_CONTEXT,file,&n);
   file = NULL;
   if (err) {
-    error("%s(%d): unable to count messages; GRIB ERROR %3d",__FILE__,__LINE__,err);
+    gerror("unable to count messages", err);
   } else {
     return ScalarInteger(n);
   }

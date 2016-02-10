@@ -83,6 +83,7 @@ SEXP R_grib_list(SEXP R_fileHandle, SEXP R_filter, SEXP R_nameSpace) {
     error("%s(%d): unable to rewind file",__FILE__,__LINE__);
   }
 
+  grib_handle_delete(h);
   UNPROTECT(1);
   return R_grib_vec;
 }

@@ -3,6 +3,7 @@
 #define NA_KEY_LEN      8
 #define DEFAULT_CONTEXT 0
 #define GRIB_FILE_START 0
+#define NO_ITER_FLAGS   0
 
 /* Functions to be registered */
 SEXP R_grib_close(SEXP R_fileHandle);

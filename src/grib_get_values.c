@@ -11,7 +11,7 @@ SEXP R_grib_get_values(SEXP R_fileHandle) {
   R_len_t i;
   size_t values_length;
   SEXP R_values, R_output,R_names;
-  double *values, *p_R_values;
+  double *values, *p_R_values, missingValue = 0;
   FILE *file = NULL;
   grib_handle *h = NULL;
 
@@ -36,12 +36,20 @@ SEXP R_grib_get_values(SEXP R_fileHandle) {
   if (err) {
     gerror("unable to get values", err);
   }
+  err = grib_get_double(h,"missingValue",&missingValue);
+  if (err) {
+    gerror("unable to get missing value", err);
+  }
 
   /* Copy over the values to the R object;
      Use pointers for speed */
   p_R_values = REAL(R_values);
   for (i = 0; i < values_length; i++) {
-    p_R_values[i] =  values[i];
+    if (values[i] == missingValue) {
+      p_R_values[i] =  NA_REAL;
+    } else {
+      p_R_values[i] =  values[i];
+    }
   }
   free(values);
 
@@ -60,6 +68,7 @@ SEXP R_grib_get_values(SEXP R_fileHandle) {
   SET_STRING_ELT(R_names, 2, mkChar("ny"));
   namesgets(R_output, R_names);
 
+  grib_handle_delete(h);
   UNPROTECT(3);
   return R_output;
 }
