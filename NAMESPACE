@@ -2,6 +2,7 @@
 
 S3method(print,grib)
 export(grib_close)
+export(grib_get_message)
 export(grib_get_values)
 export(grib_list)
 export(grib_open)
