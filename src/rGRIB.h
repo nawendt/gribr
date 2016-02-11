@@ -4,6 +4,8 @@
 #define DEFAULT_CONTEXT 0
 #define GRIB_FILE_START 0
 #define NO_ITER_FLAGS   0
+#define NULL_NAMESPACE  NULL
+#define NO_FILTER       0
 
 /* Functions to be registered */
 SEXP R_grib_close(SEXP R_fileHandle);
