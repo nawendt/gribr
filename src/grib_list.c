@@ -60,7 +60,7 @@ SEXP R_grib_list(SEXP R_fileHandle, SEXP R_filter, SEXP R_nameSpace) {
       bzero(value, valueLength);
       err = grib_get_string(h, keyName, value, &valueLength);
       if (err) {
-        strncat(keyString," NA:NA,",NA_KEY_LEN);
+        strncat(keyString," NA=NA,",NA_KEY_LEN);
       } else {
         strncat(keyString,keyName,strnlen(keyName,MAX_KEY_LEN));
         strncat(keyString,"=",1);
