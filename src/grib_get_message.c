@@ -8,12 +8,12 @@
 SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle) {
   int err;
   int keyType;
-  int filter;
   long nx, ny;
-  int *p_rgrib_INT_keyValue = NULL;
   R_len_t valuesLength;
   R_len_t n;
   size_t keyLength;
+  R_len_t totalKeys;
+  //size_t byteLength[MAX_BYTE_LENGTH];
   double lat;
   double lon;
   double value;
@@ -21,10 +21,7 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle) {
   double *p_rgrib_lat = NULL;
   double *p_rgrib_lon = NULL;
   double *p_rgrib_values = NULL;
-  double *p_rgrib_REAL_keyValue = NULL;
-  const char *nameSpace = NULL;
   const char *keyName = NULL;
-  const char *p_rgrib_STR_keyValue = NULL;
   FILE *file = NULL;
   grib_handle *h = NULL;
   grib_iterator *iter = NULL;
@@ -34,11 +31,10 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle) {
   SEXP rgrib_lon;
   SEXP rgrib_bitmap;
   SEXP rgrib_values;
-  SEXP rgrib_names;
+  SEXP rgrib_slots;
   SEXP rgrib_keys;
-  SEXP rgrib_STR_keyValue;
-  SEXP rgrib_REAL_keyValue;
-  SEXP rgrib_INT_keyValue;
+  SEXP rgrib_keyNames;
+  SEXP rgrib_NA_container;
   void *keyValue = NULL;
 
   file = R_ExternalPtrAddr(rgrib_fileHandle);
@@ -95,13 +91,15 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle) {
   SET_VECTOR_ELT(rgrib_grib_message, 1, rgrib_lat);
   SET_VECTOR_ELT(rgrib_grib_message, 2, rgrib_lon);
 
-  rgrib_names = PROTECT(allocVector(STRSXP,3));
-  SET_STRING_ELT(rgrib_names, 0, mkChar("values"));
-  SET_STRING_ELT(rgrib_names, 1, mkChar("lat"));
-  SET_STRING_ELT(rgrib_names, 2, mkChar("lon"));
-  namesgets(rgrib_grib_message, rgrib_names);
+  rgrib_slots = PROTECT(allocVector(STRSXP,4));
+  SET_STRING_ELT(rgrib_slots, 0, mkChar("values"));
+  SET_STRING_ELT(rgrib_slots, 1, mkChar("lat"));
+  SET_STRING_ELT(rgrib_slots, 2, mkChar("lon"));
+  SET_STRING_ELT(rgrib_slots, 3, mkChar("keys"));
+  namesgets(rgrib_grib_message, rgrib_slots);
 
-  /* Work on getting the keys in here, too */
+  //rgrib_NA_container = PROTECT(allocVector(STRSXP, 1));
+  //SET_STRING_ELT(rgrib_NA_container,0,NA_STRING);
 
   keyIter = grib_keys_iterator_new(h, NO_FILTER, NULL_NAMESPACE);
   if (keyIter == NULL) {
@@ -111,42 +109,42 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle) {
   /* This seems like the only way to get the keys
    * count to then allocate a list to contain them.
    * Will monitor for a better solution. */
-  n = 0;
+  totalKeys = 0;
   while(grib_keys_iterator_next(keyIter)) {
-    n++;
+    totalKeys++;
   }
   err = grib_keys_iterator_rewind(keyIter);
   if (err) {
     gerror("unable to rewind keys iterator", err);
   }
 
-  /* Now, allocate R list/component vectors and
-   * iterate over keys again.*/
-  rgrib_keys = PROTECT(allocVector(VECSXP, n));
-  rgrib_INT_keyValue = PROTECT(allocVector(INTSXP, 1));
-  rgrib_REAL_keyValue = PROTECT(allocVector(REALSXP, 1));
-  rgrib_STR_keyValue = PROTECT(allocVector(STRSXP, 1));
-
-  /* Get pointers to the components for speed */
-  p_rgrib_INT_keyValue = INTEGER(rgrib_INT_keyValue);
-  p_rgrib_REAL_keyValue = REAL(rgrib_REAL_keyValue);
-  p_rgrib_STR_keyValue = CHAR(STRING_ELT(rgrib_STR_keyValue, 0));
+  /* Now, allocate R list/component vectors w/ names and
+   * iterate over keys again. */
+  rgrib_keys = PROTECT(allocVector(VECSXP, totalKeys));
+  rgrib_keyNames = PROTECT(allocVector(STRSXP, totalKeys));
 
   n = 0;
-  while(grib_keys_iterator_next(keyIter)) {
+  while(grib_keys_iterator_next(keyIter) && n < totalKeys ) {
+
+    /* In this section we make use of the void pointer
+     * 'keyValue' to capture the key. This is only cast where
+     * necessary as some functions expect a pointer and
+     * safely cast this variable correctly. Functions expecting
+     * non-pointers of the same type need a cast */
+
+    R_CheckUserInterrupt();
     keyLength = MAX_VAL_LEN;
-    const char *keyName = grib_keys_iterator_get_name(keyIter);
+    keyName = grib_keys_iterator_get_name(keyIter);
     err = grib_get_native_type(h, keyName, &keyType);
     if (err) {
       gerror("unable to get native key type", err);
     }
+    SET_STRING_ELT(rgrib_keyNames, n, mkChar(keyName));
 
     switch(keyType){
-    // THE ERROR IS OCCURRING WITH STRINGS ******************************************
     case GRIB_TYPE_STRING:
-      bzero(keyValue, keyLength);
-      setAttrib(rgrib_STR_keyValue, R_NamesSymbol, mkString(keyName));
       keyValue = malloc(keyLength*sizeof(char));
+      bzero(keyValue, keyLength);
       if (keyValue == NULL) {
         error("%s(%d): unable to allocate keyValue string for %s\n", __FILE__, __LINE__, keyName);
       }
@@ -154,13 +152,10 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle) {
       err = grib_get_string(h, keyName, keyValue, &keyLength);
       if (err) {
         warning("unable to get keyValue for key %s; setting to NA\n", keyName);
-        p_rgrib_STR_keyValue = CHAR(NA_STRING);
-        //SET_STRING_ELT(rgrib_STR_keyValue, 0, NA_STRING);
-        SET_VECTOR_ELT(rgrib_keys, n++, rgrib_STR_keyValue);
+        SET_VECTOR_ELT(rgrib_keys, n++, ScalarInteger(NA_INTEGER));
+        //SET_VECTOR_ELT(rgrib_keys, n++, NA_STRING);
       } else {
-        p_rgrib_STR_keyValue = keyValue;
-        //SET_STRING_ELT(rgrib_STR_keyValue, 0, mkChar((char*)keyValue));
-        SET_VECTOR_ELT(rgrib_keys, n++, rgrib_STR_keyValue);
+        SET_VECTOR_ELT(rgrib_keys, n++, mkString(keyValue));
       }
 
       free(keyValue);
@@ -168,7 +163,6 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle) {
       break;
 
     case GRIB_TYPE_DOUBLE:
-      setAttrib(rgrib_REAL_keyValue, R_NamesSymbol, mkString(keyName));
       keyValue = malloc(sizeof(double));
       if (keyValue == NULL) {
         error("%s(%d): unable to allocate keyValue double for %s\n", __FILE__, __LINE__, keyName);
@@ -177,11 +171,9 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle) {
       err = grib_get_double(h, keyName, keyValue);
       if (err) {
         warning("unable to get keyValue for key %s; setting to NA\n", keyName);
-        p_rgrib_REAL_keyValue = &R_NaReal;
-        SET_VECTOR_ELT(rgrib_keys, n++, rgrib_REAL_keyValue);
+        SET_VECTOR_ELT(rgrib_keys, n++, ScalarReal(NA_REAL));
       } else {
-        p_rgrib_REAL_keyValue = keyValue;
-        SET_VECTOR_ELT(rgrib_keys, n++, rgrib_REAL_keyValue);
+        SET_VECTOR_ELT(rgrib_keys, n++, ScalarReal(*(double*)keyValue));
       }
 
       free(keyValue);
@@ -189,7 +181,6 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle) {
       break;
 
     case GRIB_TYPE_LONG:
-      setAttrib(rgrib_INT_keyValue, R_NamesSymbol, mkString(keyName));
       keyValue = malloc(sizeof(int));
       if (keyValue == NULL) {
         error("%s(%d): unable to allocate keyValue long for %s\n", __FILE__, __LINE__, keyName);
@@ -198,11 +189,9 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle) {
       err = grib_get_long(h, keyName, keyValue);
       if (err) {
         warning("unable to get keyValue for key %s; setting to NA\n", keyName);
-        p_rgrib_INT_keyValue = &R_NaInt;
-        SET_VECTOR_ELT(rgrib_keys, n++, rgrib_INT_keyValue);
+        SET_VECTOR_ELT(rgrib_keys, n++, ScalarInteger(NA_INTEGER));
       } else {
-        p_rgrib_INT_keyValue = keyValue;
-        SET_VECTOR_ELT(rgrib_keys, n++, rgrib_INT_keyValue);
+        SET_VECTOR_ELT(rgrib_keys, n++, ScalarInteger(*(int*)keyValue));
       }
 
       free(keyValue);
@@ -210,18 +199,17 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle) {
       break;
 
     default:
-      setAttrib(rgrib_INT_keyValue, R_NamesSymbol, mkString(keyName));
-      p_rgrib_INT_keyValue = &R_NaInt;
-      SET_VECTOR_ELT(rgrib_keys, n++, rgrib_INT_keyValue);
+      SET_VECTOR_ELT(rgrib_keys, n++, ScalarInteger(NA_INTEGER));
+      //SET_VECTOR_ELT(rgrib_keys, n++, NA_STRING);
     }
   }
 
   grib_handle_delete(h);
   grib_keys_iterator_delete(keyIter);
 
-  setAttrib(rgrib_INT_keyValue, R_NamesSymbol, mkString("keys"));
-  SET_VECTOR_ELT(rgrib_grib_message, 3, rgrib_keys);
+  namesgets(rgrib_keys, rgrib_keyNames);
+  SET_STRING_ELT(rgrib_grib_message, 3, rgrib_keys);
 
-  UNPROTECT(9);
+  UNPROTECT(7);
   return rgrib_grib_message;
 }
