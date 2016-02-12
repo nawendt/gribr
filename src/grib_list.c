@@ -5,7 +5,7 @@
 
 #include "rGRIB.h"
 
-SEXP R_grib_list(SEXP R_fileHandle, SEXP R_filter, SEXP R_nameSpace) {
+SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSpace) {
   int err,n;
   R_len_t floc;
   size_t messageCount = 0;
@@ -18,10 +18,10 @@ SEXP R_grib_list(SEXP R_fileHandle, SEXP R_filter, SEXP R_nameSpace) {
   char value[MAX_VAL_LEN];
   size_t valueLength=MAX_VAL_LEN;
 
-  filter = asInteger(R_filter);
-  nameSpace = CHAR(STRING_ELT(R_nameSpace,0));
+  filter = asInteger(rgrib_filter);
+  nameSpace = CHAR(STRING_ELT(rgrib_nameSpace,0));
 
-  file = R_ExternalPtrAddr(R_fileHandle);
+  file = R_ExternalPtrAddr(rgrib_fileHandle);
   if (file == NULL) {
     error("%s(%d): grib file not opened", __FILE__ ,__LINE__);
   }
@@ -37,7 +37,7 @@ SEXP R_grib_list(SEXP R_fileHandle, SEXP R_filter, SEXP R_nameSpace) {
   if (err) {
     error("%s(%d): unable to count messages; GRIB ERROR %3d", __FILE__, __LINE__, err);
   }
-  SEXP R_grib_vec = PROTECT(allocVector(STRSXP, n));
+  SEXP rgrib_grib_vec = PROTECT(allocVector(STRSXP, n));
 
   /* The grib handle is our GRIB message iterator. Each time we call new_from_file,
      we are advancing to the next message in the file. */
@@ -72,7 +72,7 @@ SEXP R_grib_list(SEXP R_fileHandle, SEXP R_filter, SEXP R_nameSpace) {
     /* Clean up the trailing comma */
     lastComma = strrchr(keyString,',');
     *lastComma = '\0';
-    SET_STRING_ELT(R_grib_vec, messageCount++, mkChar(keyString));
+    SET_STRING_ELT(rgrib_grib_vec, messageCount++, mkChar(keyString));
 
     grib_keys_iterator_delete(keyIter);
     grib_handle_delete(h);
@@ -85,5 +85,5 @@ SEXP R_grib_list(SEXP R_fileHandle, SEXP R_filter, SEXP R_nameSpace) {
 
   grib_handle_delete(h);
   UNPROTECT(1);
-  return R_grib_vec;
+  return rgrib_grib_vec;
 }

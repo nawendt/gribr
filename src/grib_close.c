@@ -3,11 +3,11 @@
 #include <R.h>
 #include <Rinternals.h>
 
-SEXP R_grib_close(SEXP R_fileHandle) {
+SEXP rgrib_grib_close(SEXP rgrib_fileHandle) {
 
   int err;
   FILE *file = NULL;
-  file = R_ExternalPtrAddr(R_fileHandle);
+  file = R_ExternalPtrAddr(rgrib_fileHandle);
 
   if (file == NULL) {
     error("grib file already closed");
@@ -17,7 +17,7 @@ SEXP R_grib_close(SEXP R_fileHandle) {
     if (err) {
       error("%s(%d): unable to close file",__FILE__,__LINE__);
     }
-    R_ClearExternalPtr(R_fileHandle);
+    R_ClearExternalPtr(rgrib_fileHandle);
   }
   return R_NilValue;
 }
