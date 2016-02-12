@@ -6,6 +6,7 @@
 #define NO_ITER_FLAGS   0
 #define NULL_NAMESPACE  NULL
 #define NO_FILTER       0
+#define MAX_BYTE_LENGTH 512
 
 /* Functions to be registered */
 SEXP rgrib_grib_close(SEXP R_fileHandle);

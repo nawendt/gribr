@@ -7,7 +7,6 @@
 
 SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSpace) {
   int err,n;
-  R_len_t floc;
   size_t messageCount = 0;
   FILE *file = NULL;
   grib_handle *h = NULL;
