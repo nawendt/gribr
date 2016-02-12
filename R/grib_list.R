@@ -20,7 +20,7 @@ grib_list <- function(gribObj,filter="none",nameSpace="ls") {
         # as well
         nameSpace <- ""
       }
-      .Call("R_grib_list",gribObj$handle,as.integer(gribFilterList[filter]),nameSpace)
+      .Call("rgrib_grib_list",gribObj$handle,as.integer(gribFilterList[filter]),nameSpace)
     } else {
       stop("GRIB object is closed or unavailable")
     }

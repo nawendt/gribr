@@ -6,7 +6,7 @@ grib_get_values <- function(gribObj) {
     if (is.null.externalptr(gribObj$handle)) {
       stop("Grib object is closed or unavailable")
     }
-    tmp <- .Call("R_grib_get_values", gribObj$handle)
+    tmp <- .Call("rgrib_grib_get_values", gribObj$handle)
     matrix(tmp$values, tmp$nx, tmp$ny)
   }
 }

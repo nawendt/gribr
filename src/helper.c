@@ -9,8 +9,8 @@ extern void file_finalizer(SEXP ptr)
   R_ClearExternalPtr(ptr);
 }
 
-extern SEXP R_is_null_ptr (SEXP R_ptr) {
-  return ScalarLogical(!R_ExternalPtrAddr(R_ptr));
+extern SEXP rgrib_is_null_ptr (SEXP rgrib_ptr) {
+  return ScalarLogical(!R_ExternalPtrAddr(rgrib_ptr));
 }
 
 extern void gerror(const char *str, int err) {
