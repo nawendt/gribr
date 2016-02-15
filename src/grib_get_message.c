@@ -5,16 +5,22 @@
 
 #include "rGRIB.h"
 
-SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle) {
+SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSpace) {
   int err;
+  int filter;
   int keyType;
   long nx, ny;
   long keyValue_i;
+  long bitmapPresent;
+  long *bitmap;
+  int *p_rgrib_bitmap;
   R_len_t valuesLength;
   R_len_t n;
-  size_t keyLength;
+  R_len_t i;
   R_len_t totalKeys;
-  //size_t byteLength[MAX_BYTE_LENGTH];
+  size_t keyLength;
+  size_t bmp_len;
+  //size_t bit_length = MAX_BYTE_LENGTH;
   double lat;
   double lon;
   double value;
@@ -24,7 +30,10 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle) {
   double *p_rgrib_lon = NULL;
   double *p_rgrib_values = NULL;
   const char *keyName = NULL;
+  const char *nameSpace = NULL;
   char keyValue_c[MAX_VAL_LEN];
+  //unsigned char keyValue_b[MAX_BYTE_LENGTH];
+  //unsigned char * p_rgrib_bytes;
   FILE *file = NULL;
   grib_handle *h = NULL;
   grib_iterator *iter = NULL;
@@ -32,11 +41,17 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle) {
   SEXP rgrib_grib_message;
   SEXP rgrib_lat;
   SEXP rgrib_lon;
-  //SEXP rgrib_bitmap;
+  SEXP rgrib_bitmap;
+  SEXP rgrib_bytes;
   SEXP rgrib_values;
   SEXP rgrib_slots;
   SEXP rgrib_keys;
   SEXP rgrib_keyNames;
+  PROTECT_INDEX pro_bitmap;
+  PROTECT_INDEX pro_bytes;
+
+  filter = asInteger(rgrib_filter);
+  nameSpace = CHAR(STRING_ELT(rgrib_nameSpace,0));
 
   file = R_ExternalPtrAddr(rgrib_fileHandle);
   h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err);
@@ -49,14 +64,24 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle) {
     gerror("unable to create new iterator", err);
   }
 
+  /* Make sure to get the dimensions which
+   * are sometimes stored in different keys.
+   * Covering all the bases here with
+   * Ni/Nx and Nj/Ny */
   err = grib_get_long(h, "Ni", &nx);
   if (err) {
+    err = grib_get_long(h, "Nx", &nx);
+    if (err) {
     gerror("unable to get x dim", err);
+    }
   }
 
   err = grib_get_long(h, "Nj", &ny);
   if (err) {
-    gerror("unable to get y dim", err);
+    err = grib_get_long(h, "Ny", &ny);
+    if (err) {
+      gerror("unable to get y dim", err);
+    }
   }
 
   err = grib_get_double(h,"missingValue",&missingValue);
@@ -68,16 +93,52 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle) {
   rgrib_lat = PROTECT(allocMatrix(REALSXP, nx, ny));
   rgrib_lon = PROTECT(allocMatrix(REALSXP, nx, ny));
   rgrib_values = PROTECT(allocMatrix(REALSXP, nx, ny));
+  /* These next two SEXPs get an index since their uses
+   * are optional. Having PROTECT() in and if () leads to
+   * hard to deal with UNPROTECT() situations. Setting the
+   * SEXPs to the most likely value and then redefining them
+   * inside REPROTECT(). This ensures that the UNPROTECT()
+   * at the end will always have the same number in the stack. */
+  PROTECT_WITH_INDEX(rgrib_bitmap = allocMatrix(INTSXP, nx, ny), &pro_bitmap);
+  PROTECT_WITH_INDEX(rgrib_bytes = allocVector(RAWSXP, 1), &pro_bytes);
 
   p_rgrib_lat = REAL(rgrib_lat);
   p_rgrib_lon = REAL(rgrib_lon);
   p_rgrib_values = REAL(rgrib_values);
+  p_rgrib_bitmap = INTEGER(rgrib_bitmap);
+
+  err = grib_get_long(h, "bitmapPresent", &bitmapPresent);
+  if (err) {
+    gerror("unable to get bitmapPresent variable", err);
+  } else {
+    if (bitmapPresent) {
+      grib_get_size(h, "bitmap", &bmp_len);
+      if (bmp_len != valuesLength) {
+        error("mismatch between bitmap and values array sizes");
+      }
+      bitmap = malloc(bmp_len*sizeof(long));
+      err = grib_get_long_array(h, "bitmap", bitmap, &bmp_len);
+      if (err) {
+        gerror("unable to get bitmap array", err);
+      } else {
+        for (i = 0; i < bmp_len; i++) {
+          R_CheckUserInterrupt();
+          p_rgrib_bitmap[i] = bitmap[i];
+        }
+        free(bitmap);
+      }
+    } else {
+      REPROTECT(rgrib_bitmap = allocVector(LGLSXP, 1), pro_bitmap);
+      LOGICAL(rgrib_bitmap)[0] =  FALSE;
+    }
+  }
 
   n = 0;
   while(grib_iterator_next(iter,&lat,&lon,&value) && n < valuesLength) {
+    R_CheckUserInterrupt();
     p_rgrib_lat[n] = lat;
     p_rgrib_lon[n] = lon;
-    if (value == missingValue) {
+    if (value == missingValue || (bitmapPresent && p_rgrib_bitmap[n] == BITMAP_MASK)) {
       p_rgrib_values[n] = NA_REAL;
     } else {
       p_rgrib_values[n] = value;
@@ -87,19 +148,21 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle) {
 
   grib_iterator_delete(iter);
 
-  rgrib_grib_message = PROTECT(allocVector(VECSXP, 4));
+  rgrib_grib_message = PROTECT(allocVector(VECSXP, 5));
   SET_VECTOR_ELT(rgrib_grib_message, 0, rgrib_values);
   SET_VECTOR_ELT(rgrib_grib_message, 1, rgrib_lat);
   SET_VECTOR_ELT(rgrib_grib_message, 2, rgrib_lon);
+  SET_VECTOR_ELT(rgrib_grib_message, 3, rgrib_bitmap);
 
-  rgrib_slots = PROTECT(allocVector(STRSXP,4));
+  rgrib_slots = PROTECT(allocVector(STRSXP,5));
   SET_STRING_ELT(rgrib_slots, 0, mkChar("values"));
   SET_STRING_ELT(rgrib_slots, 1, mkChar("lat"));
   SET_STRING_ELT(rgrib_slots, 2, mkChar("lon"));
-  SET_STRING_ELT(rgrib_slots, 3, mkChar("keys"));
+  SET_STRING_ELT(rgrib_slots, 3, mkChar("bitmap"));
+  SET_STRING_ELT(rgrib_slots, 4, mkChar("keys"));
   namesgets(rgrib_grib_message, rgrib_slots);
 
-  keyIter = grib_keys_iterator_new(h, GRIB_KEYS_ITERATOR_ALL_KEYS, NULL_NAMESPACE);
+  keyIter = grib_keys_iterator_new(h, filter, nameSpace);
   if (keyIter == NULL) {
     error("%s(%d): unable to create key iterator", __FILE__, __LINE__);
   }
@@ -171,17 +234,46 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle) {
       }
       break;
 
+    /* This will go unused for now...always returns zero bit_length.
+     * Keeping code for now for reference. GRIB_TYPE_BYTES will be
+     * returned as character instead.
+
+    case GRIB_TYPE_BYTES:
+      err = grib_get_bytes(h, keyName, keyValue_b, &bit_length);
+      if (err) {
+        //warning("unable to get keyValue for key %s; setting to NA\n", keyName);
+        SET_VECTOR_ELT(rgrib_keys, n++, ScalarInteger(NA_INTEGER));
+      } else {
+        REPROTECT(rgrib_bytes = allocVector(RAWSXP, bit_length), pro_bytes);
+        p_rgrib_bytes = RAW(rgrib_bytes);
+        for (i = 0; i < bit_length; i++) {
+          p_rgrib_bytes[i] = keyValue_b[i];
+        }
+        SET_VECTOR_ELT(rgrib_keys, n++, rgrib_bytes);
+      }
+      bit_length = MAX_BYTE_LENGTH;
+      break;
+      */
+
     default:
-      SET_VECTOR_ELT(rgrib_keys, n++, ScalarInteger(NA_INTEGER));
+      //SET_VECTOR_ELT(rgrib_keys, n++, ScalarInteger(NA_INTEGER));
+      bzero(keyValue_c, keyLength);
+      err = grib_get_string(h, keyName, keyValue_c, &keyLength);
+      if (err) {
+        //warning("unable to get keyValue for key %s; setting to NA\n", keyName);
+        SET_VECTOR_ELT(rgrib_keys, n++, ScalarString(NA_STRING));
+      } else {
+        SET_VECTOR_ELT(rgrib_keys, n++, mkString(keyValue_c));
+      }
     }
   }
 
   namesgets(rgrib_keys, rgrib_keyNames);
-  SET_VECTOR_ELT(rgrib_grib_message, 3, rgrib_keys);
+  SET_VECTOR_ELT(rgrib_grib_message, 4, rgrib_keys);
 
   grib_keys_iterator_delete(keyIter);
   grib_handle_delete(h);
 
-  UNPROTECT(7);
+  UNPROTECT(9);
   return rgrib_grib_message;
 }
