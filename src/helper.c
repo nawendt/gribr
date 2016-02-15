@@ -27,3 +27,5 @@ SEXP getListElement(SEXP list, const char *str)
     }
     return elmt;
 }
+
+//extern int rgrib_is_multifield()

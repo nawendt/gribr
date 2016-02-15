@@ -1,6 +1,7 @@
 #' @export
 
 grib_list <- function(gribObj,filter="none",nameSpace="ls") {
+  # this matches what is defined in the GRIB API
   gribFilterList = list(
     none      = 0,
     readonly  = bitwShiftL(1,0),
@@ -11,6 +12,7 @@ grib_list <- function(gribObj,filter="none",nameSpace="ls") {
     duplicate = bitwShiftL(1,5),
     func      = bitwShiftL(1,6)
     )
+
   if (is.grib(gribObj)) {
     if (!is.null.externalptr(gribObj$handle)) {
       if (is.null(nameSpace)) {
@@ -20,7 +22,7 @@ grib_list <- function(gribObj,filter="none",nameSpace="ls") {
         # as well
         nameSpace <- ""
       }
-      .Call("rgrib_grib_list",gribObj$handle,as.integer(gribFilterList[filter]),nameSpace)
+      .Call("rgrib_grib_list",gribObj$handle, as.integer(gribFilterList[filter]), nameSpace)
     } else {
       stop("GRIB object is closed or unavailable")
     }

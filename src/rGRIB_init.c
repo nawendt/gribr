@@ -11,7 +11,7 @@ static const
     {"grib_list" ,            (DL_FUNC) &rgrib_grib_list,                    3},
     {"grib_length",           (DL_FUNC) &rgrib_grib_length,                  1},
     {"grib_get_values",       (DL_FUNC) &rgrib_grib_get_values,              1},
-    {"grib_get_message",      (DL_FUNC) &rgrib_grib_get_message,             1},
+    {"grib_get_message",      (DL_FUNC) &rgrib_grib_get_message,             3},
     {NULL,                    NULL,                                      0}
   };
 
