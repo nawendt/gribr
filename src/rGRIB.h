@@ -20,3 +20,4 @@ SEXP rgrib_grib_get_message(SEXP R_fileHandle, SEXP rgrib_filter, SEXP rgrib_nam
 /* Internal functions */
 extern void file_finalizer(SEXP ptr);
 extern void gerror(const char *str, int err);
+extern int is_multi_message(FILE *file);

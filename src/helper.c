@@ -3,6 +3,8 @@
 
 #include <grib_api.h>
 
+#include "rGRIB.h"
+
 extern void file_finalizer(SEXP ptr)
 {
   if(!R_ExternalPtrAddr(ptr)) return;
@@ -28,4 +30,31 @@ SEXP getListElement(SEXP list, const char *str)
     return elmt;
 }
 
-//extern int rgrib_is_multifield()
+extern int is_multi_message(FILE *file) {
+  int err;
+  int n_on;
+  int n_off;
+  grib_context *c;
+
+  c = grib_context_get_default();
+
+  grib_multi_support_off(c);
+  err = grib_count_in_file(c, file, &n_off);
+  if (err) {
+    gerror("unable to count grib messages", err);
+  }
+
+  grib_multi_support_on(c);
+  err = grib_count_in_file(c, file, &n_on);
+  if (err) {
+    gerror("unable to count grib messages", err);
+  }
+
+  //grib_context_delete(c);
+
+  if (n_on != n_off) {
+    return 1;
+  }
+
+  return 0;
+}
