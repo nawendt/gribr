@@ -6,17 +6,33 @@
 #include "rGRIB.h"
 
 SEXP rgrib_grib_length(SEXP rgrib_fileHandle) {
-
-  int err, n;
+  int err;
+  R_len_t n;
+  R_len_t n_on;
+  R_len_t n_off;
+  grib_context *c = NULL;
   FILE *file = NULL;
   file = R_ExternalPtrAddr(rgrib_fileHandle);
 
-  err = grib_count_in_file(DEFAULT_CONTEXT,file,&n);
-  file = NULL;
+  c = grib_context_get_default();
+
+  grib_multi_support_on(c);
+  err = grib_count_in_file(c, file, &n_on);
   if (err) {
     gerror("unable to count messages", err);
-  } else {
-    return ScalarInteger(n);
   }
-  return R_NilValue;
+
+  grib_multi_support_off(c);
+  err = grib_count_in_file(c, file, &n_off);
+  if (err) {
+    gerror("unable to count messages", err);
+  }
+
+  if (n_on == n_off) {
+    n = n_off;
+  } else {
+    n = n_on;
+  }
+
+  return ScalarInteger(n);
 }

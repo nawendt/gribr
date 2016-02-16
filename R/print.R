@@ -5,6 +5,7 @@ print.grib <- function(x, ...) {
     cat("Status: closed\n")
   } else {
     cat("Status: open\n")
+    cat("isMultiMessage:", x$isMultiMessage)
     #cat("Total Messages: ", .Call("R_grib_length", x$handle), "\n")
   }
 }
