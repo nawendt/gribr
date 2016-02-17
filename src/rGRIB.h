@@ -10,14 +10,16 @@
 #define BITMAP_MASK     0
 
 /* Functions to be registered */
-SEXP rgrib_grib_close(SEXP R_fileHandle);
-SEXP rgrib_grib_open(SEXP R_fileName, SEXP R_mode);
-SEXP rgrib_grib_get_values(SEXP R_fileHandle);
-SEXP rgrib_grib_list(SEXP R_fileHandle, SEXP R_filter, SEXP R_nameSpace);
-SEXP rgrib_grib_length(SEXP R_fileHandle);
-SEXP rgrib_grib_get_message(SEXP R_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSpace);
+SEXP rgrib_grib_close(SEXP rgrib_fileHandle);
+SEXP rgrib_grib_open(SEXP rgrib_fileName, SEXP rgrib_mode);
+SEXP rgrib_grib_get_values(SEXP rgrib_fileHandle);
+SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSpace);
+SEXP rgrib_grib_length(SEXP rgrib_fileHandle);
+SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSpace);
+SEXP rgrib_is_null_ptr (SEXP rgrib_ptr);
 
 /* Internal functions */
-extern void file_finalizer(SEXP ptr);
-extern void gerror(const char *str, int err);
-extern int is_multi_message(FILE *file);
+void file_finalizer(SEXP ptr);
+void gerror(const char *str, int err);
+SEXP getListElement(SEXP list, const char *str);
+SEXP rgrib_is_multi_message(SEXP rgrib_fileHandle);

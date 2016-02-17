@@ -5,17 +5,17 @@
 
 #include "rGRIB.h"
 
-extern void file_finalizer(SEXP ptr)
+void file_finalizer(SEXP ptr)
 {
   if(!R_ExternalPtrAddr(ptr)) return;
   R_ClearExternalPtr(ptr);
 }
 
-extern SEXP rgrib_is_null_ptr (SEXP rgrib_ptr) {
+SEXP rgrib_is_null_ptr (SEXP rgrib_ptr) {
   return ScalarLogical(!R_ExternalPtrAddr(rgrib_ptr));
 }
 
-extern void gerror(const char *str, int err) {
+void gerror(const char *str, int err) {
   error("%s(%d): %s\nGRIB ERROR %s",__FILE__,__LINE__,str,grib_get_error_message(err));
 }
 
@@ -30,12 +30,14 @@ SEXP getListElement(SEXP list, const char *str)
     return elmt;
 }
 
-extern int is_multi_message(FILE *file) {
+SEXP rgrib_is_multi_message(SEXP fileHandle) {
   int err;
   int n_on;
   int n_off;
   grib_context *c;
+  FILE *file = NULL;
 
+  file = R_ExternalPtrAddr(fileHandle);
   c = grib_context_get_default();
 
   grib_multi_support_off(c);
@@ -53,8 +55,8 @@ extern int is_multi_message(FILE *file) {
   //grib_context_delete(c);
 
   if (n_on != n_off) {
-    return 1;
+    return ScalarLogical(TRUE);
   }
 
-  return 0;
+  return ScalarLogical(FALSE);
 }
