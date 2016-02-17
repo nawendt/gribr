@@ -1,16 +1,16 @@
 #' @export
 
-grib_list <- function(gribObj,filter="none",nameSpace="ls") {
+grib_list <- function(gribObj, filter = "none", nameSpace = "ls") {
   # this matches what is defined in the GRIB API
   gribFilterList = list(
     none      = 0,
-    readonly  = bitwShiftL(1,0),
-    optional  = bitwShiftL(1,1),
-    edition   = bitwShiftL(1,2),
-    coded     = bitwShiftL(1,3),
-    computed  = bitwShiftL(1,4),
-    duplicate = bitwShiftL(1,5),
-    func      = bitwShiftL(1,6)
+    readonly  = bitwShiftL(1, 0),
+    optional  = bitwShiftL(1, 1),
+    edition   = bitwShiftL(1, 2),
+    coded     = bitwShiftL(1, 3),
+    computed  = bitwShiftL(1, 4),
+    duplicate = bitwShiftL(1, 5),
+    func      = bitwShiftL(1, 6)
     )
 
   if (is.grib(gribObj)) {

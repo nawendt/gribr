@@ -10,9 +10,13 @@ grib_open <- function(file, mode) {
     stop("Problem retrieving grib handle")
   }
 
+  # Need to know if multiple fields in one GRIB message
+  isMultiMessage <- .Call("rgrib_is_multi_message", handle)
+
   # class definition for rGRIB package
   gribObj <-  list(file = path.expand(file),
-                   handle = handle
+                   handle = handle,
+                   isMultiMessage = isMultiMessage
                    )
   class(gribObj) <- "grib"
 
