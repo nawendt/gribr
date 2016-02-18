@@ -28,7 +28,7 @@ SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSp
   /* Make sure it is rewound */
   if (ftell(file) != GRIB_FILE_START) {
     if (fseek(file, GRIB_FILE_START, SEEK_SET)) {
-      error("%s(%d): unable to rewind file",__FILE__,__LINE__);
+      error("%s(%d): unable to rewind file", __FILE__, __LINE__);
     }
   }
 
@@ -61,10 +61,10 @@ SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSp
       if (err) {
         strncat(keyString," NA=NA,",NA_KEY_LEN);
       } else {
-        strncat(keyString,keyName,strnlen(keyName,MAX_KEY_LEN));
-        strncat(keyString,"=",1);
-        strncat(keyString,value,valueLength);
-        strncat(keyString,",",1);
+        strncat(keyString ,keyName, strnlen(keyName, MAX_KEY_LEN));
+        strncat(keyString, "=", 1);
+        strncat(keyString, value, valueLength);
+        strncat(keyString, ",", 1);
       }
     }
 
@@ -79,7 +79,7 @@ SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSp
   }
   /* Be kind, please rewind. Without this the next call of grib_list will fail */
   if (fseek(file, GRIB_FILE_START, SEEK_SET)) {
-    error("%s(%d): unable to rewind file",__FILE__,__LINE__);
+    error("%s(%d): unable to rewind file", __FILE__, __LINE__);
   }
 
   grib_handle_delete(h);

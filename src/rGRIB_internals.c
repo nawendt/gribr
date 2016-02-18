@@ -16,7 +16,7 @@ SEXP rgrib_is_null_ptr (SEXP rgrib_ptr) {
 }
 
 void gerror(const char *str, int err) {
-  error("%s(%d): %s\nGRIB ERROR %s",__FILE__,__LINE__,str,grib_get_error_message(err));
+  error("%s(%d): %s\nGRIB ERROR %s", __FILE__, __LINE__, str, grib_get_error_message(err));
 }
 
 SEXP getListElement(SEXP list, const char *str)
@@ -34,25 +34,33 @@ SEXP rgrib_is_multi_message(SEXP fileHandle) {
   int err;
   int n_on;
   int n_off;
-  grib_context *c;
+  grib_handle *h = NULL;
   FILE *file = NULL;
 
   file = R_ExternalPtrAddr(fileHandle);
-  c = grib_context_get_default();
 
-  grib_multi_support_off(c);
-  err = grib_count_in_file(c, file, &n_off);
+  err = grib_count_in_file(DEFAULT_CONTEXT, file, &n_off);
   if (err) {
     gerror("unable to count grib messages", err);
   }
 
-  grib_multi_support_on(c);
-  err = grib_count_in_file(c, file, &n_on);
+  grib_multi_support_on(DEFAULT_CONTEXT);
+  err = grib_count_in_file(DEFAULT_CONTEXT, file, &n_on);
+  while((h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err))) {
+    n_on++;
+  }
   if (err) {
     gerror("unable to count grib messages", err);
   }
 
-  //grib_context_delete(c);
+  /* This rewind is important as neglecting to do so will
+   * leave the file handle in a unusable state and cause
+   * R to crash */
+  if (fseek(file, 0, SEEK_SET)) {
+    error("%s(%d): unable to rewind file", __FILE__ ,__LINE__);
+  }
+
+  grib_handle_delete(h);
 
   if (n_on != n_off) {
     return ScalarLogical(TRUE);
