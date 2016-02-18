@@ -32,11 +32,11 @@ SEXP rgrib_grib_get_values(SEXP rgrib_fileHandle) {
   values_length = nx*ny;
   rgrib_values = PROTECT(allocVector(REALSXP, values_length));
   values = malloc((values_length)*sizeof(double));
-  err = grib_get_double_array(h,"values",values,&values_length);
+  err = grib_get_double_array(h, "values", values, &values_length);
   if (err) {
     gerror("unable to get values", err);
   }
-  err = grib_get_double(h,"missingValue",&missingValue);
+  err = grib_get_double(h, "missingValue", &missingValue);
   if (err) {
     gerror("unable to get missing value", err);
   }
@@ -55,14 +55,14 @@ SEXP rgrib_grib_get_values(SEXP rgrib_fileHandle) {
 
   /* Need to pass out nx, ny to be able to
    * create matrix in R wrapper */
-  rgrib_output = PROTECT(allocVector(VECSXP,3));
+  rgrib_output = PROTECT(allocVector(VECSXP, 3));
   SET_VECTOR_ELT(rgrib_output, 0, rgrib_values);
   SET_VECTOR_ELT(rgrib_output, 1, ScalarInteger(nx));
   SET_VECTOR_ELT(rgrib_output, 2, ScalarInteger(ny));
 
   /* Set names of output list for ease of handling
    * in the R wrapper function */
-  rgrib_names = PROTECT(allocVector(STRSXP,3));
+  rgrib_names = PROTECT(allocVector(STRSXP, 3));
   SET_STRING_ELT(rgrib_names, 0, mkChar("values"));
   SET_STRING_ELT(rgrib_names, 1, mkChar("nx"));
   SET_STRING_ELT(rgrib_names, 2, mkChar("ny"));

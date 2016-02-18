@@ -7,32 +7,38 @@
 
 SEXP rgrib_grib_length(SEXP rgrib_fileHandle) {
   int err;
-  R_len_t n;
   R_len_t n_on;
   R_len_t n_off;
-  grib_context *c = NULL;
+  grib_handle *h = NULL;
   FILE *file = NULL;
   file = R_ExternalPtrAddr(rgrib_fileHandle);
 
-  c = grib_context_get_default();
-
-  grib_multi_support_on(c);
-  err = grib_count_in_file(c, file, &n_on);
+  err = grib_count_in_file(DEFAULT_CONTEXT, file, &n_off);
   if (err) {
-    gerror("unable to count messages", err);
+    gerror("unable to count grib messages", err);
   }
 
-  grib_multi_support_off(c);
-  err = grib_count_in_file(c, file, &n_off);
+  grib_multi_support_on(DEFAULT_CONTEXT);
+  err = grib_count_in_file(DEFAULT_CONTEXT, file, &n_on);
+  while((h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err))) {
+    n_on++;
+  }
   if (err) {
-    gerror("unable to count messages", err);
+    gerror("unable to count grib messages", err);
   }
 
-  if (n_on == n_off) {
-    n = n_off;
-  } else {
-    n = n_on;
+  /* This rewind is important as neglecting to do so will
+   * leave the file handle in a unusable state and cause
+   * R to crash */
+  if (fseek(file, 0, SEEK_SET)) {
+    error("%s(%d): unable to rewind file", __FILE__ ,__LINE__);
   }
 
-  return ScalarInteger(n);
+  grib_handle_delete(h);
+
+  if (n_on != n_off) {
+    return ScalarInteger(n_on);
+  }
+
+  return ScalarInteger(n_off);
 }
