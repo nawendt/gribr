@@ -16,6 +16,7 @@ SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSp
   int filter;
   char value[MAX_VAL_LEN];
   size_t valueLength=MAX_VAL_LEN;
+  SEXP rgrib_grib_vec;
 
   filter = asInteger(rgrib_filter);
   nameSpace = CHAR(STRING_ELT(rgrib_nameSpace,0));
@@ -36,7 +37,7 @@ SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSp
   if (err) {
     error("%s(%d): unable to count messages; GRIB ERROR %3d", __FILE__, __LINE__, err);
   }
-  SEXP rgrib_grib_vec = PROTECT(allocVector(STRSXP, n));
+  rgrib_grib_vec = PROTECT(allocVector(STRSXP, n));
 
   /* The grib handle is our GRIB message iterator. Each time we call new_from_file,
      we are advancing to the next message in the file. */

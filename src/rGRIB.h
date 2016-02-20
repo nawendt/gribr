@@ -18,6 +18,7 @@ SEXP rgrib_grib_length(SEXP rgrib_fileHandle);
 SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSpace);
 SEXP rgrib_is_null_ptr (SEXP rgrib_ptr);
 SEXP rgrib_is_multi_message(SEXP rgrib_fileHandle);
+SEXP rgrib_select(SEXP filePath, SEXP keyPairs);
 
 /* Internal functions */
 void file_finalizer(SEXP ptr);
