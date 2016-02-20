@@ -202,7 +202,7 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib
     }
     SET_STRING_ELT(rgrib_keyNames, n, mkChar(keyName));
 
-    switch(keyType){
+    switch(keyType) {
     case GRIB_TYPE_STRING:
       bzero(keyValue_c, keyLength);
       err = grib_get_string(h, keyName, keyValue_c, &keyLength);

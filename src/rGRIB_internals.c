@@ -21,8 +21,10 @@ void gerror(const char *str, int err) {
 
 SEXP getListElement(SEXP list, const char *str)
 {
+  int i;
+
   SEXP elmt = R_NilValue, names = getAttrib(list, R_NamesSymbol);
-  for (int i = 0; i < length(list); i++)
+  for (i = 0; i < length(list); i++)
     if(strcmp(CHAR(STRING_ELT(names, i)), str) == 0) {
       elmt = VECTOR_ELT(list, i);
       break;
