@@ -1,6 +1,8 @@
 #include <R.h>
 #include <Rinternals.h>
 
+#include <string.h>
+
 #include "rGRIB.h"
 
 SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyPairs, SEXP isMulti) {
@@ -22,6 +24,7 @@ SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyPairs, SEXP isMulti) {
   const char *file = NULL;
   const char *name = NULL;
   const char *ks = NULL;
+  char *ksc = NULL;
   char *keyString = NULL;
   FILE *fileHandle = NULL;
   SEXP rgrib_keyNames;
@@ -48,7 +51,7 @@ SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyPairs, SEXP isMulti) {
   n = 0; n_tot = 0;
   for (i = 0; i < pairsLength; i++) {
     name  = CHAR(STRING_ELT(rgrib_keyNames, i));
-    n = strnlen(name, MAX_KEY_LEN - 1);
+    n = strlen(name);
     if (!n) {
       error("%s(%d): unable to allocate keyString", __FILE__, __LINE__);
     }
@@ -94,7 +97,10 @@ SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyPairs, SEXP isMulti) {
       kvl = length(VECTOR_ELT(rgrib_keyPairs, i));
       for (j = 0; j < kvl; j++) {
         ks = CHAR(STRING_ELT((VECTOR_ELT(rgrib_keyPairs, i)), j));
-        grib_index_select_string(index, name, strdup(ks));
+        ksc = calloc(strlen(ks), sizeof(char));
+        strcpy(ksc, ks);
+        grib_index_select_string(index, name, ksc);
+        free(ksc);
       }
       break;
     case GRIB_TYPE_DOUBLE:
@@ -114,7 +120,6 @@ SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyPairs, SEXP isMulti) {
          * typing than the R routines.
          */
         ki = INTEGER(coerceVector(VECTOR_ELT(rgrib_keyPairs, i), INTSXP))[j];
-        Rprintf("%d\n", ki);
         grib_index_select_long(index, name, ki);
       }
       break;

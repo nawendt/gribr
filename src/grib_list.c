@@ -51,22 +51,26 @@ SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSp
       error("%s(%d): unable to create key iterator", __FILE__, __LINE__);
     }
 
-    bzero(keyString,MAX_VAL_LEN);
+    memset(keyString, '\0', MAX_VAL_LEN);
     while(grib_keys_iterator_next(keyIter)) {
       valueLength = MAX_VAL_LEN;
       const char *keyName = grib_keys_iterator_get_name(keyIter);
-      bzero(value, valueLength);
+      memset(value, '\0', valueLength);
       err = grib_get_string(h, keyName, value, &valueLength);
-      if (err) {
-        strncat(keyString," NA=NA,",NA_KEY_LEN);
+      if ((strlen(keyString) + strlen(keyName) + strlen(value) + 2) < MAX_VAL_LEN ||
+          (strlen(keyString) + NA_KEY_LEN < MAX_VAL_LEN)) {
+        if (err) {
+          strncat(keyString," NA=NA,",NA_KEY_LEN);
+        } else {
+          strncat(keyString ,keyName, strlen(keyName));
+          strncat(keyString, "=", 1);
+          strncat(keyString, value, valueLength);
+          strncat(keyString, ",", 1);
+        }
       } else {
-        strncat(keyString ,keyName, strnlen(keyName, MAX_KEY_LEN));
-        strncat(keyString, "=", 1);
-        strncat(keyString, value, valueLength);
-        strncat(keyString, ",", 1);
+        warning("%s(%d): string overflow, truncating", __FILE__, __LINE__);
       }
     }
-
     /* Clean up the trailing comma */
     lastComma = strrchr(keyString,',');
     *lastComma = '\0';
