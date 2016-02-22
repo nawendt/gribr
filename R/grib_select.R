@@ -3,7 +3,7 @@
 grib_select <- function(gribObj, keyPairs) {
   if (is.grib(gribObj)) {
     if (is.list(keyPairs)) {
-      .Call("rgrib_select",gribObj$file,keyPairs)
+      .Call("rgrib_select", gribObj$file, keyPairs, gribObj$isMultiMessage)
     } else {
       stop("keyPairs must be a list")
     }

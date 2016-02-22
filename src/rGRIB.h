@@ -1,3 +1,5 @@
+#include <grib_api.h>
+
 #define MAX_KEY_LEN     255
 #define MAX_VAL_LEN     1024
 #define NA_KEY_LEN      8
@@ -18,7 +20,10 @@ SEXP rgrib_grib_length(SEXP rgrib_fileHandle);
 SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSpace);
 SEXP rgrib_is_null_ptr (SEXP rgrib_ptr);
 SEXP rgrib_is_multi_message(SEXP rgrib_fileHandle);
-SEXP rgrib_select(SEXP filePath, SEXP keyPairs);
+SEXP rgrib_select(SEXP filePath, SEXP keyPairs, SEXP isMulti);
+
+/* Extra GRIB API function prototypes */
+void grib_index_rewind(grib_index* index);
 
 /* Internal functions */
 void file_finalizer(SEXP ptr);

@@ -1,8 +1,6 @@
 #include <R.h>
 #include <Rinternals.h>
 
-#include <grib_api.h>
-
 #include "rGRIB.h"
 
 void file_finalizer(SEXP ptr)
@@ -22,7 +20,6 @@ void gerror(const char *str, int err) {
 SEXP getListElement(SEXP list, const char *str)
 {
   int i;
-
   SEXP elmt = R_NilValue, names = getAttrib(list, R_NamesSymbol);
   for (i = 0; i < length(list); i++)
     if(strcmp(CHAR(STRING_ELT(names, i)), str) == 0) {
@@ -70,3 +67,4 @@ SEXP rgrib_is_multi_message(SEXP fileHandle) {
 
   return ScalarLogical(FALSE);
 }
+
