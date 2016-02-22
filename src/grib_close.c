@@ -1,7 +1,7 @@
-#include <grib_api.h>
-
 #include <R.h>
 #include <Rinternals.h>
+
+#include "rGRIB.h"
 
 SEXP rgrib_grib_close(SEXP rgrib_fileHandle) {
 

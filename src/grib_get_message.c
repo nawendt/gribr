@@ -1,5 +1,3 @@
-#include <grib_api.h>
-
 #include <R.h>
 #include <Rinternals.h>
 
@@ -235,7 +233,7 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib
       break;
 
     /* This will go unused for now...always returns zero bit_length.
-     * Keeping code for now for reference. GRIB_TYPE_BYTES will be
+     * Keeping code for now as reference. GRIB_TYPE_BYTES will be
      * returned as character instead.
 
     case GRIB_TYPE_BYTES:

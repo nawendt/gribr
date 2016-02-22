@@ -1,5 +1,3 @@
-#include <grib_api.h>
-
 #include <R.h>
 #include <Rinternals.h>
 
