@@ -1,6 +1,8 @@
 #include <R.h>
 #include <Rinternals.h>
 
+#include <string.h>
+
 #include "rGRIB.h"
 
 SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSpace) {
@@ -202,7 +204,7 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib
 
     switch(keyType) {
     case GRIB_TYPE_STRING:
-      bzero(keyValue_c, keyLength);
+      memset(keyValue_c, '\0', keyLength);
       err = grib_get_string(h, keyName, keyValue_c, &keyLength);
       if (err) {
         //warning("unable to get keyValue for key %s; setting to NA\n", keyName);
@@ -255,7 +257,7 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib
 
     default:
       //SET_VECTOR_ELT(rgrib_keys, n++, ScalarInteger(NA_INTEGER));
-      bzero(keyValue_c, keyLength);
+      memset(keyValue_c, '\0', keyLength);
       err = grib_get_string(h, keyName, keyValue_c, &keyLength);
       if (err) {
         //warning("unable to get keyValue for key %s; setting to NA\n", keyName);
