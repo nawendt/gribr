@@ -21,6 +21,7 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib
 SEXP rgrib_is_null_ptr (SEXP rgrib_ptr);
 SEXP rgrib_is_multi_message(SEXP rgrib_fileHandle);
 SEXP rgrib_select(SEXP filePath, SEXP keyPairs, SEXP isMulti);
+SEXP rgrib_message_list(SEXP handle);
 
 /* Extra GRIB API function prototypes */
 void grib_index_rewind(grib_index* index);

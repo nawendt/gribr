@@ -3,14 +3,16 @@
 
 #include "rGRIB.h"
 
-SEXP rgrib_message_list(grib_handle *h, int filter, char *nameSpace) {
+/*SEXP rgrib_message_list(grib_handle *h, int filter, char *nameSpace) {*/
+SEXP rgrib_message_list(SEXP handle) {
 
   int err;
   int keyType;
   long nx;
   long ny;
-  double missingValue;
+  long *keyVal_l;
   double *keyVal_d;
+  double missingValue;
   R_len_t totalKeys;
   R_len_t i;
   R_len_t n;
@@ -18,10 +20,20 @@ SEXP rgrib_message_list(grib_handle *h, int filter, char *nameSpace) {
   const char *keyName;
   grib_keys_iterator *keyIter;
   SEXP rgrib_grib_message;
+  SEXP rgrib_list_names;
   SEXP rgrib_double;
   double *p_rgib_double;
   PROTECT_INDEX pro_double;
-  PROTECT_WITH_INDEX(rgrib_double, &pro_double);
+  PROTECT_WITH_INDEX(rgrib_double = R_NilValue, &pro_double);
+  SEXP rgrib_long;
+  int *p_rgib_long;
+  PROTECT_INDEX pro_long;
+  PROTECT_WITH_INDEX(rgrib_long = R_NilValue, &pro_long);
+
+  grib_handle *h;
+  FILE *file;
+  file = R_ExternalPtrAddr(handle);
+  h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err);
 
   /* Make sure to get the dimensions which
   * are sometimes stored in different keys.
@@ -48,7 +60,8 @@ SEXP rgrib_message_list(grib_handle *h, int filter, char *nameSpace) {
     gerror("unable to get missing value", err);
   }
 
-  keyIter = grib_keys_iterator_new(h, filter, nameSpace);
+  //keyIter = grib_keys_iterator_new(h, filter, nameSpace);
+  keyIter = grib_keys_iterator_new(h, GRIB_KEYS_ITERATOR_ALL_KEYS, "");
   if (keyIter == NULL) {
     error("%s(%d): unable to create key iterator", __FILE__, __LINE__);
   }
@@ -89,6 +102,7 @@ SEXP rgrib_message_list(grib_handle *h, int filter, char *nameSpace) {
   }
 
   rgrib_grib_message = PROTECT(allocVector(VECSXP, totalKeys));
+  rgrib_list_names = PROTECT(allocVector(STRSXP, totalKeys));
 
   n = 0;
   while(grib_keys_iterator_next(keyIter)) {
@@ -113,6 +127,7 @@ SEXP rgrib_message_list(grib_handle *h, int filter, char *nameSpace) {
         err) {
       continue;
     } else {
+      SET_STRING_ELT(rgrib_list_names, n, mkChar(keyName));
       err = grib_get_size(h, keyName, &keySize);
       if (err) {
         gerror("unable to get key value size", err);
@@ -121,7 +136,7 @@ SEXP rgrib_message_list(grib_handle *h, int filter, char *nameSpace) {
 
       case GRIB_TYPE_DOUBLE:
         if (keySize > 1) {
-          keyVal_d = calloc(keySize, sizeof(double));
+          keyVal_d = malloc(keySize*sizeof(double));
           err = grib_get_double_array(h, keyName, keyVal_d, &keySize);
           if (err) {
             gerror("unable to get double array", err);
@@ -131,21 +146,51 @@ SEXP rgrib_message_list(grib_handle *h, int filter, char *nameSpace) {
           for (i = 0; i < keySize; i++) {
             p_rgib_double[i] = keyVal_d[i];
           }
+          free(keyVal_d);
         } else {
+          keyVal_d = malloc(sizeof(double));
           err = grib_get_double(h, keyName, keyVal_d);
           if (err) {
             gerror("unable to get double scalar", err);
           }
-          SET_VECTOR_ELT(rgrib_double, n, ScalarReal(*keyVal_d));
+          REPROTECT(rgrib_double = ScalarReal(*keyVal_d), pro_double);
+          free(keyVal_d);
         }
         SET_VECTOR_ELT(rgrib_grib_message, n, rgrib_double);
+
+      case GRIB_TYPE_LONG:
+        if (keySize > 1) {
+          keyVal_l = malloc(keySize*sizeof(long));
+          err = grib_get_long_array(h, keyName, keyVal_l, &keySize);
+          if (err) {
+            gerror("unable to get long array", err);
+          }
+          REPROTECT(rgrib_long = allocVector(INTSXP, keySize), pro_long);
+          p_rgib_long = INTEGER(rgrib_long);
+          for (i = 0; i < keySize; i++) {
+            p_rgib_long[i] = (int)keyVal_l[i];
+          }
+          free(keyVal_l);
+        } else {
+          keyVal_l = malloc(sizeof(long));
+          err = grib_get_long(h, keyName, keyVal_l);
+          if (err) {
+            gerror("unable to get long scalar", err);
+          }
+          REPROTECT(rgrib_long = ScalarInteger(*keyVal_l), pro_long);
+          free(keyVal_l);
+        }
+        SET_VECTOR_ELT(rgrib_grib_message, n, rgrib_long);
 
       default:
         break;
       }
     }
+    n++;
   }
 
-  UNPROTECT(2);
+  namesgets(rgrib_grib_message, rgrib_list_names);
+
+  UNPROTECT(4);
   return rgrib_grib_message;
 }
