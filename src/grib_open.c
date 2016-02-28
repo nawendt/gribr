@@ -14,7 +14,7 @@ SEXP rgrib_grib_open(SEXP rgrib_fileName, SEXP rgrib_mode) {
   input = fopen(p_fileName, p_mode);
 
   if(input == NULL) {
-    error("%s(%d): unable to open file %s", __FILE__, __LINE__, p_fileName);
+    error("rGRIB: unable to open file %s", p_fileName);
   }
 
   rgrib_fileHandle = PROTECT(R_MakeExternalPtr(input, R_NilValue, R_NilValue));

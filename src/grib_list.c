@@ -21,19 +21,19 @@ SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSp
 
   file = R_ExternalPtrAddr(rgrib_fileHandle);
   if (file == NULL) {
-    error("%s(%d): grib file not opened", __FILE__ ,__LINE__);
+    error("rGRIB: grib file not opened");
   }
 
   /* Make sure it is rewound */
   if (ftell(file) != GRIB_FILE_START) {
     if (fseek(file, GRIB_FILE_START, SEEK_SET)) {
-      error("%s(%d): unable to rewind file", __FILE__, __LINE__);
+      error("rGRIB: unable to rewind file");
     }
   }
 
   err = grib_count_in_file(DEFAULT_CONTEXT, file, &n);
   if (err) {
-    error("%s(%d): unable to count messages; GRIB ERROR %3d", __FILE__, __LINE__, err);
+    gerror("rGRIB: unable to count messages", err);
   }
   rgrib_grib_vec = PROTECT(allocVector(STRSXP, n));
 
@@ -42,13 +42,13 @@ SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSp
   while((h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err)) != NULL) {
     grib_keys_iterator* keyIter=NULL;
 
-    if(h == NULL) {
-      error("%s(%d): unable to create grib handle: GRIB ERROR %3d", __FILE__, __LINE__, err);
+    if (h == NULL) {
+      gerror("rGRIB: unable to create grib handle", err);
     }
 
     keyIter=grib_keys_iterator_new(h, filter, nameSpace);
     if (keyIter == NULL) {
-      error("%s(%d): unable to create key iterator", __FILE__, __LINE__);
+      error("rGRIB: unable to create key iterator");
     }
 
     memset(keyString, '\0', MAX_VAL_LEN);
@@ -68,7 +68,7 @@ SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSp
           strncat(keyString, ",", 1);
         }
       } else {
-        warning("%s(%d): string overflow, truncating", __FILE__, __LINE__);
+        warning("rGRIB: string overflow, truncating");
       }
     }
     /* Clean up the trailing comma */
@@ -82,7 +82,7 @@ SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSp
   }
   /* Be kind, please rewind. Without this the next call of grib_list will fail */
   if (fseek(file, GRIB_FILE_START, SEEK_SET)) {
-    error("%s(%d): unable to rewind file", __FILE__, __LINE__);
+    error("rGRIB: unable to rewind file");
   }
 
   grib_handle_delete(h);

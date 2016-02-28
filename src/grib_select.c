@@ -35,12 +35,12 @@ SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyPairs, SEXP isMulti) {
   rgrib_keyNames = PROTECT(getAttrib(rgrib_keyPairs, R_NamesSymbol));
   fileHandle = fopen(file,"r");
   if (!fileHandle) {
-    error("%s(%d): unable to open grib file", __FILE__, __LINE__);
+    error("rGRIB: unable to open grib file");
   }
 
   keyString = calloc(MAX_VAL_LEN, sizeof(char));
   if (!keyString) {
-    error("%s(%d): unable to allocate keyString", __FILE__, __LINE__);
+    error("rGRIB: unable to allocate keyString");
   }
 
   /* Keep track of number of characters and reallocate the final string
@@ -53,7 +53,7 @@ SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyPairs, SEXP isMulti) {
     name  = CHAR(STRING_ELT(rgrib_keyNames, i));
     n = strlen(name);
     if (!n) {
-      error("%s(%d): unable to allocate keyString", __FILE__, __LINE__);
+      error("rGRIB: unable to allocate keyString");
     }
     n_tot += n;
     if (n_tot > reallocLength - 1) {
@@ -131,7 +131,7 @@ SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyPairs, SEXP isMulti) {
 
   /* rewind file to be sure nothing is askew */
   if (fseek(fileHandle, 0, SEEK_SET)) {
-    error("%s(%d): unable rewind grib file", __FILE__, __LINE__);
+    error("rGRIB: unable rewind grib file");
   }
   grib_handle_delete(h);
 
@@ -139,7 +139,7 @@ SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyPairs, SEXP isMulti) {
   indexSize = 0;
   while ((hi = grib_handle_new_from_index(index, &err))){
     if (err) {
-      error("%s(%d): unable get grib handle from index", __FILE__, __LINE__);
+      error("rGRIB: unable get grib handle from index");
     }
     indexSize++;
   }
@@ -150,7 +150,7 @@ SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyPairs, SEXP isMulti) {
   /*grib_index_rewind(index);
   while (!(hi = grib_handle_new_from_index(index, &err))){
     if (err) {
-      error("%s(%d): unable get grib handle from index", __FILE__, __LINE__);
+      error("rGRIB: unable get grib handle from index");
     }
   }
   grib_handle_delete(hi);*/

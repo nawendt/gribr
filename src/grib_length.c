@@ -29,7 +29,7 @@ SEXP rgrib_grib_length(SEXP rgrib_fileHandle) {
    * leave the file handle in a unusable state and cause
    * R to crash */
   if (fseek(file, 0, SEEK_SET)) {
-    error("%s(%d): unable to rewind file", __FILE__ ,__LINE__);
+    error("rGRIB: unable to rewind file");
   }
 
   grib_handle_delete(h);
