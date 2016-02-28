@@ -14,7 +14,7 @@ SEXP rgrib_is_null_ptr (SEXP rgrib_ptr) {
 }
 
 void gerror(const char *str, int err) {
-  error("%s(%d): %s\nGRIB ERROR %s", __FILE__, __LINE__, str, grib_get_error_message(err));
+  error("rGRIB: %s\nGRIB ERROR %s", str, grib_get_error_message(err));
 }
 
 SEXP getListElement(SEXP list, const char *str)
@@ -56,7 +56,7 @@ SEXP rgrib_is_multi_message(SEXP fileHandle) {
    * leave the file handle in a unusable state and cause
    * R to crash */
   if (fseek(file, 0, SEEK_SET)) {
-    error("%s(%d): unable to rewind file", __FILE__ ,__LINE__);
+    error("rGRIB: unable to rewind file");
   }
 
   grib_handle_delete(h);

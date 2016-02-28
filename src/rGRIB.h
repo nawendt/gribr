@@ -1,4 +1,5 @@
 #include <grib_api.h>
+#include <ctype.h>
 
 #define MAX_KEY_LEN     255
 #define MAX_VAL_LEN     1024
@@ -20,8 +21,8 @@ SEXP rgrib_grib_length(SEXP rgrib_fileHandle);
 SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSpace);
 SEXP rgrib_is_null_ptr (SEXP rgrib_ptr);
 SEXP rgrib_is_multi_message(SEXP rgrib_fileHandle);
-SEXP rgrib_select(SEXP filePath, SEXP keyPairs, SEXP isMulti);
-SEXP rgrib_message_list(SEXP handle);
+SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyPairs, SEXP isMulti);
+SEXP rgrib_grib_get_message2(SEXP rgrib_fileHandle, SEXP rgrib_messages, SEXP mask, SEXP rgrib_isMulti, SEXP rgrib_filter, SEXP rgrib_nameSpace);
 
 /* Extra GRIB API function prototypes */
 void grib_index_rewind(grib_index* index);
@@ -30,3 +31,4 @@ void grib_index_rewind(grib_index* index);
 void file_finalizer(SEXP ptr);
 void gerror(const char *str, int err);
 SEXP getListElement(SEXP list, const char *str);
+SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter, const char *nameSpace);
