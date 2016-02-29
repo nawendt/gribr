@@ -18,11 +18,10 @@ SEXP rgrib_grib_open(SEXP rgrib_fileName, SEXP rgrib_mode);
 SEXP rgrib_grib_get_values(SEXP rgrib_fileHandle);
 SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSpace);
 SEXP rgrib_grib_length(SEXP rgrib_fileHandle);
-SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSpace);
 SEXP rgrib_is_null_ptr (SEXP rgrib_ptr);
 SEXP rgrib_is_multi_message(SEXP rgrib_fileHandle);
 SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyPairs, SEXP isMulti);
-SEXP rgrib_grib_get_message2(SEXP rgrib_fileHandle, SEXP rgrib_messages, SEXP mask, SEXP rgrib_isMulti, SEXP rgrib_filter, SEXP rgrib_nameSpace);
+SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_messages, SEXP mask, SEXP rgrib_isMulti, SEXP rgrib_filter, SEXP rgrib_nameSpace);
 
 /* Extra GRIB API function prototypes */
 void grib_index_rewind(grib_index* index);

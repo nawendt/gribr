@@ -5,7 +5,7 @@
 
 #include "rGRIB.h"
 
-SEXP rgrib_grib_get_message2(SEXP rgrib_fileHandle, SEXP rgrib_messages, SEXP mask, SEXP rgrib_isMulti, SEXP rgrib_filter, SEXP rgrib_nameSpace) {
+SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_messages, SEXP mask, SEXP rgrib_isMulti, SEXP rgrib_filter, SEXP rgrib_nameSpace) {
 
   int err;
   int filter;

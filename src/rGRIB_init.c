@@ -12,11 +12,10 @@ static const R_CallMethodDef callMethods[] = {
   CALLDEF(rgrib_grib_list, 3),
   CALLDEF(rgrib_grib_length, 1),
   CALLDEF(rgrib_grib_get_values, 1),
-  CALLDEF(rgrib_grib_get_message, 3),
   CALLDEF(rgrib_is_null_ptr, 1),
   CALLDEF(rgrib_is_multi_message, 1),
   CALLDEF(rgrib_select, 3),
-  CALLDEF(rgrib_grib_get_message2, 6),
+  CALLDEF(rgrib_grib_get_message, 6),
   {NULL, NULL, 0}
 };
 
