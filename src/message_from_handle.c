@@ -9,9 +9,7 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
   int keyType;
   int ctoi;
   long bitmapBool;
-  long *bitmap = NULL;
-  long nx;
-  long ny;
+  long *bitmap;
   long *keyVal_l;
   double *keyVal_d;
   double missingValue;
@@ -42,28 +40,6 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
   PROTECT_WITH_INDEX(rgrib_long = R_NilValue, &pro_long);
 
   /*
-   * Make sure to get the dimensions which
-   * are sometimes stored in different keys.
-   * Covering all the bases here with
-   * Ni/Nx and Nj/Ny
-   */
-  err = grib_get_long(h, "Ni", &nx);
-  if (err) {
-    err = grib_get_long(h, "Nx", &nx);
-    if (err) {
-      gerror("unable to get x dim", err);
-    }
-  }
-
-  err = grib_get_long(h, "Nj", &ny);
-  if (err) {
-    err = grib_get_long(h, "Ny", &ny);
-    if (err) {
-      gerror("unable to get y dim", err);
-    }
-  }
-
-  /*
    * Take care of these now in order to give the option
    * of masking out data with NAs
    */
@@ -86,8 +62,7 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
     }
   }
 
-  //keyIter = grib_keys_iterator_new(h, filter, nameSpace);
-  keyIter = grib_keys_iterator_new(h, GRIB_KEYS_ITERATOR_ALL_KEYS, "");
+  keyIter = grib_keys_iterator_new(h, filter, nameSpace);
   if (keyIter == NULL) {
     error("rGRIB: unable to create key iterator");
   }
@@ -169,10 +144,9 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
           if (err) {
             gerror("unable to get double array", err);
           }
-          //REPROTECT(rgrib_double = allocVector(REALSXP, keySize), pro_double);
-          REPROTECT(rgrib_double = allocMatrix(REALSXP, nx, ny), pro_double);
+          REPROTECT(rgrib_double = allocVector(REALSXP, keySize), pro_double);
           p_rgib_double = REAL(rgrib_double);
-          for (i = 0; i < nx*ny; i++) {
+          for (i = 0; i < keySize; i++) {
             p_rgib_double[i] = keyVal_d[i];
           }
           free(keyVal_d);
@@ -205,10 +179,9 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
           if (err) {
             gerror("unable to get long array", err);
           }
-          //REPROTECT(rgrib_long = allocVector(REALSXP, keySize), pro_long);
-          REPROTECT(rgrib_long = allocMatrix(REALSXP, nx, ny), pro_long);
+          REPROTECT(rgrib_long = allocVector(REALSXP, keySize), pro_long);
           p_rgib_long = REAL(rgrib_long);
-          for (i = 0; i < nx*ny; i++) {
+          for (i = 0; i < keySize; i++) {
             p_rgib_long[i] = (double)keyVal_l[i];
           }
           free(keyVal_l);

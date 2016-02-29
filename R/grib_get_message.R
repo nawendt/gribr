@@ -1,5 +1,5 @@
 #' @export
-grib_get_message2 <- function(gribObj, messages, mask = FALSE, filter = "none", nameSpace = "") {
+grib_get_message <- function(gribObj, messages, mask = FALSE, filter = "none", nameSpace = "") {
 
   # this matches what is defined in the GRIB API
   gribFilterList = list(
@@ -16,6 +16,7 @@ grib_get_message2 <- function(gribObj, messages, mask = FALSE, filter = "none", 
   if (!is.integer(messages) && !is.numeric(messages)) {
     stop("requested message vector must be numeric")
   } else {
+    # sort it so C loop can be more efficient
     messages <- sort(as.integer(messages))
   }
 
@@ -30,12 +31,11 @@ grib_get_message2 <- function(gribObj, messages, mask = FALSE, filter = "none", 
       if (is.null(nameSpace)) {
         nameSpace = ""
       }
-      gm <- .Call("rgrib_grib_get_message2",
+      gm <- .Call("rgrib_grib_get_message",
                   gribObj$handle, messages, mask,
                   gribObj$isMultiMessage,
                   as.integer(gribFilterList[filter]),
                   nameSpace)
-      class(gm) <- "gribMessage"
     }
   }
 
@@ -53,5 +53,14 @@ grib_get_message2 <- function(gribObj, messages, mask = FALSE, filter = "none", 
     gm <- c(gm, Nj = gm$Ny)
   }
 
+  # Handle matricies here, storage order
+  # will be determined by jPointsAreConsecutive key
+  listLengths <- vapply(dat,length,c(0),USE.NAMES = FALSE)
+  loc <- which(listLengths > 1 & listLengths == gm$Nx*gm$Ny)
+  for (key in loc) {
+    gm[[key]] <- matrix(gm[[key]], gm$Nx, gm$Ny, byrow = gm$jPointsAreConsecutive)
+  }
+
+  class(gm) <- "gribMessage"
   gm
 }
