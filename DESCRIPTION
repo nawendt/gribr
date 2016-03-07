@@ -6,6 +6,6 @@ Date: 2015-12-25
 Author: Nathan Wendt
 Maintainer: Nathan Wendt <nawendt@ou.edu>
 Description: R interface for GRIB files using ECMWF GRIB API
-License: Apache License 2.0
+License: BSD_2_clause + file LICENSE
 LazyData: TRUE
 RoxygenNote: 5.0.1
