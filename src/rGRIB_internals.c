@@ -1,12 +1,16 @@
 #include <R.h>
 #include <Rinternals.h>
 
-#include <grib_api.h>
-
 #include "rGRIB.h"
 
-void file_finalizer(SEXP ptr)
-{
+void nfree(void *ptr) {
+  if (ptr) {
+    free(ptr);
+    ptr = NULL;
+  }
+}
+
+void file_finalizer(SEXP ptr) {
   if(!R_ExternalPtrAddr(ptr)) return;
   R_ClearExternalPtr(ptr);
 }
@@ -16,13 +20,13 @@ SEXP rgrib_is_null_ptr (SEXP rgrib_ptr) {
 }
 
 void gerror(const char *str, int err) {
-  error("%s(%d): %s\nGRIB ERROR %s", __FILE__, __LINE__, str, grib_get_error_message(err));
+  error("rGRIB: %s\nGRIB ERROR %s", str, grib_get_error_message(err));
 }
 
-SEXP getListElement(SEXP list, const char *str)
-{
+SEXP getListElement(SEXP list, const char *str) {
+  int i;
   SEXP elmt = R_NilValue, names = getAttrib(list, R_NamesSymbol);
-  for (int i = 0; i < length(list); i++)
+  for (i = 0; i < length(list); i++)
     if(strcmp(CHAR(STRING_ELT(names, i)), str) == 0) {
       elmt = VECTOR_ELT(list, i);
       break;
@@ -57,7 +61,7 @@ SEXP rgrib_is_multi_message(SEXP fileHandle) {
    * leave the file handle in a unusable state and cause
    * R to crash */
   if (fseek(file, 0, SEEK_SET)) {
-    error("%s(%d): unable to rewind file", __FILE__ ,__LINE__);
+    error("rGRIB: unable to rewind file");
   }
 
   grib_handle_delete(h);
@@ -68,3 +72,4 @@ SEXP rgrib_is_multi_message(SEXP fileHandle) {
 
   return ScalarLogical(FALSE);
 }
+

@@ -1,5 +1,6 @@
 #' @export
-grib_get_message <- function(gribObj, filter = "none", nameSpace = "") {
+grib_get_message <- function(gribObj, messages, mask = FALSE, filter = "none", nameSpace = "") {
+
   # this matches what is defined in the GRIB API
   gribFilterList = list(
     none      = 0,
@@ -12,6 +13,17 @@ grib_get_message <- function(gribObj, filter = "none", nameSpace = "") {
     func      = bitwShiftL(1, 6)
   )
 
+  if (!is.integer(messages) && !is.numeric(messages)) {
+    stop("requested message vector must be numeric")
+  } else {
+    # sort it so C loop can be more efficient
+    messages <- sort(as.integer(messages))
+  }
+
+  if (length(messages) < 1) {
+    stop("no messages requested")
+  }
+
   if (is.grib(gribObj)) {
     if (is.null.externalptr(gribObj$handle)) {
       stop("GRIB object is closed or unavailable")
@@ -19,8 +31,36 @@ grib_get_message <- function(gribObj, filter = "none", nameSpace = "") {
       if (is.null(nameSpace)) {
         nameSpace = ""
       }
-      .Call("rgrib_grib_get_message", gribObj$handle, as.integer(gribFilterList[filter]), nameSpace)
+      gm <- .Call("rgrib_grib_get_message",
+                  gribObj$handle, messages, mask,
+                  gribObj$isMultiMessage,
+                  as.integer(gribFilterList[filter]),
+                  nameSpace)
     }
   }
 
+  # Make sure both Ni/Nx, Nj/Ny are in list
+  # so scripting is easier across files
+  if (is.null(gm$Nx)) {
+    gm <- c(gm, Nx = gm$Ni)
+  } else if(is.null(gm$Ni)) {
+    gm <- c(gm, Ni = gm$Nx)
+  }
+
+  if (is.null(gm$Ny)) {
+    gm <- c(gm, Ny = gm$Nj)
+  } else if(is.null(gm$Nj)) {
+    gm <- c(gm, Nj = gm$Ny)
+  }
+
+  # Handle matricies here, storage order
+  # will be determined by jPointsAreConsecutive key
+  listLengths <- vapply(dat,length,c(0),USE.NAMES = FALSE)
+  loc <- which(listLengths > 1 & listLengths == gm$Nx*gm$Ny)
+  for (key in loc) {
+    gm[[key]] <- matrix(gm[[key]], gm$Nx, gm$Ny, byrow = gm$jPointsAreConsecutive)
+  }
+
+  class(gm) <- "gribMessage"
+  gm
 }

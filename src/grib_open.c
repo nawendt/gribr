@@ -1,5 +1,3 @@
-#include <grib_api.h>
-
 #include <R.h>
 #include <Rinternals.h>
 
@@ -7,7 +5,8 @@
 
 SEXP rgrib_grib_open(SEXP rgrib_fileName, SEXP rgrib_mode) {
 
-  const char *p_fileName, *p_mode;
+  const char *p_fileName = NULL;
+  const char *p_mode = NULL;
   SEXP rgrib_fileHandle;
   FILE *input = NULL;
 
@@ -16,7 +15,7 @@ SEXP rgrib_grib_open(SEXP rgrib_fileName, SEXP rgrib_mode) {
   input = fopen(p_fileName, p_mode);
 
   if(input == NULL) {
-    error("%s(%d): unable to open file %s", __FILE__, __LINE__, p_fileName);
+    error("rGRIB: unable to open file %s", p_fileName);
   }
 
   rgrib_fileHandle = PROTECT(R_MakeExternalPtr(input, R_NilValue, R_NilValue));
