@@ -1,2 +1,0 @@
-PKG_CFLAGS=-I/users/nwendt/local/include
-PKG_LIBS=-L/users/nwendt/local/lib -lgrib_api
