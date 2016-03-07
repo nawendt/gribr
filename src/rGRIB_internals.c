@@ -3,8 +3,14 @@
 
 #include "rGRIB.h"
 
-void file_finalizer(SEXP ptr)
-{
+void nfree(void *ptr) {
+  if (ptr) {
+    free(ptr);
+    ptr = NULL;
+  }
+}
+
+void file_finalizer(SEXP ptr) {
   if(!R_ExternalPtrAddr(ptr)) return;
   R_ClearExternalPtr(ptr);
 }
@@ -17,8 +23,7 @@ void gerror(const char *str, int err) {
   error("rGRIB: %s\nGRIB ERROR %s", str, grib_get_error_message(err));
 }
 
-SEXP getListElement(SEXP list, const char *str)
-{
+SEXP getListElement(SEXP list, const char *str) {
   int i;
   SEXP elmt = R_NilValue, names = getAttrib(list, R_NamesSymbol);
   for (i = 0; i < length(list); i++)

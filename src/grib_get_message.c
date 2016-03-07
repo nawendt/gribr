@@ -11,14 +11,14 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_messages, SEXP mas
   int filter;
   int is_multi;
   int is_masked;
-  int *p_rgrib_messages;
+  int *p_rgrib_messages = NULL;
   R_len_t n;
   R_len_t i;
   R_len_t messagesLength;
   R_len_t count;
   const char *nameSpace;
-  FILE *file;
-  grib_handle *h;
+  FILE *file = NULL;
+  grib_handle *h = NULL;
   PROTECT_INDEX pro_message;
   SEXP rgrib_message;
 

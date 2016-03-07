@@ -9,9 +9,9 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
   int keyType;
   int ctoi;
   long bitmapBool;
-  long *bitmap;
-  long *keyVal_l;
-  double *keyVal_d;
+  long *bitmap = NULL;
+  long *keyVal_l = NULL;
+  double *keyVal_d = NULL;
   double missingValue;
   R_len_t totalKeys;
   R_len_t i;
@@ -19,10 +19,10 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
   size_t keySize;
   size_t keyLength;
   size_t bmp_len;
-  const char *keyName;
+  const char *keyName = NULL;
   char intChar;
-  char *keyVal_c;
-  grib_keys_iterator *keyIter;
+  char *keyVal_c = NULL;
+  grib_keys_iterator *keyIter = NULL;
   SEXP rgrib_grib_message;
   SEXP rgrib_list_names;
   SEXP rgrib_char;
@@ -30,12 +30,12 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
   PROTECT_INDEX pro_char;
   PROTECT_WITH_INDEX(rgrib_char = R_NilValue, &pro_char);
   SEXP rgrib_double;
-  double *p_rgib_double;
+  double *p_rgib_double = NULL;
   PROTECT_INDEX pro_double;
   PROTECT_WITH_INDEX(rgrib_double = R_NilValue, &pro_double);
   SEXP rgrib_long;
   /* This is double since we will convert to R numeric */
-  double *p_rgib_long;
+  double *p_rgib_long = NULL;
   PROTECT_INDEX pro_long;
   PROTECT_WITH_INDEX(rgrib_long = R_NilValue, &pro_long);
 
@@ -149,7 +149,7 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
           for (i = 0; i < keySize; i++) {
             p_rgib_double[i] = keyVal_d[i];
           }
-          free(keyVal_d);
+          nfree(keyVal_d);
           if (mask && !strcmp(keyName, "values")) {
             for (i = 0; i < keySize; i++) {
               if (p_rgib_double[i] == missingValue || (bitmapBool && bitmap[i] == BITMAP_MASK)) {
@@ -164,7 +164,7 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
             gerror("unable to get double scalar", err);
           }
           REPROTECT(rgrib_double = ScalarReal(*keyVal_d), pro_double);
-          free(keyVal_d);
+          nfree(keyVal_d);
         }
         SET_VECTOR_ELT(rgrib_grib_message, n, rgrib_double);
         break;
@@ -184,7 +184,7 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
           for (i = 0; i < keySize; i++) {
             p_rgib_long[i] = (double)keyVal_l[i];
           }
-          free(keyVal_l);
+          nfree(keyVal_l);
           if (mask && !strcmp(keyName, "values")) {
             for (i = 0; i < keySize; i++) {
               if (p_rgib_long[i] == missingValue || (bitmapBool && bitmap[i] == BITMAP_MASK)) {
@@ -199,7 +199,7 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
             gerror("unable to get long scalar", err);
           }
           REPROTECT(rgrib_long = ScalarReal((double)*keyVal_l), pro_long);
-          free(keyVal_l);
+          nfree(keyVal_l);
         }
         SET_VECTOR_ELT(rgrib_grib_message, n, rgrib_long);
         break;
@@ -219,7 +219,7 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
           for (i = 0; i < keySize; i++) {
             p_rgib_long[i] = (int)keyVal_l[i];
           }
-          free(keyVal_l);
+          nfree(keyVal_l);
         } else {
           keyVal_l = malloc(sizeof(long));
           err = grib_get_long(h, keyName, keyVal_l);
@@ -227,7 +227,7 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
             gerror("unable to get long scalar", err);
           }
           REPROTECT(rgrib_long = ScalarInteger(*keyVal_l), pro_long);
-          free(keyVal_l);
+          nfree(keyVal_l);
         }
         SET_VECTOR_ELT(rgrib_grib_message, n, rgrib_long);
         break;
@@ -251,7 +251,7 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
           }
         }
         SET_VECTOR_ELT(rgrib_grib_message, n, rgrib_char);
-        free(keyVal_c);
+        nfree(keyVal_c);
         break;
 /* KEEP THIS OLD VERSION JUST IN CASE
       case GRIB_TYPE_STRING:
@@ -275,7 +275,7 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
   }
 
   if (bitmap) {
-    free(bitmap);
+    nfree(bitmap);
   }
   namesgets(rgrib_grib_message, rgrib_list_names);
 

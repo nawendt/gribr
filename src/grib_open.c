@@ -5,7 +5,8 @@
 
 SEXP rgrib_grib_open(SEXP rgrib_fileName, SEXP rgrib_mode) {
 
-  const char *p_fileName, *p_mode;
+  const char *p_fileName = NULL;
+  const char *p_mode = NULL;
   SEXP rgrib_fileHandle;
   FILE *input = NULL;
 
