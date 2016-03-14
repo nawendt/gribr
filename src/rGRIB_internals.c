@@ -36,8 +36,8 @@ SEXP getListElement(SEXP list, const char *str) {
 
 SEXP rgrib_is_multi_message(SEXP fileHandle) {
   int err;
-  int n_on;
-  int n_off;
+  R_len_t n_on;
+  R_len_t n_off;
   grib_handle *h = NULL;
   FILE *file = NULL;
 
@@ -49,7 +49,8 @@ SEXP rgrib_is_multi_message(SEXP fileHandle) {
   }
 
   grib_multi_support_on(DEFAULT_CONTEXT);
-  err = grib_count_in_file(DEFAULT_CONTEXT, file, &n_on);
+  /*err = grib_count_in_file(DEFAULT_CONTEXT, file, &n_on);*/
+  n_on = 0;
   while((h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err))) {
     n_on++;
   }

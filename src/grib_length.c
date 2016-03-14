@@ -17,7 +17,7 @@ SEXP rgrib_grib_length(SEXP rgrib_fileHandle) {
   }
 
   grib_multi_support_on(DEFAULT_CONTEXT);
-  err = grib_count_in_file(DEFAULT_CONTEXT, file, &n_on);
+  n_on = 0;
   while((h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err))) {
     n_on++;
   }

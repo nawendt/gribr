@@ -55,7 +55,7 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_messages, SEXP mas
     for (i = 0, n = 0; i < count && n < messagesLength; i++) {
       R_CheckUserInterrupt();
       if ((p_rgrib_messages[n] - 1) > count || p_rgrib_messages[n] < 1) {
-        error("message number out of bounds");
+        error("rGRIB: message number out of bounds");
       }
 
       h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err);
@@ -69,7 +69,7 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_messages, SEXP mas
     }
   } else {
     if (p_rgrib_messages[0] < 1 || (p_rgrib_messages[0] - 1) > count) {
-      error("message number out of bounds");
+      error("rGRIB: message number out of bounds");
     }
     for (i = 0; i < p_rgrib_messages[0]; i++) {
       R_CheckUserInterrupt();

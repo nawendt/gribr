@@ -153,6 +153,10 @@ SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyList, SEXP rgrib_mask, SEXP
       index_count++;
     }
 
+    if (index_count == 0) {
+      error("rGRIB: no messages matched");
+    }
+
     grib_index_rewind(index);
 
     REPROTECT(rgrib_temp = allocVector(VECSXP, index_count), pro_temp);

@@ -13,20 +13,22 @@ grib_list <- function(gribObj, filter = "none", nameSpace = "ls") {
     func      = bitwShiftL(1, 6)
     )
 
-  if (is.grib(gribObj)) {
-    if (!is.null.externalptr(gribObj$handle)) {
-      if (is.null(nameSpace)) {
-        # the c function that uses this parameter
-        # will accept the null string in order to
-        # print all keys, allow NULL to be input
-        # as well
-        nameSpace <- ""
-      }
-      .Call("rgrib_grib_list",gribObj$handle, as.integer(gribFilterList[filter]), nameSpace)
-    } else {
-      stop("GRIB object is closed or unavailable")
-    }
-  } else {
+  if (!is.grib(gribObj)) {
     stop("Object is not of class 'grib'")
   }
+
+  if (is.null.externalptr(gribObj$handle)) {
+    stop("GRIB object is closed or unavailable")
+  }
+
+  if (is.null(nameSpace)) {
+    # the c function that uses this parameter
+    # will accept the null string in order to
+    # print all keys, allow NULL to be input
+    # as well
+    nameSpace <- ""
+  }
+
+  .Call("rgrib_grib_list",gribObj$handle, as.integer(gribFilterList[filter]), nameSpace)
+
 }
