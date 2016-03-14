@@ -15,7 +15,6 @@
 /* Functions to be registered */
 SEXP rgrib_grib_close(SEXP rgrib_fileHandle);
 SEXP rgrib_grib_open(SEXP rgrib_fileName, SEXP rgrib_mode);
-SEXP rgrib_grib_get_values(SEXP rgrib_fileHandle);
 SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter,
                      SEXP rgrib_nameSpace);
 

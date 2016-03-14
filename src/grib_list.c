@@ -31,14 +31,17 @@ SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSp
     }
   }
 
+  grib_multi_support_on(DEFAULT_CONTEXT);
   err = grib_count_in_file(DEFAULT_CONTEXT, file, &n);
   if (err) {
     gerror("rGRIB: unable to count messages", err);
   }
+
   rgrib_grib_vec = PROTECT(allocVector(STRSXP, n));
 
   /* The grib handle is our GRIB message iterator. Each time we call new_from_file,
      we are advancing to the next message in the file. */
+  grib_multi_support_on(DEFAULT_CONTEXT);
   while((h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err)) != NULL) {
     grib_keys_iterator* keyIter=NULL;
 
