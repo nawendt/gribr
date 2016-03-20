@@ -22,8 +22,17 @@ grib_select <- function(gribObj, keyPairs, mask = FALSE, filter = "none", nameSp
     stop("keyPairs must be a list")
   }
 
-  keyCombo <- expand.grid(keyPairs, stringsAsFactors = FALSE, KEEP.OUT.ATTRS = FALSE)
-  keyList <- lapply(1:dim(keyCombo)[1],function(i) as.list(keyCombo[i,]))
+  if (length(keyPairs) > 1) {
+    keyCombo <- expand.grid(keyPairs, stringsAsFactors = FALSE, KEEP.OUT.ATTRS = FALSE)
+    keyList <- lapply(1:dim(keyCombo)[1],function(i) as.list(keyCombo[i,]))
+  } else if (length(keyPairs) == 1){
+    # needs to be list of list to be handled correctly
+    # in the c routine that grabs the messages
+    keyList <- list(keyPairs)
+  } else {
+    stop("error with keyPairs input")
+  }
+
   selected <- .Call("rgrib_select", gribObj$file, keyList,
                     mask, gribObj$isMultiMessage,
                     as.integer(gribFilterList[filter]),
