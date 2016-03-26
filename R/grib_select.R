@@ -47,6 +47,7 @@ grib_select <- function(gribObj, keyPairs, mask = FALSE, filter = "none", nameSp
 
   for (i in length(selected)) {
     selected[[i]] <- expand_grids(selected[[i]])
+    class(selected[[i]]) <- "gribMessage"
   }
 
   selected
