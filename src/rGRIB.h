@@ -20,6 +20,7 @@ SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter,
 
 SEXP rgrib_grib_length(SEXP rgrib_fileHandle);
 SEXP rgrib_is_null_ptr (SEXP rgrib_ptr);
+SEXP rgrib_api_version(void);
 SEXP rgrib_is_multi_message(SEXP rgrib_fileHandle);
 SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_messages,
                             SEXP mask, SEXP rgrib_isMulti, SEXP rgrib_filter,
