@@ -1,3 +1,24 @@
+#' Get PROJ4 string for a GRIB file
+#'
+#' \code{grib_proj4str} generates a PROJ4 string for a given gribMessage class
+#' object based on the message's keys and, optionally, user input
+#'
+#' \code{grib_proj4str} uses a GRIB message's keys to generate a PROJ4 string on
+#' the fly. A user can even input their own PROJ4 elements using the
+#' \code{userProj4} arugment. Several other packages have functions that can use
+#' this PROJ4 string to appropriately project the values in the GRIB message.
+#' Several common grid types are supported at this time, but likely not all.
+#' This function is heavily influenced the the PROJ4 string method used in the
+#' pygrib Python module (see
+#' \url{https://github.com/jswhit/pygrib/blob/master/pygrib.pyx}).
+#'
+#' @param gribMessage gribMessage class object.
+#' @param userProj4 An optional argument that can be a named list or named
+#'   character vector of additional PROJ4 elements the user would like to add.
+#'
+#' @return Returns a character string of the PROJ4 elements associate with the
+#'   \code{gribMessage}.
+#'
 #' @export
 
 grib_proj4str <- function(gribMessage, userProj4 = NULL) {
