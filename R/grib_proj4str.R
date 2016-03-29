@@ -10,7 +10,7 @@
 #' Several common grid types are supported at this time, but likely not all.
 #' This function is heavily influenced the the PROJ4 string method used in the
 #' pygrib Python module (see
-#' \url{https://github.com/jswhit/pygrib/blob/master/pygrib.pyx}).
+#' \href{https://github.com/jswhit/pygrib/blob/master/pygrib.pyx}{pygrib source}).
 #'
 #' @param gribMessage gribMessage class object.
 #' @param userProj4 An optional argument that can be a named list or named

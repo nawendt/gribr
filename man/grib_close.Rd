@@ -9,9 +9,6 @@ grib_close(gribObj)
 \arguments{
 \item{gribObj}{GRIB class object.}
 }
-\value{
-No return value.
-}
 \description{
 \code{grib_close} closes a GRIB file and frees it from memory
 }

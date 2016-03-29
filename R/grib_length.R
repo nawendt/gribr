@@ -1,3 +1,16 @@
+#' Get number of GRIB messages
+#'
+#' \code{grib_length} loops through a GRIB file to determine the number of
+#' messages.
+#'
+#' \code{grib_length} determines the length of both GRIB files with and without
+#' multiple fields per message. The GRIB file is looped though twice, with and
+#' without multi-message support turned on, to get the true length.
+#'
+#' @param gribObj GRIB class object.
+#'
+#' @return Returns integer number of GRIB messages.
+#'
 #' @export
 
 grib_length <- function(gribObj) {
