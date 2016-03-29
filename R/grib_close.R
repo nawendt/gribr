@@ -8,8 +8,6 @@
 #'
 #' @param gribObj GRIB class object.
 #'
-#' @return No return value.
-#'
 #' @seealso \code{\link{grib_open}}
 #'
 #' @export
