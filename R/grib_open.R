@@ -1,4 +1,25 @@
+#' Open GRIB files
+#'
+#' \code{grib_open} opens a GRIB file for reading or writing and returns a GRIB
+#' class object.
+#'
+#' \code{grib_open} is the constructor function for the S3 GRIB class object.
+#' The GRIB object is list with three elements: \code{file}, \code{handle}, and
+#' \code{isMultiMessage}. \code{file} is the path to the opened file,
+#' \code{handle} is an \code{externalptr} to the \code{file} in memory, and
+#' \code{isMultiMessage} is a \code{logical} indicating if there are multiple
+#' entries in any of the \code{file}'s messages.
+#'
+#' @param file character string. A path to a GRIB file.
+#' @param mode character string. File acccess mode string. Only "r" is fully
+#'   supported at this time.
+#'
+#' @return Returns a GRIB class object: see 'Details'.
+#'
+#' @seealso \code{\link{grib_close}}
+#'
 #' @export
+
 grib_open <- function(file, mode) {
 
 #  if (!missing(gribDefinitionPath)) {
