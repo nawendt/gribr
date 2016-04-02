@@ -33,7 +33,13 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_messages, SEXP mas
     grib_multi_support_on(DEFAULT_CONTEXT);
   }
 
-  grib_count_in_file(DEFAULT_CONTEXT, file, &count);
+  count = 0;
+  while((h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err))) {
+    count++;
+  }
+  if (err) {
+    gerror("unable to count grib messages", err);
+  }
 
   file = R_ExternalPtrAddr(rgrib_fileHandle);
   if (ftell(file) != 0) {
@@ -50,7 +56,7 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_messages, SEXP mas
      */
     for (i = 0, n = 0; i < count && n < messagesLength; i++) {
       R_CheckUserInterrupt();
-      if ((p_rgrib_messages[n] - 1) > count || p_rgrib_messages[n] < 1) {
+      if ((p_rgrib_messages[n] - 1) >= count || p_rgrib_messages[n] < 1) {
         error("rGRIB: message number out of bounds");
       }
 
@@ -64,7 +70,7 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_messages, SEXP mas
       }
     }
   } else {
-    if (p_rgrib_messages[0] < 1 || (p_rgrib_messages[0] - 1) > count) {
+    if (p_rgrib_messages[0] < 1 || (p_rgrib_messages[0] - 1) >= count) {
       error("rGRIB: message number out of bounds");
     }
     for (i = 0; i < p_rgrib_messages[0]; i++) {

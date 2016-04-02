@@ -16,7 +16,7 @@
 SEXP rgrib_grib_close(SEXP rgrib_fileHandle);
 SEXP rgrib_grib_open(SEXP rgrib_fileName);
 SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter,
-                     SEXP rgrib_nameSpace);
+                     SEXP rgrib_nameSpace, SEXP rgrib_isMulti);
 
 SEXP rgrib_grib_length(SEXP rgrib_fileHandle);
 SEXP rgrib_is_null_ptr (SEXP rgrib_ptr);

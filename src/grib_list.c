@@ -3,8 +3,10 @@
 
 #include "rGRIB.h"
 
-SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSpace) {
-  int err,n;
+SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSpace, SEXP rgrib_isMulti) {
+  int err;
+  int n;
+  int is_multi;
   size_t messageCount = 0;
   FILE *file = NULL;
   grib_handle *h = NULL;
@@ -18,6 +20,7 @@ SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSp
 
   filter = asInteger(rgrib_filter);
   nameSpace = CHAR(STRING_ELT(rgrib_nameSpace,0));
+  is_multi = asLogical(rgrib_isMulti);
 
   file = R_ExternalPtrAddr(rgrib_fileHandle);
   if (file == NULL) {
@@ -31,17 +34,28 @@ SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSp
     }
   }
 
-  grib_multi_support_on(DEFAULT_CONTEXT);
-  err = grib_count_in_file(DEFAULT_CONTEXT, file, &n);
+  if (is_multi) {
+    grib_multi_support_on(DEFAULT_CONTEXT);
+  }
+  n = 0;
+  while((h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err))) {
+    n++;
+  }
   if (err) {
-    gerror("rGRIB: unable to count messages", err);
+    gerror("unable to count grib messages", err);
+  }
+
+  /* Make sure it is rewound */
+  if (ftell(file) != GRIB_FILE_START) {
+    if (fseek(file, GRIB_FILE_START, SEEK_SET)) {
+      error("rGRIB: unable to rewind file");
+    }
   }
 
   rgrib_grib_vec = PROTECT(allocVector(STRSXP, n));
 
   /* The grib handle is our GRIB message iterator. Each time we call new_from_file,
      we are advancing to the next message in the file. */
-  grib_multi_support_on(DEFAULT_CONTEXT);
   while((h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err)) != NULL) {
     grib_keys_iterator* keyIter=NULL;
 
