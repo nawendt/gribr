@@ -11,8 +11,6 @@
 #' entries in any of the \code{file}'s messages.
 #'
 #' @param file character string. A path to a GRIB file.
-#' @param mode character string. File acccess mode string. Only "r" is fully
-#'   supported at this time.
 #'
 #' @return Returns a GRIB class object: see 'Details'.
 #'
@@ -20,13 +18,13 @@
 #'
 #' @export
 
-grib_open <- function(file, mode) {
+grib_open <- function(file) {
 
 #  if (!missing(gribDefinitionPath)) {
 #    Sys.setenv(GRIB_DEFINITION_PATH = path.expand(gribDefinitionPath))
 #  }
 
-  handle <- .Call("rgrib_grib_open", path.expand(file), mode)
+  handle <- .Call("rgrib_grib_open", path.expand(file))
   if (class(handle) != "externalptr") {
     stop("Problem retrieving grib handle")
   }

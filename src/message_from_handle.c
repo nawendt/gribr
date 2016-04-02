@@ -3,7 +3,7 @@
 
 #include "rGRIB.h"
 
-SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter, const char *nameSpace) {
+SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti) {
 
   int err;
   int keyType;
@@ -62,7 +62,7 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
     }
   }
 
-  keyIter = grib_keys_iterator_new(h, filter, nameSpace);
+  keyIter = grib_keys_iterator_new(h, NO_FILTER, NULL_NAMESPACE);
   if (keyIter == NULL) {
     error("rGRIB: unable to create key iterator");
   }

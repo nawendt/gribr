@@ -5,11 +5,9 @@
 
 #include "rGRIB.h"
 
-SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyList, SEXP rgrib_mask, SEXP rgrib_isMulti,
-                   SEXP rgrib_filter, SEXP rgrib_nameSpace) {
+SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyList, SEXP rgrib_mask, SEXP rgrib_isMulti) {
   int err;
   int keyType;
-  int filter;
   int is_masked;
   int is_multi;
   long ki;
@@ -26,7 +24,6 @@ SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyList, SEXP rgrib_mask, SEXP
   char *keyString = NULL;
   const char *filePath = NULL;
   const char *keyName = NULL;
-  const char *nameSpace = NULL;
   const char *ks = NULL;
   char *ksc = NULL;
   FILE *fileHandle = NULL;
@@ -39,8 +36,6 @@ SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyList, SEXP rgrib_mask, SEXP
 
   PROTECT_WITH_INDEX(rgrib_temp = R_NilValue, &pro_temp);
 
-  nameSpace = CHAR(STRING_ELT(rgrib_nameSpace, 0));
-  filter = asInteger(rgrib_filter);
   is_multi = asLogical(rgrib_isMulti);
   is_masked = asLogical(rgrib_mask);
 
@@ -167,7 +162,7 @@ SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyList, SEXP rgrib_mask, SEXP
         gerror("unable to create grib handle", err);
       }
       SET_VECTOR_ELT(rgrib_temp, m++,
-                     rgrib_message_from_handle(hi, is_masked, is_multi, filter, nameSpace));
+                     rgrib_message_from_handle(hi, is_masked, is_multi));
     }
     SET_VECTOR_ELT(rgrib_selected, i, rgrib_temp);
   }
