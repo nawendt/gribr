@@ -4,13 +4,10 @@
 \alias{grib_open}
 \title{Open GRIB files}
 \usage{
-grib_open(file, mode)
+grib_open(file)
 }
 \arguments{
 \item{file}{character string. A path to a GRIB file.}
-
-\item{mode}{character string. File acccess mode string. Only "r" is fully
-supported at this time.}
 }
 \value{
 Returns a GRIB class object: see 'Details'.
