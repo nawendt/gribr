@@ -24,8 +24,7 @@
 #' The \code{nameSpace} parameter is a quick and easy way to grab a subset of the
 #' keys available in a GRIB file using pre-defined groups of related keys. More
 #' information about GRIB key namespaces can be found
-#' \href{https://software.ecmwf.int/wiki/display/GRIB/GRIB+API+Frequently+Asked
-#' +Questions+FAQ#GRIBAPIFrequentlyAskedQuestionsFAQ-Whatarenamespaces?}{
+#' \href{https://software.ecmwf.int/wiki/display/GRIB/GRIB+API+Frequently+Asked+Questions+FAQ}{
 #' here}. The \code{nameSpace} options used in this package are described
 #' below:
 #'
