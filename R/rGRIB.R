@@ -22,6 +22,17 @@
 #'   functions are essentially helper functions to aid in scripting with the
 #'   main tools.
 #'
+#' @section Extensions: rGRIB was designed to be simple and extensible. Because
+#'   of the use of the GRIB API, this is possible. Using this package as a
+#'   template of sort, one could create new functions that work to expand on the
+#'   current capabilities. The
+#'   \href{https://software.ecmwf.int/wiki/display/GRIB/GRIB+API+examples}{GRIB
+#'   API examples} are good place to see the basic implementations in C. Beyond
+#'   that, this package is hosted on
+#'   \href{https://github.com/nawendt/rGRIB}{GitHub} where you will not only
+#'   find the source for this package, but will be able to submit any of your
+#'   own developments for inclusion in future releases.
+#'
 #' @docType package
 #' @name rGRIB
 #'

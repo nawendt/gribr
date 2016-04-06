@@ -163,8 +163,13 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti) {
           if (err) {
             gerror("unable to get double scalar", err);
           }
-          REPROTECT(rgrib_double = ScalarReal(*keyVal_d), pro_double);
-          nfree(keyVal_d);
+          if (*keyVal_d == GRIB_MISSING_DOUBLE) {
+            REPROTECT(rgrib_double = ScalarReal(NA_REAL), pro_double);
+            nfree(keyVal_d);
+          } else {
+            REPROTECT(rgrib_double = ScalarReal(*keyVal_d), pro_double);
+            nfree(keyVal_d);
+          }
         }
         SET_VECTOR_ELT(rgrib_grib_message, n, rgrib_double);
         break;
@@ -198,8 +203,14 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti) {
           if (err) {
             gerror("unable to get long scalar", err);
           }
-          REPROTECT(rgrib_long = ScalarReal((double)*keyVal_l), pro_long);
-          nfree(keyVal_l);
+          if (*keyVal_l == GRIB_MISSING_LONG) {
+            REPROTECT(rgrib_long = ScalarInteger(NA_INTEGER), pro_long);
+            nfree(keyVal_l);
+          } else {
+            REPROTECT(rgrib_long = ScalarReal((double)*keyVal_l), pro_long);
+            nfree(keyVal_l);
+          }
+
         }
         SET_VECTOR_ELT(rgrib_grib_message, n, rgrib_long);
         break;
