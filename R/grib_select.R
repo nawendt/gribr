@@ -18,6 +18,9 @@
 #'   through and match messages in the GRIB file using an index
 #' @param mask optional logical that controls whether or not missing values are
 #'   changed to \code{NA} based on the bitmap and GRIB files missing value.
+#' @param expand optional logical indicating whether or not to expand spatial
+#'   data (values, latitude, longitude, etc.) into a matrix. Default is to leave
+#'   as vector.
 #'
 #' @return Returns a list of gribMessage objects
 #'
@@ -25,7 +28,7 @@
 #'
 #' @export
 
-grib_select <- function(gribObj, keyPairs, mask = FALSE) {
+grib_select <- function(gribObj, keyPairs, mask = FALSE, expand = FALSE) {
 
   if (!is.grib(gribObj)) {
     stop("gribObj is not of class 'grib'")
@@ -58,7 +61,9 @@ grib_select <- function(gribObj, keyPairs, mask = FALSE) {
   }
 
   for (i in length(selected)) {
-    selected[[i]] <- expand_grids(selected[[i]])
+    if (expand) {
+      selected[[i]] <- expand_grids(selected[[i]])
+    }
     class(selected[[i]]) <- "gribMessage"
   }
 
