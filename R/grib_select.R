@@ -20,7 +20,8 @@
 #'   changed to \code{NA} based on the bitmap and GRIB files missing value.
 #' @param expand optional logical indicating whether or not to expand spatial
 #'   data (values, latitude, longitude, etc.) into a matrix. Default is to leave
-#'   as vector.
+#'   as vector. This only can occur if horizontal dimensions are defined in the
+#'   GRIB file.
 #'
 #' @return Returns a list of gribMessage objects
 #'
