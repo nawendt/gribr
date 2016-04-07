@@ -17,7 +17,8 @@
 #' @param keyPairs a named list of key/value pairs that will be used to search
 #'   through and match messages in the GRIB file using an index
 #' @param mask optional logical that controls whether or not missing values are
-#'   changed to \code{NA} based on the bitmap and GRIB files missing value.
+#'   changed to \code{NA} based on the bitmap and GRIB file's missing value.
+#'   Default is TRUE.
 #' @param expand optional logical indicating whether or not to expand spatial
 #'   data (values, latitude, longitude, etc.) into a matrix. Default is to leave
 #'   as vector. This only can occur if horizontal dimensions are defined in the
@@ -29,7 +30,7 @@
 #'
 #' @export
 
-grib_select <- function(gribObj, keyPairs, mask = FALSE, expand = FALSE) {
+grib_select <- function(gribObj, keyPairs, mask = TRUE, expand = FALSE) {
 
   if (!is.grib(gribObj)) {
     stop("gribObj is not of class 'grib'")
