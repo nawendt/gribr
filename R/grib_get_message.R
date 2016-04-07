@@ -11,7 +11,8 @@
 #' @param messages an integer or vector of integers corresponding to the
 #'   messages to extract from the GRIB file.
 #' @param mask optional logical that controls whether or not missing values are
-#'   changed to \code{NA} based on the bitmap and GRIB files missing value.
+#'   changed to \code{NA} based on the bitmap and GRIB file's missing value.
+#'   Default is TRUE.
 #' @param expand optional logical indicating whether or not to expand spatial
 #'   data (values, latitude, longitude, etc.) into a matrix. Default is to leave
 #'   as vector.
@@ -22,7 +23,7 @@
 #'
 #' @export
 
-grib_get_message <- function(gribObj, messages, mask = FALSE, expand = FALSE) {
+grib_get_message <- function(gribObj, messages, mask = TRUE, expand = FALSE) {
 
   if (!is.integer(messages) && !is.numeric(messages)) {
     stop("requested message vector must be numeric")
