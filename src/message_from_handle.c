@@ -3,7 +3,7 @@
 
 #include "rGRIB.h"
 
-SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti) {
+SEXP rgrib_message_from_handle(grib_handle *h, int isMulti) {
 
   int err;
   int keyType;
@@ -150,7 +150,7 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti) {
             p_rgib_double[i] = keyVal_d[i];
           }
           nfree(keyVal_d);
-          if (mask && !strcmp(keyName, "values")) {
+          if (!strcmp(keyName, "values")) {
             for (i = 0; i < keySize; i++) {
               if (p_rgib_double[i] == missingValue || (bitmapBool && bitmap[i] == BITMAP_MASK)) {
               p_rgib_double[i] = NA_REAL;
@@ -190,7 +190,7 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti) {
             p_rgib_long[i] = (double)keyVal_l[i];
           }
           nfree(keyVal_l);
-          if (mask && !strcmp(keyName, "values")) {
+          if (!strcmp(keyName, "values")) {
             for (i = 0; i < keySize; i++) {
               if (p_rgib_long[i] == missingValue || (bitmapBool && bitmap[i] == BITMAP_MASK)) {
                 p_rgib_long[i] = NA_REAL;

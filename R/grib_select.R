@@ -6,19 +6,13 @@
 #' \code{grib_select} is a function more robust than \code{grib_get_message} in
 #' that it can search through a GRIB file and get all matching messages given
 #' key(s)/value(s) pairs. This is achieved by making an index of the input GRIB
-#' file and then selecting keys that match user input in \code{keyPairs}.
-#'
-#' The \code{filter} parameter controls which keys will be filtered out of the
-#' results. More information can be found in the
-#' \href{https://software.ecmwf.int/wiki/display/GRIB/grib_api.h+File+Reference}{
-#' GRIB API Reference}. Below are the options used in this package:
+#' file and then selecting keys that match user input in \code{keyPairs}. The
+#' values returned in the GRIB message are masked if they are coded as a missing
+#' value or the bitmap, if present, masks them.
 #'
 #' @param gribObj GRIB class object.
 #' @param keyPairs a named list of key/value pairs that will be used to search
-#'   through and match messages in the GRIB file using an index
-#' @param mask optional logical that controls whether or not missing values are
-#'   changed to \code{NA} based on the bitmap and GRIB file's missing value.
-#'   Default is TRUE.
+#'   through and match messages in the GRIB file using an index.
 #' @param expand optional logical indicating whether or not to expand spatial
 #'   data (values, latitude, longitude, etc.) into a matrix. Default is to leave
 #'   as vector. This only can occur if horizontal dimensions are defined in the
@@ -30,7 +24,7 @@
 #'
 #' @export
 
-grib_select <- function(gribObj, keyPairs, mask = TRUE, expand = FALSE) {
+grib_select <- function(gribObj, keyPairs, expand = FALSE) {
 
   if (!is.grib(gribObj)) {
     stop("gribObj is not of class 'grib'")
@@ -52,7 +46,7 @@ grib_select <- function(gribObj, keyPairs, mask = TRUE, expand = FALSE) {
   }
 
   selected <- .Call("rgrib_select", gribObj$file, keyList,
-                    mask, gribObj$isMultiMessage)
+                    gribObj$isMultiMessage)
 
   # cleans up output so that each list element is
   # a grib message

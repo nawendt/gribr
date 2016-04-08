@@ -5,14 +5,13 @@
 #'
 #' \code{grib_get_message} is a quick and easy way to retrieve a GRIB message
 #' from a GRIB file if you know what message number it is. An easy way to
-#' determine the message number is to use \code{\link{grib_list}} first.
+#' determine the message number is to use \code{\link{grib_list}} first (see
+#' examples). The values returned in the GRIB message are masked if they are
+#' coded as a missing value or the bitmap, if present, masks them.
 #'
 #' @param gribObj GRIB class object.
 #' @param messages an integer or vector of integers corresponding to the
 #'   messages to extract from the GRIB file.
-#' @param mask optional logical that controls whether or not missing values are
-#'   changed to \code{NA} based on the bitmap and GRIB file's missing value.
-#'   Default is TRUE.
 #' @param expand optional logical indicating whether or not to expand spatial
 #'   data (values, latitude, longitude, etc.) into a matrix. Default is to leave
 #'   as vector.
@@ -23,7 +22,7 @@
 #'
 #' @export
 
-grib_get_message <- function(gribObj, messages, mask = TRUE, expand = FALSE) {
+grib_get_message <- function(gribObj, messages, expand = FALSE) {
 
   if (!is.integer(messages) && !is.numeric(messages)) {
     stop("requested message vector must be numeric")
@@ -45,11 +44,11 @@ grib_get_message <- function(gribObj, messages, mask = TRUE, expand = FALSE) {
   }
 
   gm <- .Call("rgrib_grib_get_message",
-              gribObj$handle, messages, mask,
+              gribObj$handle, messages,
               gribObj$isMultiMessage)
 
   if (length(gm) < 1) {
-    stop("Error retrieving grib message")
+    stop("Error retrieving grib message(s)")
   }
 
   if (expand == TRUE) {
