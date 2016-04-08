@@ -5,11 +5,10 @@
 
 #include "rGRIB.h"
 
-SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_messages, SEXP mask, SEXP rgrib_isMulti) {
+SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_messages, SEXP rgrib_isMulti) {
 
   int err;
   int is_multi;
-  int is_masked;
   int *p_rgrib_messages = NULL;
   R_len_t n;
   R_len_t i;
@@ -25,7 +24,7 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_messages, SEXP mas
   if (messagesLength == 0) {
     error("rGRIB: zero messages requested");
   }
-  is_masked = asLogical(mask);
+
   is_multi = asLogical(rgrib_isMulti);
   PROTECT_WITH_INDEX(rgrib_message = R_NilValue, &pro_message);
 
@@ -66,7 +65,7 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_messages, SEXP mas
       }
 
       if ((p_rgrib_messages[n] - 1) == i) {
-        SET_VECTOR_ELT(rgrib_message, n++,rgrib_message_from_handle(h, is_masked, is_multi));
+        SET_VECTOR_ELT(rgrib_message, n++,rgrib_message_from_handle(h, is_multi));
       }
     }
   } else {
@@ -80,7 +79,7 @@ SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_messages, SEXP mas
         gerror("unable to open grib handle", err);
       }
       if ((p_rgrib_messages[0] - 1) == i) {
-        REPROTECT(rgrib_message = rgrib_message_from_handle(h, is_masked, is_multi), pro_message);
+        REPROTECT(rgrib_message = rgrib_message_from_handle(h, is_multi), pro_message);
       }
     }
   }

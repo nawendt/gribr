@@ -1,22 +1,19 @@
-//include <R.h>
-//include <Rinternals.h>
+#include <R.h>
+#include <Rinternals.h>
 
-//include "rGRIB.h"
+#include "rGRIB.h"
 
-SEXP redtoreg(SEXP rgrib_nlons, SEXP rgrib_lonsperlat, SEXP rgrib_grid) {
+SEXP rgrib_redtoreg(SEXP rgrib_nlons, SEXP rgrib_lonsperlat, SEXP rgrib_grid) {
   R_xlen_t i, j, n, im, ip, indx, ilons, nlats, npts;
   double nlons;
-  double lonsperlat;
   double lonsperlat_sum;
-  double missingval;
-  double *grid;
   double zxi, zdx, flons;
-  double *grid_ptr;
-  double *regrid_ptr;
-  double *lons_ptr;
+  double *grid_ptr = NULL;
+  double *regrid_ptr = NULL;
+  double *lons_ptr = NULL;
   SEXP regrid;
 
-  nlons = REAL(rgrib_nlons);
+  nlons = asReal(rgrib_nlons);
   nlats = xlength(rgrib_lonsperlat);
   npts = xlength(rgrib_grid);
 
@@ -26,13 +23,14 @@ SEXP redtoreg(SEXP rgrib_nlons, SEXP rgrib_lonsperlat, SEXP rgrib_grid) {
   }
 
   if (lonsperlat_sum != npts) {
-    error('size of reduced grid does not match number of data values');
+    error("size of reduced grid does not match number of data values");
   }
 
-  regrid = PROTECT(allocMatrix(REALSXP, nlats, nlons));
+  regrid = PROTECT(allocVector(REALSXP, nlats*nlons));
 
-  grid_ptr = REAL(grid);
-  regrid_ptr = &regrid_ptr;
+  lons_ptr = REAL(rgrib_lonsperlat);
+  grid_ptr = REAL(rgrib_grid);
+  regrid_ptr = REAL(regrid);
 
   n= 0;
   indx = 0;
@@ -40,15 +38,16 @@ SEXP redtoreg(SEXP rgrib_nlons, SEXP rgrib_lonsperlat, SEXP rgrib_grid) {
   for (j = 0; j < nlats; j++) {
     ilons = lons_ptr[j];
     flons =ilons;
-    for (i = 0; i < nlons; I++) {
+    for (i = 0; i < nlons; i++) {
       zxi = i * flons / nlons;
       im = zxi;
+      zdx = zxi - im;
       if (ilons != 0) {
         im = (long)(im + ilons)%(long)ilons;
         ip = (long)(im + 1 + ilons)%(long)ilons;
 
-        if (grid_ptr[indx + im] == NA_REAL || grid_ptr[index + ip] == NA_REAL) {
-          if (zdx <0.5) {
+        if (grid_ptr[indx + im] == NA_REAL || grid_ptr[indx + ip] == NA_REAL) {
+          if (zdx < 0.5) {
             regrid_ptr[n] = grid_ptr[indx + im];
           } else {
             regrid_ptr[n] = grid_ptr[indx + ip];

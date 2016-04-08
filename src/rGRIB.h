@@ -23,10 +23,10 @@ SEXP rgrib_is_null_ptr (SEXP rgrib_ptr);
 SEXP rgrib_api_version(void);
 SEXP rgrib_is_multi_message(SEXP rgrib_fileHandle);
 SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_messages,
-                            SEXP mask, SEXP rgrib_isMulti);
+                            SEXP rgrib_isMulti);
 
-SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyList, SEXP mask,
-                  SEXP rgrib_isMulti);
+SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyList, SEXP rgrib_isMulti);
+SEXP rgrib_redtoreg(SEXP rgrib_nlons, SEXP rgrib_lonsperlat, SEXP rgrib_grid);
 
 /* Extra GRIB API function prototypes */
 void grib_index_rewind(grib_index* index);
@@ -36,4 +36,4 @@ void file_finalizer(SEXP ptr);
 void nfree(void *ptr);
 void gerror(const char *str, int err);
 SEXP getListElement(SEXP list, const char *str);
-SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti);
+SEXP rgrib_message_from_handle(grib_handle *h, int isMulti);

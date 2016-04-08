@@ -5,10 +5,9 @@
 
 #include "rGRIB.h"
 
-SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyList, SEXP rgrib_mask, SEXP rgrib_isMulti) {
+SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyList, SEXP rgrib_isMulti) {
   int err;
   int keyType;
-  int is_masked;
   int is_multi;
   long ki;
   double kd;
@@ -37,7 +36,6 @@ SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyList, SEXP rgrib_mask, SEXP
   PROTECT_WITH_INDEX(rgrib_temp = R_NilValue, &pro_temp);
 
   is_multi = asLogical(rgrib_isMulti);
-  is_masked = asLogical(rgrib_mask);
 
   filePath = CHAR(STRING_ELT(rgrib_filePath, 0));
   lenKeysList = xlength(rgrib_keyList);
@@ -162,7 +160,7 @@ SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyList, SEXP rgrib_mask, SEXP
         gerror("unable to create grib handle", err);
       }
       SET_VECTOR_ELT(rgrib_temp, m++,
-                     rgrib_message_from_handle(hi, is_masked, is_multi));
+                     rgrib_message_from_handle(hi, is_multi));
     }
     SET_VECTOR_ELT(rgrib_selected, i, rgrib_temp);
   }
