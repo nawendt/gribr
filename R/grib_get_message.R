@@ -12,9 +12,6 @@
 #' @param gribObj GRIB class object.
 #' @param messages an integer or vector of integers corresponding to the
 #'   messages to extract from the GRIB file.
-#' @param expand optional logical indicating whether or not to expand spatial
-#'   data (values, latitude, longitude, etc.) into a matrix. Default is to leave
-#'   as vector.
 #'
 #' @return Returns a \code{gribMessage} object.
 #'
@@ -22,7 +19,7 @@
 #'
 #' @export
 
-grib_get_message <- function(gribObj, messages, expand = FALSE) {
+grib_get_message <- function(gribObj, messages) {
 
   if (!is.integer(messages) && !is.numeric(messages)) {
     stop("requested message vector must be numeric")
@@ -51,10 +48,5 @@ grib_get_message <- function(gribObj, messages, expand = FALSE) {
     stop("Error retrieving grib message(s)")
   }
 
-  if (expand == TRUE) {
-    gm <- expand_grids(gm)
-  }
-
-  class(gm) <- "gribMessage"
   gm
 }

@@ -13,10 +13,6 @@
 #' @param gribObj GRIB class object.
 #' @param keyPairs a named list of key/value pairs that will be used to search
 #'   through and match messages in the GRIB file using an index.
-#' @param expand optional logical indicating whether or not to expand spatial
-#'   data (values, latitude, longitude, etc.) into a matrix. Default is to leave
-#'   as vector. This only can occur if horizontal dimensions are defined in the
-#'   GRIB file.
 #'
 #' @return Returns a list of gribMessage objects
 #'
@@ -24,7 +20,7 @@
 #'
 #' @export
 
-grib_select <- function(gribObj, keyPairs, expand = FALSE) {
+grib_select <- function(gribObj, keyPairs) {
 
   if (!is.grib(gribObj)) {
     stop("gribObj is not of class 'grib'")
@@ -56,11 +52,9 @@ grib_select <- function(gribObj, keyPairs, expand = FALSE) {
     stop("No messages matched keyPairs")
   }
 
-  for (i in length(selected)) {
-    if (expand) {
-      selected[[i]] <- expand_grids(selected[[i]])
-    }
-    class(selected[[i]]) <- "gribMessage"
+  # Just return the gribMessage if only one
+  if (length(selected) == 1) {
+    selected <- selected[[1]]
   }
 
   selected
