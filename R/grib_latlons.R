@@ -28,8 +28,8 @@ grib_latlons <- function(gribMessage, expand = FALSE) {
     lat2 <- gribMessage$latitudeOfLastGridPointInDegrees
 
     if (grepl("grid_complex", gribMessage$packingType)) {
-      lats <- seq(lat1, lat2, ny)
-      lons <- seq(lon1, lon2, nx)
+      lats <- seq(lat1, lat2, length.out = ny)
+      lons <- seq(lon1, lon2, length.out = nx)
     } else {
       lats <- gribMessage$distinctLatitudes
       if (lat2 < lat1 && lats[length(lats)] > lats[1]) {
@@ -38,7 +38,7 @@ grib_latlons <- function(gribMessage, expand = FALSE) {
       lons <- gribMessage$distinctLongitudes
     }
     if (lon2 < 0) {
-      lons <- seq(lon1, lon2, nx)
+      lons <- seq(lon1, lon2, length.out = nx)
     }
     mg <- meshgrid(lons,lats)
     lons <- mg$X
@@ -57,7 +57,7 @@ grib_latlons <- function(gribMessage, expand = FALSE) {
       nx <- ny * 2
       lon1 <- gribMessage$longitudeOfFirstGridPointInDegrees
       lon2 <- gribMessage$longitudeOfLastGridPointInDegrees
-      lons <- seq(lon1, lon2, nx)
+      lons <- seq(lon1, lon2, length.out = nx)
       mg <- meshgrid(lons, lats)
       lons <- mg$X
       lats <- mg$Y
@@ -75,8 +75,8 @@ grib_latlons <- function(gribMessage, expand = FALSE) {
       lon2 <- gribMessage$longitudeOfLastGridPointInDegrees
       ny <- gribMessage$Nj
       nx <- ny * 2
-      lons <- seq(lon1, lon2, nx)
-      lats <- seq(lat1, lat2, ny)
+      lons <- seq(lon1, lon2, length.out = nx)
+      lats <- seq(lat1, lat2, length.out = ny)
       mg <- meshgrid(lons, lats)
       lons <- mg$X
       lats <- mg$Y
@@ -209,8 +209,8 @@ grib_latlons <- function(gribMessage, expand = FALSE) {
     dy <- height/gribMessage$dy
     xmax <- dx * (nx - 1)
     ymax <- dy * (ny - 1)
-    x <- seq(-0.5*xmax, 0.5*xmax, nx)
-    y <- seq(-0.5*ymax, 0.5*ymax, ny)
+    x <- seq(-0.5*xmax, 0.5*xmax, length.out = nx)
+    y <- seq(-0.5*ymax, 0.5*ymax, length.out = ny)
     mg <- meshgrid(x, y)
     unprj <- proj4::project(list(mg$X, mg$Y),
                             grib_proj4str(gribMessage),
@@ -340,8 +340,8 @@ grib_latlons <- function(gribMessage, expand = FALSE) {
   }
 
   if (expand) {
-    lats <- matrix(lats, nx, ny, byrow = gribMessage$jPointsAreConsecutive)
-    lons <- matrix(lons, nx, ny)
+    lats <- matrix(lats, ny, nx, byrow = gribMessage$jPointsAreConsecutive)
+    lons <- matrix(lons, ny, nx)
   }
   list(lats = lats, lons = lons)
 }

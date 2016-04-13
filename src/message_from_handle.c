@@ -289,6 +289,7 @@ SEXP rgrib_message_from_handle(grib_handle *h, int isMulti) {
     nfree(bitmap);
   }
   namesgets(rgrib_grib_message, rgrib_list_names);
+  classgets(rgrib_grib_message, mkString("gribMessage"));
 
   UNPROTECT(5);
   return rgrib_grib_message;
