@@ -10,13 +10,23 @@
 #' values returned in the GRIB message are masked if they are coded as a missing
 #' value or the bitmap, if present, masks them.
 #'
-#' @param gribObj GRIB class object.
-#' @param keyPairs a named list of key/value pairs that will be used to search
-#'   through and match messages in the GRIB file using an index.
+#' All grid (latitude, longitude, values, etc.) are output as vectors for
+#' simplicity and flexibility. Many plotting functions want input in
+#' \code{matrix} form (e.g., \code{image()}, \code{fields::image.plot()} while
+#' others want input in long form \code{data.frame}s or vectors (e.g.,
+#' \code{ggplot}). Keeping vector form allows the most flexibility for the user
+#' to do what is needed to format the data appropriately. Some helper functions
+#' in this package will do some data formatting for you.
 #'
-#' @return Returns a list of gribMessage objects
+#' @param gribObj \code{GRIB} class object.
+#' @param keyPairs a named \code{list} of key/value pairs that will be used to
+#'   search through and match messages in the GRIB file using an index.
+#'
+#' @return Returns a \code{gribMessage} or a list of \code{gribMessage} objects
+#'   if more than one message is selected
 #'
 #' @seealso \code{\link{grib_get_message}} \code{\link{grib_list}}
+#'   \code{\link{grib_expand_grids}} \code{\link{grib_latlons}}
 #'
 #' @export
 

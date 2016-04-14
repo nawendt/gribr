@@ -4,7 +4,7 @@
 #'
 #' @param obj object to be tested
 #'
-#' @return Returns a logical
+#' @return Returns a \code{logical}
 #'
 #' @seealso \code{\link{is.grib}}
 #'

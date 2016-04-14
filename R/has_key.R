@@ -5,7 +5,7 @@
 #' @param gribMessage gribMessage object to be tested
 #' @param key character string of the key to be tested for
 #'
-#' @return Returns a logical
+#' @return Returns a \code{logical}
 #'
 #' @export
 

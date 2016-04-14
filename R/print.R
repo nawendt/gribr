@@ -9,7 +9,7 @@
 #' file handle in memory, and whether or not the file containins multiple fields
 #' in some messages.
 #'
-#' @param x GRIB class object.
+#' @param x \code{GRIB} class object.
 #'
 #' @param ... futher arguments; ignored here.
 #'
