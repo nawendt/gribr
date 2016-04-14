@@ -10,9 +10,9 @@
 #' \code{isMultiMessage} is a \code{logical} indicating if there are multiple
 #' entries in any of the \code{file}'s messages.
 #'
-#' @param file character string. A path to a GRIB file.
+#' @param file \code{character} string. A path to a GRIB file.
 #'
-#' @return Returns a GRIB class object: see 'Details'.
+#' @return Returns a \code{GRIB} class object: see 'Details'.
 #'
 #' @seealso \code{\link{grib_close}}
 #'

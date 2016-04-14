@@ -9,13 +9,22 @@
 #' examples). The values returned in the GRIB message are masked if they are
 #' coded as a missing value or the bitmap, if present, masks them.
 #'
-#' @param gribObj GRIB class object.
-#' @param messages an integer or vector of integers corresponding to the
-#'   messages to extract from the GRIB file.
+#' All grid (latitude, longitude, values, etc.) are output as vectors for
+#' simplicity and flexibility. Many plotting functions want input in matrix form
+#' (e.g., \code{image()}, \code{fields::image.plot()} while others want input in
+#' long form \code{data.frame}s or vectors (e.g., \code{ggplot}). Keeping vector
+#' form allows the most flexibility for the user to do what is needed to format
+#' the data appropriately. Some helper functions in this package will do some
+#' data formatting for you.
+#'
+#' @param gribObj \code{GRIB} class object.
+#' @param messages an \code{integer} or vector of \code{integer}s corresponding
+#'   to the messages to extract from the GRIB file.
 #'
 #' @return Returns a \code{gribMessage} object.
 #'
 #' @seealso \code{\link{grib_select}} \code{\link{grib_list}}
+#'   \code{\link{grib_expand_grids}} \code{\link{grib_latlons}}
 #'
 #' @export
 

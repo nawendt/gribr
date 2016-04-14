@@ -8,16 +8,19 @@
 #' \code{userProj4} arugment. Several other packages have functions that can use
 #' this PROJ4 string to appropriately project the values in the GRIB message.
 #' Several common grid types are supported at this time, but likely not all.
-#' This function is heavily influenced the the PROJ4 string method used in the
-#' pygrib Python module (see
-#' \href{https://github.com/jswhit/pygrib/blob/master/pygrib.pyx}{pygrib source}).
 #'
-#' @param gribMessage gribMessage class object.
-#' @param userProj4 An optional argument that can be a named list or named
-#'   character vector of additional PROJ4 elements the user would like to add.
+#' This function is influenced by the PROJ4 string method used in the pygrib
+#' Python module (see
+#' \href{https://github.com/jswhit/pygrib/blob/master/pygrib.pyx}{pygrib
+#' source}).
 #'
-#' @return Returns a character string of the PROJ4 elements associate with the
-#'   \code{gribMessage}.
+#' @param gribMessage \code{gribMessage} class object.
+#' @param userProj4 An optional argument that can be a named \code{list} or
+#'   named \code{character} vector of additional PROJ4 elements the user would
+#'   like to add.
+#'
+#' @return Returns a \code{character} string of the PROJ4 elements associate
+#'   with the \code{gribMessage}.
 #'
 #' @export
 

@@ -6,7 +6,7 @@
 #' No formal return value is given with this function. Only feedback is a short
 #' message inidicating success or failure.
 #'
-#' @param gribObj GRIB class object.
+#' @param gribObj \code{GRIB} class object.
 #'
 #' @seealso \code{\link{grib_open}}
 #'

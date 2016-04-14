@@ -1,3 +1,32 @@
+#' Extract projected latitudes and longitudes
+#'
+#' \code{grib_latlons} extracts the latitudes and longitudes from a GRIB message
+#' and optionally expands them into \code{matrix} form.
+#'
+#' \code{grib_latlons} is a convenience function that returns the latitude and
+#' longitudes after reversing projected coordinates (using the \code{proj4}
+#' package) from the GRIB message. This makes it easy to use latitude and
+#' longitude for the axes in plots intstead of eastings and northings. Use of
+#' this function is optional given that the user can extract the PROJ.4 string
+#' from the GRIB message using \code{\link{grib_proj4str}}. From the user can
+#' use whatever package/work flow to project the data. Not all grid types may be
+#' supported at this time. New grid types may be added in the future.
+#'
+#' This function is influenced by the latitude and longitude extraction method
+#' used in the pygrib Python module (see
+#' \href{https://github.com/jswhit/pygrib/blob/master/pygrib.pyx}{pygrib
+#' source}).
+#'
+#' @param gribMessage \code{gribMessage} class object.
+#' @param expand optional \code{logical} inidcating whether or not to return
+#'   coordinates as a \code{matrix} or not. Default \code{FALSE}.
+#'
+#' @return a \code{list} or a \code{matrix} of the latitudes and longitudes
+#'   after projection
+#'
+#' @seealso \code{\link{grib_select}} \code{\link{grib_get_message}}
+#'   \code{\link{grib_expand_grids}}
+#'
 #' @export
 
 grib_latlons <- function(gribMessage, expand = FALSE) {
