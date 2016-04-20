@@ -22,6 +22,6 @@ grib_close <- function(gribObj) {
     stop("GRIB object is closed or unavailable")
   }
 
-  invisible(.Call("rgrib_grib_close", gribObj$handle))
+  invisible(.Call("gribr_grib_close", gribObj$handle))
   cat(gribObj$file, "closed\n")
 }

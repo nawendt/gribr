@@ -24,15 +24,15 @@ grib_open <- function(file) {
 #    Sys.setenv(GRIB_DEFINITION_PATH = path.expand(gribDefinitionPath))
 #  }
 
-  handle <- .Call("rgrib_grib_open", path.expand(file))
+  handle <- .Call("gribr_grib_open", path.expand(file))
   if (class(handle) != "externalptr") {
     stop("Problem retrieving grib handle")
   }
 
   # Need to know if multiple fields in one GRIB message
-  isMultiMessage <- .Call("rgrib_is_multi_message", handle)
+  isMultiMessage <- .Call("gribr_is_multi_message", handle)
 
-  # class definition for rGRIB package
+  # class definition for gribr package
   gribObj <-  list(file = path.expand(file),
                    handle = handle,
                    isMultiMessage = isMultiMessage

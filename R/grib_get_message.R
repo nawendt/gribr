@@ -49,7 +49,7 @@ grib_get_message <- function(gribObj, messages) {
     stop("GRIB object is closed or unavailable")
   }
 
-  gm <- .Call("rgrib_grib_get_message",
+  gm <- .Call("gribr_grib_get_message",
               gribObj$handle, messages,
               gribObj$isMultiMessage)
 

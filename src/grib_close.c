@@ -1,13 +1,13 @@
 #include <R.h>
 #include <Rinternals.h>
 
-#include "rGRIB.h"
+#include "gribr.h"
 
-SEXP rgrib_grib_close(SEXP rgrib_fileHandle) {
+SEXP gribr_grib_close(SEXP gribr_fileHandle) {
 
   int err;
   FILE *file = NULL;
-  file = R_ExternalPtrAddr(rgrib_fileHandle);
+  file = R_ExternalPtrAddr(gribr_fileHandle);
 
   if (file == NULL) {
     error("grib file already closed");
@@ -15,9 +15,9 @@ SEXP rgrib_grib_close(SEXP rgrib_fileHandle) {
     err = fclose(file);
     file = NULL;
     if (err) {
-      error("rGRIB: unable to close file");
+      error("gribr: unable to close file");
     }
-    R_ClearExternalPtr(rgrib_fileHandle);
+    R_ClearExternalPtr(gribr_fileHandle);
   }
   return R_NilValue;
 }
