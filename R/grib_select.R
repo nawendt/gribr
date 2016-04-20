@@ -51,7 +51,7 @@ grib_select <- function(gribObj, keyPairs) {
     stop("error with keyPairs input")
   }
 
-  selected <- .Call("rgrib_select", gribObj$file, keyList,
+  selected <- .Call("gribr_select", gribObj$file, keyList,
                     gribObj$isMultiMessage)
 
   # cleans up output so that each list element is

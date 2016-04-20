@@ -66,7 +66,7 @@ grib_proj4str <- function(gribMessage, userProj4 = NULL) {
 	    scalea <- 1
 	    scaleb <- 1
 	  }
-	    apiVersion <- as.numeric(.Call("rgrib_api_version"))
+	    apiVersion <- as.numeric(.Call("gribr_api_version"))
 	    if (apiVersion < 10900) {
 	      proj4list$a <- gribMessage$scaledValueOfMajorAxisOfOblateSpheroidEarth * scalea
 	      proj4list$b <- gribMessage$scaledValueOfMajorAxisOfOblateSpheroidEarth * scaleb

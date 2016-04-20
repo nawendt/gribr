@@ -3,9 +3,9 @@
 
 #include <string.h>
 
-#include "rGRIB.h"
+#include "gribr.h"
 
-SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyList, SEXP rgrib_isMulti) {
+SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_keyList, SEXP gribr_isMulti) {
   int err;
   int keyType;
   int is_multi;
@@ -29,25 +29,25 @@ SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyList, SEXP rgrib_isMulti) {
   grib_index *index = NULL;
   grib_handle *h = NULL;
   grib_handle *hi = NULL;
-  SEXP rgrib_selected;
-  SEXP rgrib_temp;
+  SEXP gribr_selected;
+  SEXP gribr_temp;
   PROTECT_INDEX pro_temp;
 
-  PROTECT_WITH_INDEX(rgrib_temp = R_NilValue, &pro_temp);
+  PROTECT_WITH_INDEX(gribr_temp = R_NilValue, &pro_temp);
 
-  is_multi = asLogical(rgrib_isMulti);
+  is_multi = asLogical(gribr_isMulti);
 
-  filePath = CHAR(STRING_ELT(rgrib_filePath, 0));
-  lenKeysList = xlength(rgrib_keyList);
-  rgrib_selected = PROTECT(allocVector(VECSXP, lenKeysList));
+  filePath = CHAR(STRING_ELT(gribr_filePath, 0));
+  lenKeysList = xlength(gribr_keyList);
+  gribr_selected = PROTECT(allocVector(VECSXP, lenKeysList));
   fileHandle = fopen(filePath, "r");
   if (!fileHandle) {
-    error("rGRIB: unable to open grib file");
+    error("gribr: unable to open grib file");
   }
 
   keyString = calloc(MAX_VAL_LEN, sizeof(char));
   if (!keyString) {
-    error("rGRIB: unable to allocate keyString");
+    error("gribr: unable to allocate keyString");
   }
 
   /* Keep track of number of characters and reallocate the final string
@@ -56,16 +56,16 @@ SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyList, SEXP rgrib_isMulti) {
    * likely going to be more than enough in preponderance of cases
    **********************************************************************/
   n = 0; n_tot = 0;
-  lenKeys = xlength(VECTOR_ELT(rgrib_keyList, 0));
+  lenKeys = xlength(VECTOR_ELT(gribr_keyList, 0));
   /*
    * One loop will work since the input list will have all the same
    * keys
    */
   for (i = 0; i < lenKeys; i++) {
-    keyName = CHAR(STRING_ELT(getAttrib(VECTOR_ELT(rgrib_keyList, 0), R_NamesSymbol), i));
+    keyName = CHAR(STRING_ELT(getAttrib(VECTOR_ELT(gribr_keyList, 0), R_NamesSymbol), i));
     n = strlen(keyName);
     if (!n) {
-      error("rGRIB: unable to get keyString length");
+      error("gribr: unable to get keyString length");
     }
     n_tot += n;
     if (n_tot > reallocLength - 1) {
@@ -77,7 +77,7 @@ SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyList, SEXP rgrib_isMulti) {
     }
   }
 
-  if (asLogical(rgrib_isMulti)) {
+  if (asLogical(gribr_isMulti)) {
     grib_multi_support_on(DEFAULT_CONTEXT);
   }
 
@@ -104,16 +104,16 @@ SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyList, SEXP rgrib_isMulti) {
   }
 
   for (i = 0; i < lenKeysList; i++) {
-    lenKeys = xlength(VECTOR_ELT(rgrib_keyList, i));
+    lenKeys = xlength(VECTOR_ELT(gribr_keyList, i));
     for (j = 0; j < lenKeys; j++) {
-      keyName = CHAR(STRING_ELT(getAttrib(VECTOR_ELT(rgrib_keyList, i), R_NamesSymbol), j));
+      keyName = CHAR(STRING_ELT(getAttrib(VECTOR_ELT(gribr_keyList, i), R_NamesSymbol), j));
       err = grib_get_native_type(h, keyName, &keyType);
       if (err) {
         gerror("unable to get native type", err);
       }
       switch (keyType) {
       case GRIB_TYPE_DOUBLE:
-        kd = asReal(VECTOR_ELT(VECTOR_ELT(rgrib_keyList, i), j));
+        kd = asReal(VECTOR_ELT(VECTOR_ELT(gribr_keyList, i), j));
         grib_index_select_double(index, keyName, kd);
         break;
       case GRIB_TYPE_LONG:
@@ -123,11 +123,11 @@ SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyList, SEXP rgrib_isMulti) {
          * the get_naitve_type call. The C routines know more about the
          * typing than the R routines.
          */
-        ki = (long)asReal(VECTOR_ELT(VECTOR_ELT(rgrib_keyList, i), j));
+        ki = (long)asReal(VECTOR_ELT(VECTOR_ELT(gribr_keyList, i), j));
         grib_index_select_long(index, keyName, ki);
         break;
       case GRIB_TYPE_STRING:
-        ks = CHAR(asChar(VECTOR_ELT(VECTOR_ELT(rgrib_keyList, i), j)));
+        ks = CHAR(asChar(VECTOR_ELT(VECTOR_ELT(gribr_keyList, i), j)));
         ksc = calloc(strlen(ks) + 1, sizeof(char));
         strcpy(ksc, ks);
         grib_index_select_string(index, keyName, ksc);
@@ -147,22 +147,22 @@ SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyList, SEXP rgrib_isMulti) {
     }
 
     if (index_count == 0) {
-      error("rGRIB: no messages matched");
+      error("gribr: no messages matched");
     }
 
     grib_index_rewind(index);
 
-    REPROTECT(rgrib_temp = allocVector(VECSXP, index_count), pro_temp);
+    REPROTECT(gribr_temp = allocVector(VECSXP, index_count), pro_temp);
 
     m = 0;
     while((hi = grib_handle_new_from_index(index, &err)) && m < index_count) {
       if (err) {
         gerror("unable to create grib handle", err);
       }
-      SET_VECTOR_ELT(rgrib_temp, m++,
-                     rgrib_message_from_handle(hi, is_multi));
+      SET_VECTOR_ELT(gribr_temp, m++,
+                     gribr_message_from_handle(hi, is_multi));
     }
-    SET_VECTOR_ELT(rgrib_selected, i, rgrib_temp);
+    SET_VECTOR_ELT(gribr_selected, i, gribr_temp);
   }
 
   grib_handle_delete(h);
@@ -170,5 +170,5 @@ SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyList, SEXP rgrib_isMulti) {
   grib_index_delete(index);
 
   UNPROTECT(2);
-  return rgrib_selected;
+  return gribr_selected;
 }

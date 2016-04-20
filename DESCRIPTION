@@ -1,4 +1,4 @@
-Package: rGRIB
+Package: gribr
 Type: Package
 Title: Read and Write GRIB Files
 Version: 0.0.0.9000

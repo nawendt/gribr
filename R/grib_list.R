@@ -74,7 +74,7 @@ grib_list <- function(gribObj, filter = "none", nameSpace = "ls") {
     nameSpace <- ""
   }
 
-  .Call("rgrib_grib_list",gribObj$handle, as.integer(gribFilterList[filter]),
+  .Call("gribr_grib_list",gribObj$handle, as.integer(gribFilterList[filter]),
                           nameSpace, gribObj$isMultiMessage)
 
 }

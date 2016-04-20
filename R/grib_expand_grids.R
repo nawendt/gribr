@@ -34,7 +34,7 @@ grib_expand_grids <- function(gribMessage, vector = FALSE) {
 
   if (grepl("reduced", gribMessage$gridType)) {
     nx <- ny * 2
-    values <- .Call("rgrib_redtoreg", nx, gribMessage$pl,
+    values <- .Call("gribr_redtoreg", nx, gribMessage$pl,
                     gribMessage$values)
     values <- matrix(values, nx, ny,
                      byrow = gribMessage$jPointsAreConsecutive)

@@ -1,9 +1,9 @@
 #include <R.h>
 #include <Rinternals.h>
 
-#include "rGRIB.h"
+#include "gribr.h"
 
-SEXP rgrib_redtoreg(SEXP rgrib_nlons, SEXP rgrib_lonsperlat, SEXP rgrib_grid) {
+SEXP gribr_redtoreg(SEXP gribr_nlons, SEXP gribr_lonsperlat, SEXP gribr_grid) {
   R_xlen_t i, j, n, im, ip, indx, ilons, nlats, npts;
   double nlons;
   double lonsperlat_sum;
@@ -13,13 +13,13 @@ SEXP rgrib_redtoreg(SEXP rgrib_nlons, SEXP rgrib_lonsperlat, SEXP rgrib_grid) {
   double *lons_ptr = NULL;
   SEXP regrid;
 
-  nlons = asReal(rgrib_nlons);
-  nlats = xlength(rgrib_lonsperlat);
-  npts = xlength(rgrib_grid);
+  nlons = asReal(gribr_nlons);
+  nlats = xlength(gribr_lonsperlat);
+  npts = xlength(gribr_grid);
 
   lonsperlat_sum = 0;
   for (i = 0; i < nlats; i++) {
-    lonsperlat_sum = lonsperlat_sum + REAL(rgrib_lonsperlat)[i];
+    lonsperlat_sum = lonsperlat_sum + REAL(gribr_lonsperlat)[i];
   }
 
   if (lonsperlat_sum != npts) {
@@ -28,8 +28,8 @@ SEXP rgrib_redtoreg(SEXP rgrib_nlons, SEXP rgrib_lonsperlat, SEXP rgrib_grid) {
 
   regrid = PROTECT(allocVector(REALSXP, nlats*nlons));
 
-  lons_ptr = REAL(rgrib_lonsperlat);
-  grid_ptr = REAL(rgrib_grid);
+  lons_ptr = REAL(gribr_lonsperlat);
+  grid_ptr = REAL(gribr_grid);
   regrid_ptr = REAL(regrid);
 
   n= 0;

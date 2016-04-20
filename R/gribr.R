@@ -1,6 +1,6 @@
-#' rGRIB: GRIB interface for R using the ECMWF GRIB API
+#' gribr: GRIB interface for R using the ECMWF GRIB API
 #'
-#' The rGRIB package provides a simple interface between R and GRIB 1/2 files.
+#' The gribr package provides a simple interface between R and GRIB 1/2 files.
 #' The package is designed so that data is kept in R's intuitive data structures
 #' and can be easily projected using your preferred plotting package.
 #'
@@ -13,7 +13,7 @@
 #'   future. This package will follow suit once the EC CODES package is out of
 #'   beta testing and ready to supplant the GRIB API.
 #'
-#' @section rGRIB Functions:
+#' @section gribr Functions:
 #'
 #'   The main functions that will be used in this package are those that can
 #'   easily display the contents of a GRIB file (grib_list), those that import
@@ -22,25 +22,25 @@
 #'   functions are essentially helper functions to aid in scripting with the
 #'   main tools.
 #'
-#' @section Extensions: rGRIB was designed to be simple and extensible. Because
+#' @section Extensions: gribr was designed to be simple and extensible. Because
 #'   of the use of the GRIB API, this is possible. Using this package as a
 #'   template of sort, one could create new functions that work to expand on the
 #'   current capabilities. The
 #'   \href{https://software.ecmwf.int/wiki/display/GRIB/GRIB+API+examples}{GRIB
 #'   API examples} are good place to see the basic implementations in C. Beyond
 #'   that, this package is hosted on
-#'   \href{https://github.com/nawendt/rGRIB}{GitHub} where you will not only
+#'   \href{https://github.com/nawendt/gribr}{GitHub} where you will not only
 #'   find the source for this package, but will be able to submit any of your
 #'   own developments for inclusion in future releases.
 #'
 #' @docType package
-#' @name rGRIB
+#' @name gribr
 #'
 NULL
 
-#' @useDynLib rGRIB, .registration = TRUE, .fixes = "rgc_"
+#' @useDynLib gribr, .registration = TRUE, .fixes = "rgc_"
 
-.onUnload <- function (libpath = find.package("rGRIB")) {
-  library.dynam.unload("rGRIB", libpath)
+.onUnload <- function (libpath = find.package("gribr")) {
+  library.dynam.unload("gribr", libpath)
 }
 
