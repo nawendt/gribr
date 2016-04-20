@@ -13,20 +13,20 @@
 #define BITMAP_MASK     0
 
 /* Functions to be registered */
-SEXP rgrib_grib_close(SEXP rgrib_fileHandle);
-SEXP rgrib_grib_open(SEXP rgrib_fileName);
-SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter,
-                     SEXP rgrib_nameSpace, SEXP rgrib_isMulti);
+SEXP gribr_grib_close(SEXP gribr_fileHandle);
+SEXP gribr_grib_open(SEXP gribr_fileName);
+SEXP gribr_grib_list(SEXP gribr_fileHandle, SEXP gribr_filter,
+                     SEXP gribr_nameSpace, SEXP gribr_isMulti);
 
-SEXP rgrib_grib_length(SEXP rgrib_fileHandle);
-SEXP rgrib_is_null_ptr (SEXP rgrib_ptr);
-SEXP rgrib_api_version(void);
-SEXP rgrib_is_multi_message(SEXP rgrib_fileHandle);
-SEXP rgrib_grib_get_message(SEXP rgrib_fileHandle, SEXP rgrib_messages,
-                            SEXP rgrib_isMulti);
+SEXP gribr_grib_length(SEXP gribr_fileHandle);
+SEXP gribr_is_null_ptr (SEXP gribr_ptr);
+SEXP gribr_api_version(void);
+SEXP gribr_is_multi_message(SEXP gribr_fileHandle);
+SEXP gribr_grib_get_message(SEXP gribr_fileHandle, SEXP gribr_messages,
+                            SEXP gribr_isMulti);
 
-SEXP rgrib_select(SEXP rgrib_filePath, SEXP rgrib_keyList, SEXP rgrib_isMulti);
-SEXP rgrib_redtoreg(SEXP rgrib_nlons, SEXP rgrib_lonsperlat, SEXP rgrib_grid);
+SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_keyList, SEXP gribr_isMulti);
+SEXP gribr_redtoreg(SEXP gribr_nlons, SEXP gribr_lonsperlat, SEXP gribr_grid);
 
 /* Extra GRIB API function prototypes */
 void grib_index_rewind(grib_index* index);
@@ -36,4 +36,4 @@ void file_finalizer(SEXP ptr);
 void nfree(void *ptr);
 void gerror(const char *str, int err);
 SEXP getListElement(SEXP list, const char *str);
-SEXP rgrib_message_from_handle(grib_handle *h, int isMulti);
+SEXP gribr_message_from_handle(grib_handle *h, int isMulti);
