@@ -12,6 +12,11 @@
 #' @return Returns \code{integer} number of GRIB messages.
 #'
 #' @export
+#'
+#' @examples
+#' g <- grib_open(system.file("extdata", "lfpw.grib1", package = "gribr"))
+#' grib_length(g)
+#' grib_close(g)
 
 grib_length <- function(gribObj) {
 

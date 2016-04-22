@@ -32,6 +32,10 @@ grib_expand_grids <- function(gribMessage, vector = FALSE) {
     ny <- gribMessage$Nj
   }
 
+  if (is.null(nx) || is.null(ny)) {
+    stop("unsupported grid type: ", gribMessage$gridType)
+  }
+
   if (grepl("reduced", gribMessage$gridType)) {
     nx <- ny * 2
     values <- .Call("gribr_redtoreg", nx, gribMessage$pl,

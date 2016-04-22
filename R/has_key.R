@@ -8,6 +8,15 @@
 #' @return Returns a \code{logical}
 #'
 #' @export
+#'
+#' @examples
+#' g <- grib_open(system.file("extdata", "lfpw.grib1", package = "gribr"))
+#' gm <- grib_get_message(g, 1)
+#' # this key exists
+#' has.key(gm, "shortName")
+#' # this key does not exist
+#' has.key(gm, "grib")
+#' grib_close(g)
 
 has.key <- function(gribMessage, key) {
 

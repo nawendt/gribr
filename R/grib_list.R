@@ -26,10 +26,20 @@
 #' keys \item "parameter": keys related to the parameter \item "statistics":
 #' keys related to statiscal values of the data \item "time": keys related to
 #' the forecast time/initialization \item "geography": keys describing the grid
-#' geometry \item "vertical": keys describing levels and layers \item "mars:
+#' geometry \item "vertical": keys describing levels and layers \item "mars":
 #' ECMWF's Meteorological Archive and Retrieval System keys }
 #'
-#' \code{grib_list} is a simple tool
+#' \strong{NOTE:} The output of \code{grib_list} is predicated on having the
+#' appropriate GRIB definition files available to the GRIB API. By default that
+#' location is in \code{share/grib_api/definitions} directory in the GRIB API
+#' root. Any locally defined paramters will not likely be displayed correctly
+#' without first overriding the parameter definitions manually. You can read
+#' more information about creating your own local definitions in the
+#' \href{https://software.ecmwf.int/wiki/display/OPTR/GRIB+API\%3A+Library+and+Tools}{
+#' GRIB API Training Material}. Once your own definitions are created, be sure to set
+#' the \code{GRIB_DEFINITION_PATH} environment variable to the location of your
+#' local defintions before using this function to display the contents.
+#'
 #' @param gribObj GRIB class object.
 #' @param filter optional \code{character} string that controls what keys will
 #'   be filtered out of the resulting GRIB message. The default is "none". See
@@ -44,6 +54,15 @@
 #' @seealso \code{\link{grep}} \code{\link{grib_get_message}}
 #'
 #' @export
+#'
+#' @examples
+#' g <- grib_open(system.file("extdata", "lfpw.grib1", package = "gribr"))
+#' grib_list(g)
+#'
+#' # Use grib_list output to help select messages
+#' msg_loc <- grep("shortName=2t", grib_list(g)) # find 2m temp message
+#' gm <- grib_get_message(g, msg_loc)
+#' grib_close(g)
 
 grib_list <- function(gribObj, filter = "none", nameSpace = "ls") {
   # this matches what is defined in the GRIB API

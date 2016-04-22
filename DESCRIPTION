@@ -3,7 +3,7 @@ Type: Package
 Title: Read and Write GRIB Files
 Version: 0.0.0.9000
 Date: 2015-12-25
-Author: Nathan Wendt
+Author: Nathan Wendt <nawendt@ou.edu>
 Maintainer: Nathan Wendt <nawendt@ou.edu>
 Description: R interface for GRIB files using ECMWF GRIB API. Easily read GRIB data into native R data types.
 License: BSD_2_clause + file LICENSE
@@ -11,4 +11,4 @@ LazyData: TRUE
 RoxygenNote: 5.0.1
 NeedsCompilation: Yes
 SystemRequirements: ECMWF GRIB API (>= 1.10.0)
-#Imports: proj4
+Imports: proj4

@@ -17,6 +17,11 @@
 #' @seealso \code{\link{grib_close}}
 #'
 #' @export
+#'
+#' @examples
+#' g <- grib_open(system.file("extdata", "lfpw.grib1", package = "gribr"))
+#' g
+#' grib_close(g)
 
 grib_open <- function(file) {
 
