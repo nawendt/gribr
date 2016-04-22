@@ -1,0 +1,16 @@
+citHeader("To cite gribr in publications use:")
+
+citEntry(entry = "Manual",
+  title        = "{gribr}: GRIB Interface for R using {ECMWF GRIB API}",
+  author       = personList(as.person("Nathan Wendt")),
+  email        = "nawendt@ou.edu",
+  year         = "2016",
+  url          = "https://github.com/nawendt/gribr",
+  note         = "R package version 1.0",
+
+  textVersion  =
+  paste("Nathan Wendt (2016).",
+        "gribr: GRIB Interface for R using ECMWF GRIB API.",
+        "R package version 1.0.",
+        "https://github.com/nawendt/gribr.")
+)

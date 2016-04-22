@@ -365,7 +365,7 @@ grib_latlons <- function(gribMessage, expand = FALSE) {
     lats <- unprj$y
 
   } else {
-    stop("unsupported gridType: ", gribMessage$gridType)
+    stop("unsupported grid type: ", gribMessage$gridType)
   }
 
   if (expand) {

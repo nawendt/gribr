@@ -180,7 +180,7 @@ grib_proj4str <- function(gribMessage, userProj4 = NULL) {
 	  }
 	  proj4list$lon_0 <- 0.5 * (lon1 + lon2)
 	  proj4list$proj <- "merc"
-	} else if (gribMessage$gribType %in% c("rotated_ll", "rotated_gg")) {
+	} else if (gribMessage$gridType %in% c("rotated_ll", "rotated_gg")) {
 	  rot_angle <- gribMessage$angleOfRotationInDegrees
 	  pole_lat <- gribMessage$latitudeOfSouthernPoleInDegrees
 	  pole_lon <- gribMessage$longitudeOfSouthernPoleInDegrees
@@ -190,7 +190,7 @@ grib_proj4str <- function(gribMessage, userProj4 = NULL) {
 	  proj4list$o_lon_p <- rot_angle
 	  proj4list$lon_0 <- pole_lon
 	} else {
-	  stop("unsupported grid type")
+	  stop("unsupported grid type: ", gribMessage$gridType)
 	}
 	proj_to_string(proj4list, userProj4)
 }
