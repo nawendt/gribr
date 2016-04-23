@@ -27,6 +27,18 @@
 #'   \code{\link{grib_expand_grids}} \code{\link{grib_latlons}}
 #'
 #' @export
+#'
+#' @examples
+#' g <- grib_open(system.file("extdata", "lfpw.grib1", package = "gribr"))
+#' # select one message
+#' gm <- grib_get_message(g, 1)
+#' # select multiple messages
+#' gm_multi <- grib_get_message(g, c(2, 4, 6))
+#'
+#' # Use grib_list output to help select messages
+#' msg_loc <- grep("shortName=2t", grib_list(g)) # find 2m temp message
+#' gm_ls <- grib_get_message(g, msg_loc)
+#' grib_close(g)
 
 grib_get_message <- function(gribObj, messages) {
 

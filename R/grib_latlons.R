@@ -28,6 +28,11 @@
 #'   \code{\link{grib_expand_grids}}
 #'
 #' @export
+#'
+#' @examples
+#' g <- grib_open(system.file("extdata", "lfpw.grib1", package = "gribr"))
+#' gm <- grib_get_message(g, 1)
+#' latlon <- grib_latlons(gm)
 
 grib_latlons <- function(gribMessage, expand = FALSE) {
 

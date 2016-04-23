@@ -14,6 +14,11 @@
 #' @param ... futher arguments; ignored here.
 #'
 #' @export
+#'
+#' @examples
+#' g <- grib_open(system.file("extdata", "lfpw.grib1", package = "gribr"))
+#' print(g)
+#' grib_close(g)
 
 print.grib <- function(x, ...) {
 

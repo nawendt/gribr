@@ -21,6 +21,19 @@
 #' @seealso \code{\link{grib_latlons}}
 #'
 #' @export
+#'
+#' @examples
+#' # expand basic values grid to matrix
+#' g <- grib_open(system.file("extdata", "lfpw.grib1", package = "gribr"))
+#' gm <- grib_get_message(g, 1)
+#' gm_ex <- grib_expand_grids(gm)
+#' grib_close(g)
+#'
+#' # expand a reduced grid (uses interpolation)
+#' g_red <- grib_open(system.file("extdata", "reduced_latlon_surface.grib1", package = "gribr"))
+#' gm <- grib_get_message(g_red, 1)
+#' gm_red_ex <- grib_expand_grids(gm)
+#' grib_close(g_red)
 
 grib_expand_grids <- function(gribMessage, vector = FALSE) {
 
