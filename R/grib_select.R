@@ -29,6 +29,14 @@
 #'   \code{\link{grib_expand_grids}} \code{\link{grib_latlons}}
 #'
 #' @export
+#'
+#' @examples
+#' g <- grib_open(system.file("extdata", "lfpw.grib1", package = "gribr"))
+#' # select all mixing ratio messages
+#' gm1 <- grib_select(g, list(shortName = "q"))
+#' # select mixing ratio, but only at 1000 and 850 hPa
+#' gm2 <- grib_select(g, list(shortName = "q", level = c(1000, 850)))
+#' grib_close(g)
 
 grib_select <- function(gribObj, keyPairs) {
 

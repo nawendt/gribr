@@ -5,9 +5,11 @@
 #'
 #' \code{grib_proj4str} uses a GRIB message's keys to generate a PROJ4 string on
 #' the fly. A user can even input their own PROJ4 elements using the
-#' \code{userProj4} arugment. Several other packages have functions that can use
-#' this PROJ4 string to appropriately project the values in the GRIB message.
-#' Several common grid types are supported at this time, but likely not all.
+#' \code{userProj4} arugment. Be aware that any user PROJ4 elements that
+#' conflict with already present elements will override the elements extracted
+#' from the GRIB file. Several other packages have functions that can use this
+#' PROJ4 string to appropriately project the values in the GRIB message. Several
+#' common grid types are supported at this time, but likely not all.
 #'
 #' This function is influenced by the PROJ4 string method used in the pygrib
 #' Python module (see
@@ -17,12 +19,23 @@
 #' @param gribMessage \code{gribMessage} class object.
 #' @param userProj4 An optional argument that can be a named \code{list} or
 #'   named \code{character} vector of additional PROJ4 elements the user would
-#'   like to add.
+#'   like to add. User PROJ4 elements take precedence over that given in GRIB
+#'   file.
 #'
 #' @return Returns a \code{character} string of the PROJ4 elements associate
 #'   with the \code{gribMessage}.
 #'
 #' @export
+#'
+#' @examples
+#' g <- grib_open(system.file("extdata", "lfpw.grib1", package = "gribr"))
+#' gm <- grib_get_message(g, 1)
+#' grib_proj4str(gm)
+#'
+#' # add proj4 parameters, if needed
+#' # overrides proj in this case
+#' grib_proj4str(gm, list(lat_0 = 35, lon_0 = -95, proj = "lcc"))
+#' grib_close(g)
 
 grib_proj4str <- function(gribMessage, userProj4 = NULL) {
 
@@ -31,6 +44,12 @@ grib_proj4str <- function(gribMessage, userProj4 = NULL) {
 	if (!is.grib.message(gribMessage)) {
 	  stop("input must be of class 'gribMessage'")
 	}
+
+  if (!is.null(userProj4)) {
+    if (is.null(names(userProj4))) {
+      stop("user PROJ.4 input must be named list or named vector")
+    }
+  }
 
 	proj4list <- list()
 

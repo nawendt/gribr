@@ -20,7 +20,7 @@
 #'
 #' @examples
 #' g <- grib_open(system.file("extdata", "lfpw.grib1", package = "gribr"))
-#' g
+#' g # shows status
 #' grib_close(g)
 
 grib_open <- function(file) {

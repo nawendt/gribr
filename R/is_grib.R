@@ -9,6 +9,15 @@
 #' @seealso \code{\link{is.grib.message}}
 #'
 #' @export
+#'
+#' @examples
+#' g <- grib_open(system.file("extdata", "lfpw.grib1", package = "gribr"))
+#' gm <- grib_get_message(g, 1)
+#' is.grib.message(g)
+#' # should be FALSE
+#' is.grib(gm)
+#' grib_close(g)
+
 is.grib <- function(obj) {
   if (class(obj) == "grib") {
     TRUE
