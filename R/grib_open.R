@@ -25,10 +25,6 @@
 
 grib_open <- function(file) {
 
-#  if (!missing(gribDefinitionPath)) {
-#    Sys.setenv(GRIB_DEFINITION_PATH = path.expand(gribDefinitionPath))
-#  }
-
   handle <- .Call("gribr_grib_open", path.expand(file))
   if (class(handle) != "externalptr") {
     stop("Problem retrieving grib handle")
