@@ -1,0 +1,20 @@
+context("GRIB message retrieval")
+
+test_that("Incorrect message requests are handled correctly", {
+  g <- grib_open(system.file("extdata", "lfpw.grib1", package = "gribr"))
+
+  # grib_get_message
+  expect_error(grib_get_message(g,-1), "out of bounds")
+  expect_error(grib_get_message(g,0), "out of bounds")
+  expect_error(grib_get_message(g,999), "out of bounds")
+  gm <- grib_get_message(g,1)
+  expect_is(gm, "gribMessage")
+
+  # grib_select
+  expect_error(grib_select(g, list(dne = "dne")), "not found")
+  expect_error(grib_select(g, list(shortName = "dne")), "no messages matched")
+  expect_error(grib_select(g, list()), "keyPairs input")
+  expect_error(grib_select(g, c(dne = "dne")), "must be a list")
+
+  capture_output(grib_close(g))
+})
