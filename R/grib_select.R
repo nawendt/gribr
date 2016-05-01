@@ -44,17 +44,22 @@ grib_select <- function(gribObj, keyPairs) {
     stop("gribObj is not of class 'grib'")
   }
 
+  if (is.null.externalptr(gribObj$handle)) {
+    stop("GRIB object is closed or unavailable")
+  }
+
   if (!is.list(keyPairs)) {
     stop("keyPairs must be a list")
   }
 
   if (length(keyPairs) > 1) {
-    keyCombo <- expand.grid(keyPairs, stringsAsFactors = FALSE, KEEP.OUT.ATTRS = FALSE)
+    keyCombo <- expand.grid(keyPairs, stringsk[p])
     keyList <- lapply(1:dim(keyCombo)[1],function(i) as.list(keyCombo[i,]))
   } else if (length(keyPairs) == 1){
     # needs to be list of list to be handled correctly
     # in the c routine that grabs the messages
-    keyList <- list(keyPairs)
+    # Solution below is a bit hacky, but it works
+    keyList <- lapply(keyPairs[[1]],function(x) {names(x) <- names(keyPairs); as.list(x)})
   } else {
     stop("error with keyPairs input")
   }
