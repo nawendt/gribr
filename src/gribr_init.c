@@ -17,6 +17,7 @@ static const R_CallMethodDef callMethods[] = {
   CALLDEF(gribr_select, 3),
   CALLDEF(gribr_api_version, 0),
   CALLDEF(gribr_redtoreg, 3),
+  CALLDEF(gribr_grib_test, 1),
   {NULL, NULL, 0}
 };
 

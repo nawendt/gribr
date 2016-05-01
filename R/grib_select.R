@@ -44,6 +44,10 @@ grib_select <- function(gribObj, keyPairs) {
     stop("gribObj is not of class 'grib'")
   }
 
+  if (is.null.externalptr(gribObj$handle)) {
+    stop("GRIB object is closed or unavailable")
+  }
+
   if (!is.list(keyPairs)) {
     stop("keyPairs must be a list")
   }
