@@ -25,6 +25,11 @@
 
 grib_open <- function(file) {
 
+  # test to make sure file is actuall GRIB format
+  if (.Call("gribr_grib_test", path.expand(file))) {
+    stop("File is not GRIB format (0 messages found)")
+  }
+
   handle <- .Call("gribr_grib_open", path.expand(file))
   if (class(handle) != "externalptr") {
     stop("Problem retrieving grib handle")
