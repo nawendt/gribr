@@ -28,6 +28,8 @@ AC_C_CONST
 AC_PATH_PROG([PKGCONF],[pkg-config],[],[$PATH:/usr/local/bin:ext/bin:ext:/sw/bin:/opt/bin])
 
 # Check for grib_api
+# first try pkg-config
+found_api="no"
 if test "X$GRIB_API_LIB" = "X" && test "X$GRIB_API_INC" = "X"; then
     if test "X$PKGCONF" != "X"; then
         AC_MSG_CHECKING([if pkg-config finds grib_api])
@@ -39,27 +41,40 @@ if test "X$GRIB_API_LIB" = "X" && test "X$GRIB_API_INC" = "X"; then
             fi
             GRIB_API_CFLAGS=`"${PKGCONF}" --cflags grib_api`
             GRIB_API_LIBS=`"${PKGCONF}" --libs grib_api`
-            GRIBR_CFLAGS="${CFLAGS} ${GRIB_API_CFLAGS}"
-            GRIBR_LIBS="${GRIB_API_LIBS}"
-            AC_SUBST(GRIBR_LIBS)
-            AC_SUBST(GRIBR_CFLAGS)
+            CFLAGS="${CFLAGS} ${GRIB_API_CFLAGS}"
+            LIBS="${GRIB_API_LIBS}"
+            AC_SUBST(LIBS)
+            AC_SUBST(CFLAGS)
+            found_api="yes"
         else
             AC_MSG_RESULT([no])
         fi
-    else
+    fi
+
+    # then try system library paths
+    if test "$found_api" = "no"; then
         AC_MSG_NOTICE([Checking if grib_api is in a system location])
-        AC_CHECK_LIB(grib_api, grib_new_handle, [HAVE_GRIB_API=TRUE], [HAVE_GRIB_API=FALSE])
+        AC_CHECK_LIB(grib_api, grib_handle_new, [HAVE_GRIB_API=TRUE], [HAVE_GRIB_API=FALSE])
 
         if test "${HAVE_GRIB_API}" = "TRUE"; then
-            GRIBR_CFLAGS="${CFLAGS}"
-            GRIBR_LIBS="-lgrib_api"
-            AC_SUBST(GRIBR_LIBS)
-            AC_SUBST(GRIBR_CFLAGS)
+            CFLAGS="${CFLAGS}"
+            LIBS="-lgrib_api"
+            AC_SUBST(LIBS)
+            AC_SUBST(CFLAGS)
         else
-            AC_MSG_ERROR([grib_api not found with pkg-config or in system libraries. Please set GRIB_API_LIB and GRIB_API_INC environmental variables and try again.])
+            AC_MSG_ERROR([grib_api not found with pkg-config or in system libraries. Please set GRIB_API_LIB and GRIB_API_INC environmental variables and try again])
         fi
     fi
+elif test "X$GRIB_API_LIB" != "X" && test "X$GRIB_API_INC" != "X"; then
+    AC_MSG_NOTICE([Using GRIB_API_LIB and GRIB_API_INC to use grib_api])
+    CFLAGS="${CFLAGS} ${GRIB_API_INC}"
+    LIBS="${GRIB_API_LIB}"
+    AC_SUBST(LIBS)
+    AC_SUBST(CFLAGS)
+else
+    AC_MSG_ERROR([Error finding grip_api])
 fi
+
 
 # Make sure grib_api.h can be found
 
@@ -68,8 +83,8 @@ fi
 echo "==================== GRIBR CONFIGURE SUMMARY ===================="
 echo ""
 echo "COMPILER/LINKER OPTIONS:"
-echo "PKG_LIBS   = ${GRIBR_LIBS}"
-echo "PKG_CFLAGS = ${GRIBR_CFLAGS}"
+echo "PKG_LIBS   = ${LIBS}"
+echo "PKG_CFLAGS = ${CFLAGS}"
 echo ""
 echo "================================================================="
 
