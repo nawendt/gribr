@@ -63,7 +63,7 @@ SEXP gribr_grib_list(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_nameSp
       gerror("gribr: unable to create grib handle", err);
     }
 
-    keyIter=grib_keys_iterator_new(h, filter, nameSpace);
+    keyIter=grib_keys_iterator_new(h, filter, (char*)nameSpace);
     if (keyIter == NULL) {
       error("gribr: unable to create key iterator");
     }

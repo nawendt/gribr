@@ -30,7 +30,7 @@ AC_PATH_PROG([PKGCONF],[pkg-config],[],[$PATH:/usr/local/bin:ext/bin:ext:/sw/bin
 # Check for grib_api
 # first try pkg-config
 found_api="no"
-if test "X$GRIB_API_LIB" = "X" && test "X$GRIB_API_INC" = "X"; then
+if test "X$GRIB_API_LDFLAGS" = "X" && test "X$GRIB_API_CFLAGS" = "X"; then
     if test "X$PKGCONF" != "X"; then
         AC_MSG_CHECKING([if pkg-config finds grib_api])
         if `"${PKGCONF}" --exists grib_api`; then
@@ -40,9 +40,9 @@ if test "X$GRIB_API_LIB" = "X" && test "X$GRIB_API_INC" = "X"; then
                 AC_MSG_ERROR([Minimum grib_api version is ${GRIB_API_MIN_VERSION}, but found version ${GRIB_API_VERSION}])
             fi
             GRIB_API_CFLAGS=`"${PKGCONF}" --cflags grib_api`
-            GRIB_API_LIBS=`"${PKGCONF}" --libs grib_api`
+            GRIB_API_LDFLAGS=`"${PKGCONF}" --libs grib_api`
             CFLAGS="${CFLAGS} ${GRIB_API_CFLAGS}"
-            LIBS="${GRIB_API_LIBS}"
+            LIBS="${GRIB_API_LDFLAGS}"
             AC_SUBST(LIBS)
             AC_SUBST(CFLAGS)
             found_api="yes"
@@ -65,10 +65,10 @@ if test "X$GRIB_API_LIB" = "X" && test "X$GRIB_API_INC" = "X"; then
             AC_MSG_ERROR([grib_api not found with pkg-config or in system libraries. Please set GRIB_API_LIB and GRIB_API_INC environmental variables and try again])
         fi
     fi
-elif test "X$GRIB_API_LIB" != "X" && test "X$GRIB_API_INC" != "X"; then
-    AC_MSG_NOTICE([Using GRIB_API_LIB and GRIB_API_INC to use grib_api])
-    CFLAGS="${CFLAGS} ${GRIB_API_INC}"
-    LIBS="${GRIB_API_LIB}"
+elif test "X$GRIB_API_LDFLAGS" != "X" && test "X$GRIB_API_CFLAGS" != "X"; then
+    AC_MSG_NOTICE([Using GRIB_API_LDFLAGS and GRIB_API_CFLAGS to use grib_api])
+    CFLAGS="${CFLAGS} ${GRIB_API_CFLAGS}"
+    LIBS="${GRIB_API_LDFLAGS}"
     AC_SUBST(LIBS)
     AC_SUBST(CFLAGS)
 else
@@ -77,6 +77,7 @@ fi
 
 
 # Make sure grib_api.h can be found
+AC_CHECK_HEADER([grib_api.h], [HAVE_GRIB_HEADERS=TRUE], [HAVE_GRIB_HEADERS=FALSE], [AC_INCLUDES_DEFAULT])
 
 
 # Summary
