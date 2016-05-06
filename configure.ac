@@ -17,6 +17,10 @@ CFLAGS=`"${RBIN}" CMD config CFLAGS`
 AC_PROG_CC
 AC_PROG_CC_C99
 
+# Check ENV VARS
+AC_ARG_VAR(GRIB_API_CFLAGS, [Compiler flags for the GRIB API installation])
+AC_ARG_VAR(GRIB_API_LDFLAGS, [Linker flags for the GRIB API installation])
+
 # Check for system headers
 AC_HEADER_STDC
 AC_CHECK_HEADERS([ctype.h])
@@ -43,8 +47,6 @@ if test "X$GRIB_API_LDFLAGS" = "X" && test "X$GRIB_API_CFLAGS" = "X"; then
             GRIB_API_LDFLAGS=`"${PKGCONF}" --libs grib_api`
             CFLAGS="${CFLAGS} ${GRIB_API_CFLAGS}"
             LIBS="${GRIB_API_LDFLAGS}"
-            AC_SUBST(LIBS)
-            AC_SUBST(CFLAGS)
             found_api="yes"
         else
             AC_MSG_RESULT([no])
@@ -59,8 +61,6 @@ if test "X$GRIB_API_LDFLAGS" = "X" && test "X$GRIB_API_CFLAGS" = "X"; then
         if test "${HAVE_GRIB_API}" = "TRUE"; then
             CFLAGS="${CFLAGS}"
             LIBS="-lgrib_api"
-            AC_SUBST(LIBS)
-            AC_SUBST(CFLAGS)
         else
             AC_MSG_ERROR([grib_api not found with pkg-config or in system libraries. Please set GRIB_API_LIB and GRIB_API_INC environmental variables and try again])
         fi
@@ -69,8 +69,6 @@ elif test "X$GRIB_API_LDFLAGS" != "X" && test "X$GRIB_API_CFLAGS" != "X"; then
     AC_MSG_NOTICE([Using GRIB_API_LDFLAGS and GRIB_API_CFLAGS to use grib_api])
     CFLAGS="${CFLAGS} ${GRIB_API_CFLAGS}"
     LIBS="${GRIB_API_LDFLAGS}"
-    AC_SUBST(LIBS)
-    AC_SUBST(CFLAGS)
 else
     AC_MSG_ERROR([Error finding grip_api])
 fi
