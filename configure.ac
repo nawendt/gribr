@@ -62,7 +62,7 @@ if test "X$GRIB_API_LDFLAGS" = "X" && test "X$GRIB_API_CFLAGS" = "X"; then
             CFLAGS="${CFLAGS}"
             LIBS="-lgrib_api"
         else
-            AC_MSG_ERROR([grib_api not found with pkg-config or in system libraries. Please set GRIB_API_LIB and GRIB_API_INC environmental variables and try again])
+            AC_MSG_ERROR([grib_api not found with pkg-config or in system libraries. Please set GRIB_API_LDFLAGS and GRIB_API_CFLAGS environmental variables (or in $HOME/.Renviron) and try again])
         fi
     fi
 elif test "X$GRIB_API_LDFLAGS" != "X" && test "X$GRIB_API_CFLAGS" != "X"; then
