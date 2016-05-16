@@ -1,8 +1,8 @@
 Package: gribr
 Type: Package
 Title: Read and Write GRIB Files
-Version: 0.0.0.9000
-Date: 2015-12-25
+Version: 1.0.0
+Date: 2016-05-16
 Author: Nathan Wendt <nawendt@ou.edu>
 Maintainer: Nathan Wendt <nawendt@ou.edu>
 Description: R interface for GRIB files using ECMWF GRIB API. Easily read GRIB data into native R data types.
