@@ -1,26 +1,24 @@
 #include <R.h>
 #include <Rinternals.h>
 
-#include "rGRIB.h"
+#include "gribr.h"
 
-SEXP rgrib_grib_open(SEXP rgrib_fileName, SEXP rgrib_mode) {
+SEXP gribr_grib_open(SEXP gribr_fileName) {
 
   const char *p_fileName = NULL;
-  const char *p_mode = NULL;
-  SEXP rgrib_fileHandle;
+  SEXP gribr_fileHandle;
   FILE *input = NULL;
 
-  p_fileName = CHAR(STRING_ELT(rgrib_fileName, 0));
-  p_mode = CHAR(STRING_ELT(rgrib_mode, 0));
-  input = fopen(p_fileName, p_mode);
+  p_fileName = CHAR(STRING_ELT(gribr_fileName, 0));
+  input = fopen(p_fileName, "r");
 
   if(input == NULL) {
-    error("rGRIB: unable to open file %s", p_fileName);
+    error("gribr: unable to open file %s", p_fileName);
   }
 
-  rgrib_fileHandle = PROTECT(R_MakeExternalPtr(input, R_NilValue, R_NilValue));
-  R_RegisterCFinalizerEx(rgrib_fileHandle, file_finalizer, TRUE);
+  gribr_fileHandle = PROTECT(R_MakeExternalPtr(input, R_NilValue, R_NilValue));
+  R_RegisterCFinalizerEx(gribr_fileHandle, file_finalizer, TRUE);
 
   UNPROTECT(1);
-  return rgrib_fileHandle;
+  return gribr_fileHandle;
 }

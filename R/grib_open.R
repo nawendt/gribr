@@ -1,19 +1,44 @@
+#' Open GRIB files
+#'
+#' \code{grib_open} opens a GRIB file for reading or writing and returns a GRIB
+#' class object.
+#'
+#' \code{grib_open} is the constructor function for the S3 GRIB class object.
+#' The GRIB object is list with three elements: \code{file}, \code{handle}, and
+#' \code{isMultiMessage}. \code{file} is the path to the opened file,
+#' \code{handle} is an \code{externalptr} to the \code{file} in memory, and
+#' \code{isMultiMessage} is a \code{logical} indicating if there are multiple
+#' entries in any of the \code{file}'s messages.
+#'
+#' @param file \code{character} string. A path to a GRIB file.
+#'
+#' @return Returns a \code{GRIB} class object: see 'Details'.
+#'
+#' @seealso \code{\link{grib_close}}
+#'
 #' @export
-grib_open <- function(file, mode) {
+#'
+#' @examples
+#' g <- grib_open(system.file("extdata", "lfpw.grib1", package = "gribr"))
+#' g # shows status
+#' grib_close(g)
 
-#  if (!missing(gribDefinitionPath)) {
-#    Sys.setenv(GRIB_DEFINITION_PATH = path.expand(gribDefinitionPath))
-#  }
+grib_open <- function(file) {
 
-  handle <- .Call("rgrib_grib_open", path.expand(file), mode)
+  # test to make sure file is actuall GRIB format
+  if (.Call("gribr_grib_test", path.expand(file))) {
+    stop("File is not GRIB format (0 messages found)")
+  }
+
+  handle <- .Call("gribr_grib_open", path.expand(file))
   if (class(handle) != "externalptr") {
     stop("Problem retrieving grib handle")
   }
 
   # Need to know if multiple fields in one GRIB message
-  isMultiMessage <- .Call("rgrib_is_multi_message", handle)
+  isMultiMessage <- .Call("gribr_is_multi_message", handle)
 
-  # class definition for rGRIB package
+  # class definition for gribr package
   gribObj <-  list(file = path.expand(file),
                    handle = handle,
                    isMultiMessage = isMultiMessage

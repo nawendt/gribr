@@ -1,9 +1,9 @@
 #include <R.h>
 #include <Rinternals.h>
 
-#include "rGRIB.h"
+#include "gribr.h"
 
-SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter, const char *nameSpace) {
+SEXP gribr_message_from_handle(grib_handle *h, int isMulti) {
 
   int err;
   int keyType;
@@ -23,21 +23,21 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
   char intChar;
   char *keyVal_c = NULL;
   grib_keys_iterator *keyIter = NULL;
-  SEXP rgrib_grib_message;
-  SEXP rgrib_list_names;
-  SEXP rgrib_char;
-  /* rgrib_char = PROTECT(allocVector(STRSXP, 1)); */
+  SEXP gribr_grib_message;
+  SEXP gribr_list_names;
+  SEXP gribr_char;
+  /* gribr_char = PROTECT(allocVector(STRSXP, 1)); */
   PROTECT_INDEX pro_char;
-  PROTECT_WITH_INDEX(rgrib_char = R_NilValue, &pro_char);
-  SEXP rgrib_double;
+  PROTECT_WITH_INDEX(gribr_char = R_NilValue, &pro_char);
+  SEXP gribr_double;
   double *p_rgib_double = NULL;
   PROTECT_INDEX pro_double;
-  PROTECT_WITH_INDEX(rgrib_double = R_NilValue, &pro_double);
-  SEXP rgrib_long;
+  PROTECT_WITH_INDEX(gribr_double = R_NilValue, &pro_double);
+  SEXP gribr_long;
   /* This is double since we will convert to R numeric */
   double *p_rgib_long = NULL;
   PROTECT_INDEX pro_long;
-  PROTECT_WITH_INDEX(rgrib_long = R_NilValue, &pro_long);
+  PROTECT_WITH_INDEX(gribr_long = R_NilValue, &pro_long);
 
   /*
    * Take care of these now in order to give the option
@@ -62,9 +62,9 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
     }
   }
 
-  keyIter = grib_keys_iterator_new(h, filter, nameSpace);
+  keyIter = grib_keys_iterator_new(h, NO_FILTER, NULL_NAMESPACE);
   if (keyIter == NULL) {
-    error("rGRIB: unable to create key iterator");
+    error("gribr: unable to create key iterator");
   }
 
   /* This seems like the only way to get the keys
@@ -103,8 +103,8 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
     gerror("unable to rewind keys iterator", err);
   }
 
-  rgrib_grib_message = PROTECT(allocVector(VECSXP, totalKeys));
-  rgrib_list_names = PROTECT(allocVector(STRSXP, totalKeys));
+  gribr_grib_message = PROTECT(allocVector(VECSXP, totalKeys));
+  gribr_list_names = PROTECT(allocVector(STRSXP, totalKeys));
 
   n = 0;
   while(grib_keys_iterator_next(keyIter)) {
@@ -130,7 +130,7 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
         err) {
       continue;
     } else {
-      SET_STRING_ELT(rgrib_list_names, n, mkChar(keyName));
+      SET_STRING_ELT(gribr_list_names, n, mkChar(keyName));
       err = grib_get_size(h, keyName, &keySize);
       if (err) {
         gerror("unable to get key value size", err);
@@ -144,13 +144,13 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
           if (err) {
             gerror("unable to get double array", err);
           }
-          REPROTECT(rgrib_double = allocVector(REALSXP, keySize), pro_double);
-          p_rgib_double = REAL(rgrib_double);
+          REPROTECT(gribr_double = allocVector(REALSXP, keySize), pro_double);
+          p_rgib_double = REAL(gribr_double);
           for (i = 0; i < keySize; i++) {
             p_rgib_double[i] = keyVal_d[i];
           }
           nfree(keyVal_d);
-          if (mask && !strcmp(keyName, "values")) {
+          if (!strcmp(keyName, "values")) {
             for (i = 0; i < keySize; i++) {
               if (p_rgib_double[i] == missingValue || (bitmapBool && bitmap[i] == BITMAP_MASK)) {
               p_rgib_double[i] = NA_REAL;
@@ -163,10 +163,15 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
           if (err) {
             gerror("unable to get double scalar", err);
           }
-          REPROTECT(rgrib_double = ScalarReal(*keyVal_d), pro_double);
-          nfree(keyVal_d);
+          if (*keyVal_d == GRIB_MISSING_DOUBLE) {
+            REPROTECT(gribr_double = ScalarReal(NA_REAL), pro_double);
+            nfree(keyVal_d);
+          } else {
+            REPROTECT(gribr_double = ScalarReal(*keyVal_d), pro_double);
+            nfree(keyVal_d);
+          }
         }
-        SET_VECTOR_ELT(rgrib_grib_message, n, rgrib_double);
+        SET_VECTOR_ELT(gribr_grib_message, n, gribr_double);
         break;
 /*
  *Since R does not have a native long type, we can keep precision by doing
@@ -179,13 +184,13 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
           if (err) {
             gerror("unable to get long array", err);
           }
-          REPROTECT(rgrib_long = allocVector(REALSXP, keySize), pro_long);
-          p_rgib_long = REAL(rgrib_long);
+          REPROTECT(gribr_long = allocVector(REALSXP, keySize), pro_long);
+          p_rgib_long = REAL(gribr_long);
           for (i = 0; i < keySize; i++) {
             p_rgib_long[i] = (double)keyVal_l[i];
           }
           nfree(keyVal_l);
-          if (mask && !strcmp(keyName, "values")) {
+          if (!strcmp(keyName, "values")) {
             for (i = 0; i < keySize; i++) {
               if (p_rgib_long[i] == missingValue || (bitmapBool && bitmap[i] == BITMAP_MASK)) {
                 p_rgib_long[i] = NA_REAL;
@@ -198,10 +203,16 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
           if (err) {
             gerror("unable to get long scalar", err);
           }
-          REPROTECT(rgrib_long = ScalarReal((double)*keyVal_l), pro_long);
-          nfree(keyVal_l);
+          if (*keyVal_l == GRIB_MISSING_LONG) {
+            REPROTECT(gribr_long = ScalarInteger(NA_INTEGER), pro_long);
+            nfree(keyVal_l);
+          } else {
+            REPROTECT(gribr_long = ScalarReal((double)*keyVal_l), pro_long);
+            nfree(keyVal_l);
+          }
+
         }
-        SET_VECTOR_ELT(rgrib_grib_message, n, rgrib_long);
+        SET_VECTOR_ELT(gribr_grib_message, n, gribr_long);
         break;
 /*
  * This is a working version of taking long values to R integers. Will keep
@@ -214,8 +225,8 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
           if (err) {
             gerror("unable to get long array", err);
           }
-          REPROTECT(rgrib_long = allocVector(INTSXP, keySize), pro_long);
-          p_rgib_long = INTEGER(rgrib_long);
+          REPROTECT(gribr_long = allocVector(INTSXP, keySize), pro_long);
+          p_rgib_long = INTEGER(gribr_long);
           for (i = 0; i < keySize; i++) {
             p_rgib_long[i] = (int)keyVal_l[i];
           }
@@ -226,10 +237,10 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
           if (err) {
             gerror("unable to get long scalar", err);
           }
-          REPROTECT(rgrib_long = ScalarInteger(*keyVal_l), pro_long);
+          REPROTECT(gribr_long = ScalarInteger(*keyVal_l), pro_long);
           nfree(keyVal_l);
         }
-        SET_VECTOR_ELT(rgrib_grib_message, n, rgrib_long);
+        SET_VECTOR_ELT(gribr_grib_message, n, gribr_long);
         break;
 */
       case GRIB_TYPE_STRING:
@@ -244,13 +255,13 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
           if (strlen(keyVal_c) == 1 && isdigit(intChar)) {
             /* Convert character integers to integers */
             ctoi = intChar - '0';
-            REPROTECT(rgrib_char = ScalarInteger(ctoi), pro_char);
+            REPROTECT(gribr_char = ScalarInteger(ctoi), pro_char);
           } else {
-            REPROTECT(rgrib_char = allocVector(STRSXP, 1), pro_char);
-            SET_STRING_ELT(rgrib_char, 0, mkChar(keyVal_c));
+            REPROTECT(gribr_char = allocVector(STRSXP, 1), pro_char);
+            SET_STRING_ELT(gribr_char, 0, mkChar(keyVal_c));
           }
         }
-        SET_VECTOR_ELT(rgrib_grib_message, n, rgrib_char);
+        SET_VECTOR_ELT(gribr_grib_message, n, gribr_char);
         nfree(keyVal_c);
         break;
 /* KEEP THIS OLD VERSION JUST IN CASE
@@ -259,11 +270,11 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
         memset(keyVal_c, '\0', keyLength);
         err = grib_get_string(h, keyName, keyVal_c, &keyLength);
         if (err) {
-          SET_STRING_ELT(rgrib_char, 0, ScalarString(NA_STRING));
+          SET_STRING_ELT(gribr_char, 0, ScalarString(NA_STRING));
         } else {
-          SET_STRING_ELT(rgrib_char, 0, mkChar(keyVal_c));
+          SET_STRING_ELT(gribr_char, 0, mkChar(keyVal_c));
         }
-        SET_VECTOR_ELT(rgrib_grib_message, n, rgrib_char);
+        SET_VECTOR_ELT(gribr_grib_message, n, gribr_char);
         break;
 */
       default:
@@ -277,8 +288,9 @@ SEXP rgrib_message_from_handle(grib_handle *h, int mask, int isMulti, int filter
   if (bitmap) {
     nfree(bitmap);
   }
-  namesgets(rgrib_grib_message, rgrib_list_names);
+  namesgets(gribr_grib_message, gribr_list_names);
+  classgets(gribr_grib_message, mkString("gribMessage"));
 
   UNPROTECT(5);
-  return rgrib_grib_message;
+  return gribr_grib_message;
 }
