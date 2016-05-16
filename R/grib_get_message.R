@@ -1,17 +1,46 @@
+#' Get GRIB messages
+#'
+#' \code{grib_get_message} retrieves a GRIB message from a GRIB file using the
+#' message number
+#'
+#' \code{grib_get_message} is a quick and easy way to retrieve a GRIB message
+#' from a GRIB file if you know what message number it is. An easy way to
+#' determine the message number is to use \code{\link{grib_list}} first (see
+#' examples). The values returned in the GRIB message are masked if they are
+#' coded as a missing value or the bitmap, if present, masks them.
+#'
+#' All grid (latitude, longitude, values, etc.) are output as vectors for
+#' simplicity and flexibility. Many plotting functions want input in matrix form
+#' (e.g., \code{image()}, \code{fields::image.plot()} while others want input in
+#' long form \code{data.frame}s or vectors (e.g., \code{ggplot}). Keeping vector
+#' form allows the most flexibility for the user to do what is needed to format
+#' the data appropriately. Some helper functions in this package will do some
+#' data formatting for you.
+#'
+#' @param gribObj \code{GRIB} class object.
+#' @param messages an \code{integer} or vector of \code{integer}s corresponding
+#'   to the messages to extract from the GRIB file.
+#'
+#' @return Returns a \code{gribMessage} object.
+#'
+#' @seealso \code{\link{grib_select}} \code{\link{grib_list}}
+#'   \code{\link{grib_expand_grids}} \code{\link{grib_latlons}}
+#'
 #' @export
-grib_get_message <- function(gribObj, messages, mask = FALSE, filter = "none", nameSpace = "") {
+#'
+#' @examples
+#' g <- grib_open(system.file("extdata", "lfpw.grib1", package = "gribr"))
+#' # select one message
+#' gm <- grib_get_message(g, 1)
+#' # select multiple messages
+#' gm_multi <- grib_get_message(g, c(2, 4, 6))
+#'
+#' # Use grib_list output to help select messages
+#' msg_loc <- grep("shortName=2t", grib_list(g)) # find 2m temp message
+#' gm_ls <- grib_get_message(g, msg_loc)
+#' grib_close(g)
 
-  # this matches what is defined in the GRIB API
-  gribFilterList = list(
-    none      = 0,
-    readonly  = bitwShiftL(1, 0),
-    optional  = bitwShiftL(1, 1),
-    edition   = bitwShiftL(1, 2),
-    coded     = bitwShiftL(1, 3),
-    computed  = bitwShiftL(1, 4),
-    duplicate = bitwShiftL(1, 5),
-    func      = bitwShiftL(1, 6)
-  )
+grib_get_message <- function(gribObj, messages) {
 
   if (!is.integer(messages) && !is.numeric(messages)) {
     stop("requested message vector must be numeric")
@@ -24,43 +53,21 @@ grib_get_message <- function(gribObj, messages, mask = FALSE, filter = "none", n
     stop("no messages requested")
   }
 
-  if (is.grib(gribObj)) {
-    if (is.null.externalptr(gribObj$handle)) {
-      stop("GRIB object is closed or unavailable")
-    } else {
-      if (is.null(nameSpace)) {
-        nameSpace = ""
-      }
-      gm <- .Call("rgrib_grib_get_message",
-                  gribObj$handle, messages, mask,
-                  gribObj$isMultiMessage,
-                  as.integer(gribFilterList[filter]),
-                  nameSpace)
-    }
+  if (!is.grib(gribObj)) {
+    stop("Object is not of class 'grib'")
   }
 
-  # Make sure both Ni/Nx, Nj/Ny are in list
-  # so scripting is easier across files
-  if (is.null(gm$Nx)) {
-    gm <- c(gm, Nx = gm$Ni)
-  } else if(is.null(gm$Ni)) {
-    gm <- c(gm, Ni = gm$Nx)
+  if (is.null.externalptr(gribObj$handle)) {
+    stop("GRIB object is closed or unavailable")
   }
 
-  if (is.null(gm$Ny)) {
-    gm <- c(gm, Ny = gm$Nj)
-  } else if(is.null(gm$Nj)) {
-    gm <- c(gm, Nj = gm$Ny)
+  gm <- .Call("gribr_grib_get_message",
+              gribObj$handle, messages,
+              gribObj$isMultiMessage)
+
+  if (length(gm) < 1) {
+    stop("Error retrieving grib message(s)")
   }
 
-  # Handle matricies here, storage order
-  # will be determined by jPointsAreConsecutive key
-  listLengths <- vapply(dat,length,c(0),USE.NAMES = FALSE)
-  loc <- which(listLengths > 1 & listLengths == gm$Nx*gm$Ny)
-  for (key in loc) {
-    gm[[key]] <- matrix(gm[[key]], gm$Nx, gm$Ny, byrow = gm$jPointsAreConsecutive)
-  }
-
-  class(gm) <- "gribMessage"
   gm
 }

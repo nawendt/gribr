@@ -1,10 +1,12 @@
 #include <R.h>
 #include <Rinternals.h>
 
-#include "rGRIB.h"
+#include "gribr.h"
 
-SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSpace) {
-  int err,n;
+SEXP gribr_grib_list(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_nameSpace, SEXP gribr_isMulti) {
+  int err;
+  int n;
+  int is_multi;
   size_t messageCount = 0;
   FILE *file = NULL;
   grib_handle *h = NULL;
@@ -14,28 +16,43 @@ SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSp
   int filter;
   char value[MAX_VAL_LEN];
   size_t valueLength=MAX_VAL_LEN;
-  SEXP rgrib_grib_vec;
+  SEXP gribr_grib_vec;
 
-  filter = asInteger(rgrib_filter);
-  nameSpace = CHAR(STRING_ELT(rgrib_nameSpace,0));
+  filter = asInteger(gribr_filter);
+  nameSpace = CHAR(STRING_ELT(gribr_nameSpace,0));
+  is_multi = asLogical(gribr_isMulti);
 
-  file = R_ExternalPtrAddr(rgrib_fileHandle);
+  file = R_ExternalPtrAddr(gribr_fileHandle);
   if (file == NULL) {
-    error("rGRIB: grib file not opened");
+    error("gribr: grib file not opened");
   }
 
   /* Make sure it is rewound */
   if (ftell(file) != GRIB_FILE_START) {
     if (fseek(file, GRIB_FILE_START, SEEK_SET)) {
-      error("rGRIB: unable to rewind file");
+      error("gribr: unable to rewind file");
     }
   }
 
-  err = grib_count_in_file(DEFAULT_CONTEXT, file, &n);
-  if (err) {
-    gerror("rGRIB: unable to count messages", err);
+  if (is_multi) {
+    grib_multi_support_on(DEFAULT_CONTEXT);
   }
-  rgrib_grib_vec = PROTECT(allocVector(STRSXP, n));
+  n = 0;
+  while((h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err))) {
+    n++;
+  }
+  if (err) {
+    gerror("unable to count grib messages", err);
+  }
+
+  /* Make sure it is rewound */
+  if (ftell(file) != GRIB_FILE_START) {
+    if (fseek(file, GRIB_FILE_START, SEEK_SET)) {
+      error("gribr: unable to rewind file");
+    }
+  }
+
+  gribr_grib_vec = PROTECT(allocVector(STRSXP, n));
 
   /* The grib handle is our GRIB message iterator. Each time we call new_from_file,
      we are advancing to the next message in the file. */
@@ -43,12 +60,12 @@ SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSp
     grib_keys_iterator* keyIter=NULL;
 
     if (h == NULL) {
-      gerror("rGRIB: unable to create grib handle", err);
+      gerror("gribr: unable to create grib handle", err);
     }
 
-    keyIter=grib_keys_iterator_new(h, filter, nameSpace);
+    keyIter=grib_keys_iterator_new(h, filter, (char*)nameSpace);
     if (keyIter == NULL) {
-      error("rGRIB: unable to create key iterator");
+      error("gribr: unable to create key iterator");
     }
 
     memset(keyString, '\0', MAX_VAL_LEN);
@@ -68,13 +85,13 @@ SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSp
           strncat(keyString, ",", 1);
         }
       } else {
-        warning("rGRIB: string overflow, truncating");
+        warning("gribr: string overflow, truncating");
       }
     }
     /* Clean up the trailing comma */
     lastComma = strrchr(keyString,',');
     *lastComma = '\0';
-    SET_STRING_ELT(rgrib_grib_vec, messageCount++, mkChar(keyString));
+    SET_STRING_ELT(gribr_grib_vec, messageCount++, mkChar(keyString));
 
     grib_keys_iterator_delete(keyIter);
     grib_handle_delete(h);
@@ -82,10 +99,10 @@ SEXP rgrib_grib_list(SEXP rgrib_fileHandle, SEXP rgrib_filter, SEXP rgrib_nameSp
   }
   /* Be kind, please rewind. Without this the next call of grib_list will fail */
   if (fseek(file, GRIB_FILE_START, SEEK_SET)) {
-    error("rGRIB: unable to rewind file");
+    error("gribr: unable to rewind file");
   }
 
   grib_handle_delete(h);
   UNPROTECT(1);
-  return rgrib_grib_vec;
+  return gribr_grib_vec;
 }

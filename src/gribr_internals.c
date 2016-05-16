@@ -1,7 +1,7 @@
 #include <R.h>
 #include <Rinternals.h>
 
-#include "rGRIB.h"
+#include "gribr.h"
 
 void nfree(void *ptr) {
   if (ptr) {
@@ -15,12 +15,12 @@ void file_finalizer(SEXP ptr) {
   R_ClearExternalPtr(ptr);
 }
 
-SEXP rgrib_is_null_ptr (SEXP rgrib_ptr) {
-  return ScalarLogical(!R_ExternalPtrAddr(rgrib_ptr));
+SEXP gribr_is_null_ptr (SEXP gribr_ptr) {
+  return ScalarLogical(!R_ExternalPtrAddr(gribr_ptr));
 }
 
 void gerror(const char *str, int err) {
-  error("rGRIB: %s\nGRIB ERROR %s", str, grib_get_error_message(err));
+  error("gribr: %s\nGRIB ERROR %s", str, grib_get_error_message(err));
 }
 
 SEXP getListElement(SEXP list, const char *str) {
@@ -34,10 +34,10 @@ SEXP getListElement(SEXP list, const char *str) {
     return elmt;
 }
 
-SEXP rgrib_is_multi_message(SEXP fileHandle) {
+SEXP gribr_is_multi_message(SEXP fileHandle) {
   int err;
-  int n_on;
-  int n_off;
+  R_len_t n_on;
+  R_len_t n_off;
   grib_handle *h = NULL;
   FILE *file = NULL;
 
@@ -49,7 +49,8 @@ SEXP rgrib_is_multi_message(SEXP fileHandle) {
   }
 
   grib_multi_support_on(DEFAULT_CONTEXT);
-  err = grib_count_in_file(DEFAULT_CONTEXT, file, &n_on);
+  /*err = grib_count_in_file(DEFAULT_CONTEXT, file, &n_on);*/
+  n_on = 0;
   while((h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err))) {
     n_on++;
   }
@@ -61,7 +62,7 @@ SEXP rgrib_is_multi_message(SEXP fileHandle) {
    * leave the file handle in a unusable state and cause
    * R to crash */
   if (fseek(file, 0, SEEK_SET)) {
-    error("rGRIB: unable to rewind file");
+    error("gribr: unable to rewind file");
   }
 
   grib_handle_delete(h);
