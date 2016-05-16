@@ -32,7 +32,11 @@ gribr is functional at this point in time. Several functions exist for reading G
    ```
 
 #### Contributing
-Coming soon...
+You are welcome to contribute to this project. At some point in the future I will put together some more formal guidelines so as to keep this project as uniform as possible. For now, simply take advantage of the features of git and github and sumbit pull requests for anything you would like to contribute.
+
+__Current Needs__: While all improvements are welcome, here are a few specific needs:
+  * Build GRIB API on Windows to get gribr ported to that platform
+  * Plotting wrapper functions to give some quick/easy plotting functionality to the package
 
 ####Contact
 [Nathan Wendt](mailto:nawendt@ou.edu)
