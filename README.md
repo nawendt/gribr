@@ -16,7 +16,9 @@ As ECMWF continues to develop their ecCodes package, their plan is to phase out 
   * gribr depends on the ECMWF GRIB API (>= 1.10.0), or the ECMWF ecCodes package (>=2.0.0), and the proj4 R package
   * The GRIB API can be easily installed via a package manager on Linux (`apt-get`, `yum`, etc.) or MacOS (`port`, `fink`, `brew`). This would be the recommened option. Since some repositories carry versions that are too old, you may have to install from source.
     * To install from source, download the GRIB API [here](https://software.ecmwf.int/wiki/display/GRIB/Releases)
+  * To use ecCodes you will have to install from source. It is not available from any package management system as of this writing. Get it [here](https://software.ecmwf.int/wiki/display/ECC/Releases)
 2. Set up environment (if necessary)
+  * __NOTE__: Because the ecCodes GRIB libraries have the same name as those in the GRIB API, the same environmental variables below can be used.
   * _GRIB API installed in a system location_: The the libraries/headers should be found by the linker/compiler without any additional environmental settings.
   * _GRIB API installed in a non-system/user location_: When the GRIB API is installed in a non-system location (i.e., a path that is not in the `ld` search paths), there are some extra steps that need to be taken depending on your use case:
     * _R_: Prior to running `R CMD INSTALL`, set the `GRIB_API_LDFLAGS` and `GRIB_API_CFLAGS` environment variables to the GRIB API library and header directories, respectively. The configure script should pick up on these variables and build the `PKG_LIBS` and `PKG_CFLAGS` for gribr appropriately.
