@@ -1,5 +1,5 @@
 # gribr
-GRIB interface for R using the [ECMWF GRIB API](http://software.ecmwf.int/wiki/display/GRIB/Home)
+GRIB interface for R using the [ECMWF GRIB API](https://software.ecmwf.int/wiki/display/GRIB) or the [ECMWF ecCodes package](https://software.ecmwf.int/wiki/display/ECC).
 
 #### Purpose
 This project was started to address a need to easily read GRIB data into R as has been done in other languages (e.g., Python). Working on this also presents a great opportunity to learn more about R, C, and the interface between the two.
@@ -7,11 +7,13 @@ This project was started to address a need to easily read GRIB data into R as ha
 #### Status
 gribr is functional at this point in time. Several functions exist for reading GRIB messages and extracting them. Functions are also available to help with projecting the data. All of the documentation has been written and some basic examples exist to get you started. I have yet to develop good plotting examples.
 
+As ECMWF continues to develop their ecCodes package, their plan is to phase out the GRIB API in favor of ecCodes. They have "strongly advised" users to make the transition to ecCodes as it is now production-ready. The plan for gribr is to support both the GRIB API and ecCodes until the GRIB API is deprecated by ECMWF. For now, both libraries are virtually identical in terms of GRIB functionality and should not require me to select one over the other. I will update you on this issue as need be.
+
 #### Installation
 **NOTE:** This is not available for Windows at this time due to difficulties compiling the GRIB API on that platform.
 
 1. Prerequisites
-  * gribr depends on the ECMWF GRIB API (>= 1.10.0) and the proj4 R package
+  * gribr depends on the ECMWF GRIB API (>= 1.10.0), or the ECMWF ecCodes package (>=2.0.0), and the proj4 R package
   * The GRIB API can be easily installed via a package manager on Linux (`apt-get`, `yum`, etc.) or MacOS (`port`, `fink`, `brew`). This would be the recommened option. Since some repositories carry versions that are too old, you may have to install from source.
     * To install from source, download the GRIB API [here](https://software.ecmwf.int/wiki/display/GRIB/Releases)
 2. Set up environment (if necessary)
