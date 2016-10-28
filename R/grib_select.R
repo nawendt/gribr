@@ -53,7 +53,7 @@ grib_select <- function(gribObj, keyPairs) {
   }
 
   if (length(keyPairs) > 1) {
-    keyCombo <- expand.grid(keyPairs, stringsk[p])
+    keyCombo <- expand.grid(keyPairs, KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
     keyList <- lapply(1:dim(keyCombo)[1],function(i) as.list(keyCombo[i,]))
   } else if (length(keyPairs) == 1){
     # needs to be list of list to be handled correctly
