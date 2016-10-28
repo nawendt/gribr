@@ -1,7 +1,7 @@
 Package: gribr
 Type: Package
 Title: Read and Write GRIB Files
-Version: 1.0.1
+Version: 1.0.2
 Date: 2016-10-28
 Author: Nathan Wendt <nawendt@ou.edu>
 Maintainer: Nathan Wendt <nawendt@ou.edu>
