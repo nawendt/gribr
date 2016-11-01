@@ -1,7 +1,7 @@
 #' Get GRIB messages
 #'
 #' \code{grib_get_message} retrieves a GRIB message from a GRIB file using the
-#' message number
+#' message number.
 #'
 #' \code{grib_get_message} is a quick and easy way to retrieve a GRIB message
 #' from a GRIB file if you know what message number it is. An easy way to

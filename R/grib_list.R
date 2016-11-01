@@ -49,7 +49,7 @@
 #'   See 'Details' for full description.
 #'
 #' @return Returns a \code{character} vector containing the keys subset for each
-#'   message
+#'   message.
 #'
 #' @seealso \code{\link{grep}} \code{\link{grib_get_message}}
 #'

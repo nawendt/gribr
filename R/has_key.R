@@ -1,9 +1,9 @@
 #' Test for keys
 #'
-#' \code{has.key} tests whether a gribMessage object has a given key
+#' \code{has.key} tests whether a gribMessage object has a given key.
 #'
-#' @param gribMessage gribMessage object to be tested
-#' @param key character string of the key to be tested for
+#' @param gribMessage gribMessage object to be tested.
+#' @param key character string of the key to be tested for.
 #'
 #' @return Returns a \code{logical}
 #'
