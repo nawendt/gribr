@@ -1,6 +1,6 @@
 #' Close GRIB files
 #'
-#' \code{grib_close} closes a GRIB file and frees it from memory
+#' \code{grib_close} closes a GRIB file and frees it from memory.
 #'
 #' \code{grib_close} checks to see if the GRIB object is open before closing it.
 #' No formal return value is given with this function. Only feedback is a short

@@ -119,7 +119,7 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_keyList, SEXP gribr_isMulti) {
       case GRIB_TYPE_LONG:
         /* Need to coerce vector to integer as R list components entered
          * as integers really end up being numeric (double in C). Doing
-         * corecion here make the most sense as the type gets deciced in
+         * corecion here makes the most sense as the type gets deciced in
          * the get_naitve_type call. The C routines know more about the
          * typing than the R routines.
          */

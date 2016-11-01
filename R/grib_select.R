@@ -23,7 +23,7 @@
 #'   search through and match messages in the GRIB file using an index.
 #'
 #' @return Returns a \code{gribMessage} or a list of \code{gribMessage} objects
-#'   if more than one message is selected
+#'   if more than one message is selected.
 #'
 #' @seealso \code{\link{grib_get_message}} \code{\link{grib_list}}
 #'   \code{\link{grib_expand_grids}} \code{\link{grib_latlons}}
