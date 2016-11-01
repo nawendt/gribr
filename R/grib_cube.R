@@ -38,8 +38,8 @@ grib_cube <- function(gribObj, shortName, typeOfLevel, decreasing = FALSE) {
   oLevels <- order(levels, decreasing = decreasing)
 
   # Check dimensions
-  nx <- sapply(cubeSelect, function(x) x$Nx)
-  ny <- sapply(cubeSelect, function(x) x$Ny)
+  nx <- sapply(cubeSelect, function(x) ifelse(is.null(x$Nx), x$Ni, x$Nx))
+  ny <- sapply(cubeSelect, function(x) ifelse(is.null(x$Ny), x$Nj, x$Ny))
   nz <- length(oLevels)
 
   if (length(unique(nx)) > 1 || length(unique(ny)) > 1) {
