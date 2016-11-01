@@ -22,6 +22,14 @@ test_that("Incorrect message requests are handled correctly", {
   expect_equal(length(gm), 2)
   expect_equal(all(sapply(gm, class) == "gribMessage"), TRUE)
 
+  # grib_cube
+  expect_error(grib_cube(g, "dne", "isobaricInhPa"), "no messages matched")
+  expect_error(grib_cube(g, "u", "dne"), "no messages matched")
+  cube <- grib_cube(g, "u", "isobaricInhPa", TRUE)
+  expect_is(cube, "array")
+  expect_equal(length(dim(cube)), 3)
+
+
   # keys
   expect_equal(has.key(gm[[1]], "shortName"), TRUE)
   expect_equal(has.key(gm[[1]], "dne"), FALSE)
