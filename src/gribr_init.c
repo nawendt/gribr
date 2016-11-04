@@ -10,6 +10,7 @@ static const R_CallMethodDef callMethods[] = {
   CALLDEF(gribr_grib_open, 1),
   CALLDEF(gribr_grib_close, 1),
   CALLDEF(gribr_grib_list, 4),
+  CALLDEF(gribr_grib_df, 4),
   CALLDEF(gribr_grib_length, 1),
   CALLDEF(gribr_is_null_ptr, 1),
   CALLDEF(gribr_is_multi_message, 1),
