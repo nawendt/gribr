@@ -1,6 +1,5 @@
 #include <R.h>
 #include <Rinternals.h>
-#include <stdio.h>
 
 #include "gribr.h"
 
@@ -17,20 +16,15 @@ SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_nameSpac
   double *keyVal_d = NULL;
   char *keyVal_c = NULL;
   int is_multi;
-  size_t messageCount = 0;
   FILE *file = NULL;
   grib_handle *h = NULL;
   const char *nameSpace = NULL;
-  char *lastComma = NULL;
-  char keyString[MAX_VAL_LEN];
   int filter;
-  char value[MAX_VAL_LEN];
-  size_t valueLength=MAX_VAL_LEN;
   SEXP gribr_grib_df;
   SEXP keyNames;
   SEXP keyTypes;
   SEXP rowNames;
-  grib_keys_iterator* keyIter=NULL;
+  grib_keys_iterator* keyIter = NULL;
 
   filter = asInteger(gribr_filter);
   nameSpace = CHAR(STRING_ELT(gribr_nameSpace,0));
@@ -60,33 +54,33 @@ SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_nameSpac
   while((h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err))) {
     n++;
     if (toggle == 0) {
-        keyIter = grib_keys_iterator_new(h, filter, (char*)nameSpace);
-        if (keyIter == NULL) {
-            error("gribr: unable to create key iterator");
-        }
-        while(grib_keys_iterator_next(keyIter)) {
-            m++;
-        }
+      keyIter = grib_keys_iterator_new(h, filter, (char*)nameSpace);
+      if (keyIter == NULL) {
+        error("gribr: unable to create key iterator");
+      }
+      while(grib_keys_iterator_next(keyIter)) {
+        m++;
+      }
     } else if (toggle == 1) {
-    /* The final data frame will be list of m (key names) length
-    and it will contain lists of length n (key values) for each
-    key name  */
-        gribr_grib_df = PROTECT(allocVector(VECSXP, m));
-        keyNames = PROTECT(allocVector(STRSXP, m));
-        keyTypes = PROTECT(allocVector(INTSXP, m));
+      /* The final data frame will be list of m (key names) length
+       and it will contain lists of length n (key values) for each
+       key name  */
+      gribr_grib_df = PROTECT(allocVector(VECSXP, m));
+      keyNames = PROTECT(allocVector(STRSXP, m));
+      keyTypes = PROTECT(allocVector(INTSXP, m));
 
-        i = 0;
-        keyIter = grib_keys_iterator_new(h, filter, (char*)nameSpace);
-        while(grib_keys_iterator_next(keyIter)) {
-            const char *keyName = grib_keys_iterator_get_name(keyIter);
-            SET_STRING_ELT(keyNames, i, mkChar(keyName));
-            err = grib_get_native_type(h, keyName, &keyType);
-            if (err) {
-              gerror("unable to get native type", err);
-            }
-            INTEGER(keyTypes)[i] = keyType;
-            i++;
+      i = 0;
+      keyIter = grib_keys_iterator_new(h, filter, (char*)nameSpace);
+      while(grib_keys_iterator_next(keyIter)) {
+        const char *keyName = grib_keys_iterator_get_name(keyIter);
+        SET_STRING_ELT(keyNames, i, mkChar(keyName));
+        err = grib_get_native_type(h, keyName, &keyType);
+        if (err) {
+          gerror("unable to get native type", err);
         }
+        INTEGER(keyTypes)[i] = keyType;
+        i++;
+      }
     }
     toggle++;
   }
@@ -121,11 +115,6 @@ SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_nameSpac
           break;
     }
   }
-
-  // err = grib_keys_iterator_rewind(keyIter);
-  // if (err) {
-  //   gerror("unable to rewind keys iterator", err);
-  // }
 
   /* Make sure it is rewound */
   if (ftell(file) != GRIB_FILE_START) {

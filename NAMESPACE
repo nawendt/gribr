@@ -3,7 +3,6 @@
 S3method(print,grib)
 export(grib_close)
 export(grib_cube)
-export(grib_df)
 export(grib_expand_grids)
 export(grib_get_message)
 export(grib_latlons)
