@@ -90,8 +90,14 @@ grib_list <- function(gribObj, filter = "none", nameSpace = "ls", output = "tabl
     stop("GRIB object is closed or unavailable")
   }
 
-  if (is.null(nameSpace) || nameSpace == "") {
-    stop("Bad namespace")
+  if (!(filter %in% names(gribFilterList))) {
+    stop("Invalid GRIB keys filter")
+  }
+
+  if (!(nameSpace %in% c("ls", "parameter","statistics",
+                         "time", "geography", "vertical",
+                         "mars"))) {
+    stop("Invalid GRIB keys namespace")
   }
 
   if (output == "table") {
