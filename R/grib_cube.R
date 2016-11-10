@@ -7,6 +7,12 @@
 #' create a three-dimensional cube. The user inputs a variable to search for and
 #' the vertical coordinate to use when finding each level.
 #'
+#' Because \code{grib_cube} uses \code{grib_select}, speed can become an issue.
+#' This is meant as a convenience to "get the job done". If you want more speed,
+#' it will always be better to know which message number you want, set up your
+#' own loop, and use \code{grib_get_message} as that will avoid the overhead of
+#' searching through the GRIB file.
+#'
 #' @param gribObj \code{GRIB} class object.
 #'
 #' @param shortName The short name given in the GRIB file of the variable to
@@ -20,7 +26,8 @@
 #' @return Returns a three-dimenional array.
 #'
 #' @seealso \code{\link{grib_get_message}} \code{\link{grib_list}}
-#'   \code{\link{grib_expand_grids}} \code{\link{grib_latlons}} \code{\link{grib_select}}
+#'   \code{\link{grib_expand_grids}} \code{\link{grib_latlons}}
+#'   \code{\link{grib_select}}
 #'
 #' @export
 #'

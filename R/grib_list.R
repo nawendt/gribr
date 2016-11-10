@@ -18,16 +18,17 @@
 #'
 #' The \code{nameSpace} parameter is a quick and easy way to grab a subset of
 #' the keys available in a GRIB file using pre-defined groups of related keys.
-#' More information about GRIB key namespaces can be found
+#' To get a full set of keys, extract a \code{gribMessage} and view the
+#' \code{names}. More information about GRIB key namespaces can be found
 #' \href{https://software.ecmwf.int/wiki/display/GRIB/GRIB+API+Frequently+Asked+Questions+FAQ}{
 #' here}. The \code{nameSpace} options used in this package are described below:
 #'
-#' \itemize{ \item "" or \code{NULL}: all keys \item "ls": most commonly used
-#' keys \item "parameter": keys related to the parameter \item "statistics":
-#' keys related to statiscal values of the data \item "time": keys related to
-#' the forecast time/initialization \item "geography": keys describing the grid
-#' geometry \item "vertical": keys describing levels and layers \item "mars":
-#' ECMWF's Meteorological Archive and Retrieval System keys }
+#' \itemize{ \item "ls": most commonly used keys \item "parameter": keys related
+#' to the parameter \item "statistics": keys related to statiscal values of the
+#' data \item "time": keys related to the forecast time/initialization \item
+#' "geography": keys describing the grid geometry \item "vertical": keys
+#' describing levels and layers \item "mars": ECMWF's Meteorological Archive and
+#' Retrieval System keys }
 #'
 #' \strong{NOTE:} The output of \code{grib_list} is predicated on having the
 #' appropriate GRIB definition files available to the GRIB API. By default that
@@ -36,9 +37,9 @@
 #' without first overriding the parameter definitions manually. You can read
 #' more information about creating your own local definitions in the
 #' \href{https://software.ecmwf.int/wiki/display/OPTR/GRIB+API\%3A+Library+and+Tools}{
-#' GRIB API Training Material}. Once your own definitions are created, be sure to set
-#' the \code{GRIB_DEFINITION_PATH} environment variable to the location of your
-#' local defintions before using this function to display the contents.
+#' GRIB API Training Material}. Once your own definitions are created, be sure
+#' to set the \code{GRIB_DEFINITION_PATH} environment variable to the location
+#' of your local defintions before using this function to display the contents.
 #'
 #' @param gribObj GRIB class object.
 #' @param filter optional \code{character} string that controls what keys will
@@ -47,6 +48,10 @@
 #' @param nameSpace optional \code{character} string that can control what
 #'   special, pre-defined group of keys gets return. Defaults to returning all.
 #'   See 'Details' for full description.
+#' @param format optional \code{character} string that controls the output
+#'   format. The default is "table" and will display the results in a
+#'   \code{data.frame} for easy subsetting. The other option is "string" which
+#'   will output each messages keys as a \code{character} vector of strings.
 #'
 #' @return Returns a \code{character} vector containing the keys subset for each
 #'   message.
@@ -64,7 +69,7 @@
 #' gm <- grib_get_message(g, msg_loc)
 #' grib_close(g)
 
-grib_list <- function(gribObj, filter = "none", nameSpace = "ls") {
+grib_list <- function(gribObj, filter = "none", nameSpace = "ls", output = "table") {
   # this matches what is defined in the GRIB API
   gribFilterList = list(
     none      = 0,
@@ -85,15 +90,24 @@ grib_list <- function(gribObj, filter = "none", nameSpace = "ls") {
     stop("GRIB object is closed or unavailable")
   }
 
-  if (is.null(nameSpace)) {
-    # the c function that uses this parameter
-    # will accept the null string in order to
-    # print all keys, allow NULL to be input
-    # as well
-    nameSpace <- ""
+  if (!(filter %in% names(gribFilterList))) {
+    stop("Invalid GRIB keys filter")
   }
 
-  .Call("gribr_grib_list",gribObj$handle, as.integer(gribFilterList[filter]),
+  if (!(nameSpace %in% c("ls", "parameter","statistics",
+                         "time", "geography", "vertical",
+                         "mars"))) {
+    stop("Invalid GRIB keys namespace")
+  }
+
+  if (output == "table") {
+    .Call("gribr_grib_df",gribObj$handle, as.integer(gribFilterList[filter]),
                           nameSpace, gribObj$isMultiMessage)
+  } else if (output == "string") {
+    .Call("gribr_grib_list",gribObj$handle, as.integer(gribFilterList[filter]),
+          nameSpace, gribObj$isMultiMessage)
+  } else {
+    stop("Unknown output type")
+  }
 
 }
