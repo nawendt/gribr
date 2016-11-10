@@ -18,6 +18,11 @@
 #' to do what is needed to format the data appropriately. Some helper functions
 #' in this package will do some data formatting for you.
 #'
+#' \code{grib_select} is meant as an easy way to grab the data you want.
+#' However, it can suffer from performance issues due to the overhead of
+#' searching through the GRIB file. If speed is important, knowing the message
+#' number in the file and using \code{grib_get_message} is the way to go.
+#'
 #' @param gribObj \code{GRIB} class object.
 #' @param keyPairs a named \code{list} of key/value pairs that will be used to
 #'   search through and match messages in the GRIB file using an index.

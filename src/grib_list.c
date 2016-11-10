@@ -5,7 +5,7 @@
 
 SEXP gribr_grib_list(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_nameSpace, SEXP gribr_isMulti) {
   int err;
-  int n;
+  R_xlen_t n;
   int is_multi;
   size_t messageCount = 0;
   FILE *file = NULL;
