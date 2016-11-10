@@ -11,14 +11,14 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_keyList, SEXP gribr_isMulti) {
   int is_multi;
   long ki;
   double kd;
-  R_len_t lenKeysList;
-  R_len_t lenKeys;
-  R_len_t m;
-  R_len_t n;
-  R_len_t n_tot;
-  R_len_t i;
-  R_len_t j;
-  R_len_t index_count;
+  R_xlen_t lenKeysList;
+  R_xlen_t lenKeys;
+  R_xlen_t m;
+  R_xlen_t n;
+  R_xlen_t n_tot;
+  R_xlen_t i;
+  R_xlen_t j;
+  R_xlen_t index_count;
   size_t reallocLength = MAX_VAL_LEN;
   char *keyString = NULL;
   const char *filePath = NULL;
@@ -119,7 +119,7 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_keyList, SEXP gribr_isMulti) {
       case GRIB_TYPE_LONG:
         /* Need to coerce vector to integer as R list components entered
          * as integers really end up being numeric (double in C). Doing
-         * corecion here make the most sense as the type gets deciced in
+         * corecion here makes the most sense as the type gets deciced in
          * the get_naitve_type call. The C routines know more about the
          * typing than the R routines.
          */

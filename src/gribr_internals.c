@@ -36,8 +36,8 @@ SEXP getListElement(SEXP list, const char *str) {
 
 SEXP gribr_is_multi_message(SEXP fileHandle) {
   int err;
-  R_len_t n_on;
-  R_len_t n_off;
+  int n_on;
+  int n_off;
   grib_handle *h = NULL;
   FILE *file = NULL;
 

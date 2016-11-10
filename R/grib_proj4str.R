@@ -1,7 +1,7 @@
 #' Get PROJ4 string for a GRIB file
 #'
 #' \code{grib_proj4str} generates a PROJ4 string for a given gribMessage class
-#' object based on the message's keys and, optionally, user input
+#' object based on the message's keys and, optionally, user input.
 #'
 #' \code{grib_proj4str} uses a GRIB message's keys to generate a PROJ4 string on
 #' the fly. A user can even input their own PROJ4 elements using the

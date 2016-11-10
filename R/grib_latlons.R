@@ -22,7 +22,7 @@
 #'   coordinates as a \code{matrix} or not. Default \code{FALSE}.
 #'
 #' @return a \code{list} or a \code{matrix} of the latitudes and longitudes
-#'   after projection
+#'   after projection.
 #'
 #' @seealso \code{\link{grib_select}} \code{\link{grib_get_message}}
 #'   \code{\link{grib_expand_grids}}
@@ -33,6 +33,7 @@
 #' g <- grib_open(system.file("extdata", "lfpw.grib1", package = "gribr"))
 #' gm <- grib_get_message(g, 1)
 #' latlon <- grib_latlons(gm)
+#' grib_close(g)
 
 grib_latlons <- function(gribMessage, expand = FALSE) {
 

@@ -1,10 +1,10 @@
 #' GRIB Messages
 #'
-#' \code{is.grib} tests whether and object is a GRIB object
+#' \code{is.grib} tests whether and object is a GRIB object.
 #'
-#' @param obj object to be tested
+#' @param obj object to be tested.
 #'
-#' @return Returns a \code{logical}
+#' @return Returns a \code{logical}.
 #'
 #' @seealso \code{\link{is.grib.message}}
 #'
