@@ -10,7 +10,8 @@
 #define NULL_NAMESPACE  NULL
 #define NO_FILTER       0
 #define MAX_BYTE_LENGTH 512
-#define BITMAP_MASK     0
+#define BITMAP_MASK     0                                      \
+#define INTERRUPT_FREQ  256
 
 /* Functions to be registered */
 SEXP gribr_grib_close(SEXP gribr_fileHandle);
@@ -37,6 +38,7 @@ void grib_index_rewind(grib_index* index);
 /* Internal functions */
 void file_finalizer(SEXP ptr);
 void nfree(void *ptr);
+void grewind(FILE* file);
 void gerror(const char *str, int err);
 SEXP getListElement(SEXP list, const char *str);
 SEXP gribr_message_from_handle(grib_handle *h, int isMulti);

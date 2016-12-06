@@ -28,11 +28,7 @@ SEXP gribr_grib_list(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_nameSp
   }
 
   /* Make sure it is rewound */
-  if (ftell(file) != GRIB_FILE_START) {
-    if (fseek(file, GRIB_FILE_START, SEEK_SET)) {
-      error("gribr: unable to rewind file");
-    }
-  }
+  grewind(file);
 
   if (is_multi) {
     grib_multi_support_on(DEFAULT_CONTEXT);
@@ -46,11 +42,7 @@ SEXP gribr_grib_list(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_nameSp
   }
 
   /* Make sure it is rewound */
-  if (ftell(file) != GRIB_FILE_START) {
-    if (fseek(file, GRIB_FILE_START, SEEK_SET)) {
-      error("gribr: unable to rewind file");
-    }
-  }
+  grewind(file);
 
   gribr_grib_vec = PROTECT(allocVector(STRSXP, n));
 
