@@ -85,7 +85,7 @@ SEXP gribr_grib_get_message(SEXP gribr_fileHandle, SEXP gribr_messages, SEXP gri
   }
 
   grib_handle_delete(h);
-  fseek(file, 0, SEEK_SET);
+  grewind(file);
 
   UNPROTECT(1);
   return gribr_message;

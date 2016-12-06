@@ -36,11 +36,7 @@ SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_nameSpac
   }
 
   /* Make sure it is rewound */
-  if (ftell(file) != GRIB_FILE_START) {
-    if (fseek(file, GRIB_FILE_START, SEEK_SET)) {
-      error("gribr: unable to rewind file");
-    }
-  }
+  grewind(file);
 
   if (is_multi) {
     grib_multi_support_on(DEFAULT_CONTEXT);
@@ -53,39 +49,47 @@ SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_nameSpac
 
   while((h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err))) {
     n++;
+    keyIter = grib_keys_iterator_new(h, filter, (char*)nameSpace);
+    if (keyIter == NULL) {
+      error("gribr: unable to create key iterator");
+    }
     if (toggle == 0) {
-      keyIter = grib_keys_iterator_new(h, filter, (char*)nameSpace);
-      if (keyIter == NULL) {
-        error("gribr: unable to create key iterator");
-      }
       while(grib_keys_iterator_next(keyIter)) {
         m++;
-      }
-    } else if (toggle == 1) {
-      /* The final data frame will be list of m (key names) length
-       and it will contain lists of length n (key values) for each
-       key name  */
-      gribr_grib_df = PROTECT(allocVector(VECSXP, m));
-      keyNames = PROTECT(allocVector(STRSXP, m));
-      keyTypes = PROTECT(allocVector(INTSXP, m));
-
-      i = 0;
-      keyIter = grib_keys_iterator_new(h, filter, (char*)nameSpace);
-      while(grib_keys_iterator_next(keyIter)) {
-        const char *keyName = grib_keys_iterator_get_name(keyIter);
-        SET_STRING_ELT(keyNames, i, mkChar(keyName));
-        err = grib_get_native_type(h, keyName, &keyType);
-        if (err) {
-          gerror("unable to get native type", err);
-        }
-        INTEGER(keyTypes)[i] = keyType;
-        i++;
       }
     }
     toggle++;
   }
   if (err) {
-    gerror("unable to count grib messages", err);
+    gerror("unable to count grib messages/keys", err);
+  }
+
+  /* Make sure it is rewound */
+  grewind(file);
+
+  /* The final data frame will be list of m (key names) length
+   and it will contain lists of length n (key values) for each
+  key name  */
+  gribr_grib_df = PROTECT(allocVector(VECSXP, m));
+  keyNames = PROTECT(allocVector(STRSXP, m));
+  keyTypes = PROTECT(allocVector(INTSXP, m));
+
+  while((h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err))) {
+    i = 0;
+    keyIter = grib_keys_iterator_new(h, filter, (char*)nameSpace);
+    while(grib_keys_iterator_next(keyIter)) {
+      const char *keyName = grib_keys_iterator_get_name(keyIter);
+      SET_STRING_ELT(keyNames, i, mkChar(keyName));
+      err = grib_get_native_type(h, keyName, &keyType);
+      if (err) {
+        gerror("unable to get native type", err);
+      }
+      INTEGER(keyTypes)[i] = keyType;
+      i++;
+    }
+  }
+  if (err) {
+    gerror("unable to process table header", err);
   }
 
   /* We need row.names so make them */
@@ -98,6 +102,9 @@ SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_nameSpac
   namesgets(gribr_grib_df, keyNames);
 
   for (i = 0; i < m; i ++) {
+    if (i % INTERRUPT_FREQ == 0) {
+      R_CheckUserInterrupt();
+    }
     switch(INTEGER(keyTypes)[i]) {
         case GRIB_TYPE_DOUBLE:
           SET_VECTOR_ELT(gribr_grib_df, i, allocVector(REALSXP, n));
@@ -117,11 +124,7 @@ SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_nameSpac
   }
 
   /* Make sure it is rewound */
-  if (ftell(file) != GRIB_FILE_START) {
-    if (fseek(file, GRIB_FILE_START, SEEK_SET)) {
-      error("gribr: unable to rewind file");
-    }
-  }
+  grewind(file);
 
   j = 0;
   /* The grib handle is our GRIB message iterator. Each time we call new_from_file,
@@ -185,9 +188,7 @@ SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_nameSpac
   }
 
   /* Be kind, please rewind. Without this the next call of grib_list will fail */
-  if (fseek(file, GRIB_FILE_START, SEEK_SET)) {
-    error("gribr: unable to rewind file");
-  }
+  grewind(file);
 
   /* Finalize data.frame attributes and class */
   classgets(gribr_grib_df, mkString("data.frame"));

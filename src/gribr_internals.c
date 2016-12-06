@@ -23,6 +23,14 @@ void gerror(const char *str, int err) {
   error("gribr: %s\nGRIB ERROR %s", str, grib_get_error_message(err));
 }
 
+void grewind(FILE* file) {
+  if (ftell(file) != GRIB_FILE_START) {
+    if (fseek(file, GRIB_FILE_START, SEEK_SET)) {
+      error("gribr: unable to rewind file");
+    }
+  }
+}
+
 SEXP getListElement(SEXP list, const char *str) {
   int i;
   SEXP elmt = R_NilValue, names = getAttrib(list, R_NamesSymbol);
