@@ -1,16 +1,16 @@
 # gribr
 GRIB interface for R using the [ECMWF GRIB API](https://software.ecmwf.int/wiki/display/GRIB) or the [ECMWF ecCodes package](https://software.ecmwf.int/wiki/display/ECC).
 
-#### Purpose
+### Purpose
 This project was started to address a need to easily read GRIB data into R as has been done in other languages (e.g., Python). Working on this also presents a great opportunity to learn more about R, C, and the interface between the two.
 
-#### Status
+### Status
 gribr is functional at this point in time. Several functions exist for reading GRIB messages and extracting them. Functions are also available to help with projecting the data. All of the documentation has been written and some basic examples exist to get you started. I have yet to develop good plotting examples.
 
 As ECMWF continues to develop their ecCodes package, their plan is to phase out the GRIB API in favor of ecCodes. They have "strongly advised" users to make the transition to ecCodes as it is now production-ready. The plan for gribr is to support both the GRIB API and ecCodes until the GRIB API is deprecated by ECMWF. For now, both libraries are virtually identical in terms of GRIB functionality and should not require me to select one over the other. I will update you on this issue as need be.
 
-#### Installation
-**NOTE:** This is not available for Windows at this time due to difficulties compiling the GRIB API on that platform.
+### Installation
+**NOTE:** This is not _natively_ available for Windows at this time due to difficulties compiling the GRIB API on that platform. See below for details.
 
 1. Prerequisites
   * gribr depends on the ECMWF GRIB API (>= 1.10.0), or the ECMWF ecCodes package (>=2.0.0), and the proj4 R package
@@ -28,14 +28,19 @@ As ECMWF continues to develop their ecCodes package, their plan is to phase out 
 3. Install gribr
   * _From the command line_:
    ```shell
-   R CMD INSTALL /path/to/gribr --configure-vars="GRIB_API_CFLAGS=-I/users/nwendt/local/include GRIB_API_LDFLAGS='-L/home/nwendt/local/lib -lgrib_api'"
+   R CMD INSTALL /path/to/gribr --configure-vars="GRIB_API_CFLAGS=-I/path/to/grib_api/include GRIB_API_LDFLAGS='-L/path/to/grib_api/lib -lgrib_api'"
    ```
   * _From within R or RStudio_:
    ```R
    install.packages("path/to/cloned/gribr/repo", repos = NULL, configure.vars = c("GRIB_API_LDFLAGS='-L/path/to/grib_api/lib -lgrib_api'", "GRIB_API_CFLAGS=-I/path/to/grib_api/include"))
    ```
 
-#### Contributing
+### Windows Install Options
+While a native Windows GRIB API library that will work with R is not available, there are ways to run gribr on Windows. The first option is to use the [Windows 10 Linux Subsystem](https://msdn.microsoft.com/en-us/commandline/wsl/install_guide). Simply follow the [instructions](https://cran.r-project.org/bin/linux/ubuntu/) to install the latest R as you would on any other Linux system. Any other necessary libraries should be available on the package manager. Build gribr as usual and enjoy using it on Windows.
+
+The second option is to use gribr via [Cygwin](https://cygwin.org/). A Cygwin build of R is available through their package manager. Simply make sure to also install the dev versions of the libraries that you will need. This will likely include libraries that the R package proj4 depends on. You will have to install GRIB API from source for this. From there, install gribr from the R CMD taking care to include all the correct configure-vars. If you build the GRIB API with PNG or JPEG support, you'll need to add the appropriate linker flags.
+
+### Contributing
 You are welcome to contribute to this project. At some point in the future I will put together some more formal guidelines so as to keep this project as uniform as possible. For now, simply take advantage of the features of git and github and sumbit pull requests for anything you would like to contribute.
 
 __Current Needs__: While all improvements are welcome, here are a few specific needs:
