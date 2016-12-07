@@ -48,6 +48,9 @@ SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_nameSpac
   toggle = 0;
 
   while((h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err))) {
+    if (n % INTERRUPT_FREQ == 0) {
+      R_CheckUserInterrupt();
+    }
     n++;
     keyIter = grib_keys_iterator_new(h, filter, (char*)nameSpace);
     if (keyIter == NULL) {
@@ -130,6 +133,9 @@ SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_nameSpac
   /* The grib handle is our GRIB message iterator. Each time we call new_from_file,
      we are advancing to the next message in the file. */
   while((h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err)) != NULL) {
+    if (j % INTERRUPT_FREQ == 0) {
+      R_CheckUserInterrupt();
+    }
     keyIter = grib_keys_iterator_new(h, filter, (char*)nameSpace);
     i = 0;
     while(grib_keys_iterator_next(keyIter)) {

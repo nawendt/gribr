@@ -62,6 +62,9 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_keyList, SEXP gribr_isMulti) {
    * keys
    */
   for (i = 0; i < lenKeys; i++) {
+    if (i % INTERRUPT_FREQ == 0) {
+      R_CheckUserInterrupt();
+    }
     keyName = CHAR(STRING_ELT(getAttrib(VECTOR_ELT(gribr_keyList, 0), R_NamesSymbol), i));
     n = strlen(keyName);
     if (!n) {
@@ -104,6 +107,9 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_keyList, SEXP gribr_isMulti) {
   }
 
   for (i = 0; i < lenKeysList; i++) {
+    if (i % INTERRUPT_FREQ == 0) {
+      R_CheckUserInterrupt();
+    }
     lenKeys = xlength(VECTOR_ELT(gribr_keyList, i));
     for (j = 0; j < lenKeys; j++) {
       keyName = CHAR(STRING_ELT(getAttrib(VECTOR_ELT(gribr_keyList, i), R_NamesSymbol), j));

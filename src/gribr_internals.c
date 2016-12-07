@@ -31,6 +31,29 @@ void grewind(FILE* file) {
   }
 }
 
+int skip_keys(const char* keyName, int keyType, int err) {
+    if (!strcmp(keyName, "zero") ||
+        !strcmp(keyName, "one") ||
+        !strcmp(keyName, "eight") ||
+        !strcmp(keyName, "eleven") ||
+        !strcmp(keyName, "false") ||
+        !strcmp(keyName, "thousand") ||
+        !strcmp(keyName, "file") ||
+        !strcmp(keyName, "localDir") ||
+        !strcmp(keyName, "7777") ||
+        !strcmp(keyName, "oneThousand") ||
+        !strcmp(keyName, "hundred") ||
+        keyType == GRIB_TYPE_BYTES ||
+        keyType == GRIB_TYPE_LABEL ||
+        keyType == GRIB_TYPE_MISSING ||
+        keyType == GRIB_TYPE_SECTION ||
+        keyType == GRIB_TYPE_UNDEFINED ||
+        err) {
+      return 1;
+    }
+    return 0;
+}
+
 SEXP getListElement(SEXP list, const char *str) {
   int i;
   SEXP elmt = R_NilValue, names = getAttrib(list, R_NamesSymbol);
