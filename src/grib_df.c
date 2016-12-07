@@ -98,7 +98,7 @@ SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_nameSpac
   /* We need row.names so make them */
   rowNames = PROTECT(allocVector(INTSXP, n));
   for (i = 0; i < n; i++) {
-    INTEGER(rowNames)[i] = i;
+    INTEGER(rowNames)[i] = i + 1; /* R indices start at 1 */
   }
 
   /* Key names will be column names */
