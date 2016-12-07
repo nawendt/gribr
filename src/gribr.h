@@ -32,9 +32,6 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_keyList, SEXP gribr_isMulti);
 SEXP gribr_redtoreg(SEXP gribr_nlons, SEXP gribr_lonsperlat, SEXP gribr_grid);
 SEXP gribr_grib_test(SEXP gribr_fileName);
 
-/* Extra GRIB API function prototypes */
-void grib_index_rewind(grib_index* index);
-
 /* Internal functions */
 int skip_keys(const char* keyName, int keyType, int err);
 void file_finalizer(SEXP ptr);
