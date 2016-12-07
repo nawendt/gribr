@@ -72,26 +72,12 @@ SEXP gribr_message_from_handle(grib_handle *h, int isMulti) {
    * Will monitor for a better solution. */
   totalKeys = 0;
   while(grib_keys_iterator_next(keyIter)) {
-    R_CheckUserInterrupt();
+    if (totalKeys % INTERRUPT_FREQ == 0) {
+      R_CheckUserInterrupt();
+    }
     keyName = grib_keys_iterator_get_name(keyIter);
     err = grib_get_native_type(h, keyName, &keyType);
-    if (!strcmp(keyName, "zero") ||
-        !strcmp(keyName, "one") ||
-        !strcmp(keyName, "eight") ||
-        !strcmp(keyName, "eleven") ||
-        !strcmp(keyName, "false") ||
-        !strcmp(keyName, "thousand") ||
-        !strcmp(keyName, "file") ||
-        !strcmp(keyName, "localDir") ||
-        !strcmp(keyName, "7777") ||
-        !strcmp(keyName, "oneThousand") ||
-        !strcmp(keyName, "hundred") ||
-        keyType == GRIB_TYPE_BYTES ||
-        keyType == GRIB_TYPE_LABEL ||
-        keyType == GRIB_TYPE_MISSING ||
-        keyType == GRIB_TYPE_SECTION ||
-        keyType == GRIB_TYPE_UNDEFINED ||
-        err) {
+    if (skip_keys(keyName, keyType, err)) {
       continue;
     } else {
       totalKeys++;
@@ -108,26 +94,12 @@ SEXP gribr_message_from_handle(grib_handle *h, int isMulti) {
 
   n = 0;
   while(grib_keys_iterator_next(keyIter)) {
-    R_CheckUserInterrupt();
+    if (n % INTERRUPT_FREQ == 0) {
+      R_CheckUserInterrupt();
+    }
     keyName = grib_keys_iterator_get_name(keyIter);
     err = grib_get_native_type(h, keyName, &keyType);
-    if (!strcmp(keyName, "zero") ||
-        !strcmp(keyName, "one") ||
-        !strcmp(keyName, "eight") ||
-        !strcmp(keyName, "eleven") ||
-        !strcmp(keyName, "false") ||
-        !strcmp(keyName, "thousand") ||
-        !strcmp(keyName, "file") ||
-        !strcmp(keyName, "localDir") ||
-        !strcmp(keyName, "7777") ||
-        !strcmp(keyName, "oneThousand") ||
-        !strcmp(keyName, "hundred") ||
-        keyType == GRIB_TYPE_BYTES ||
-        keyType == GRIB_TYPE_LABEL ||
-        keyType == GRIB_TYPE_MISSING ||
-        keyType == GRIB_TYPE_SECTION ||
-        keyType == GRIB_TYPE_UNDEFINED ||
-        err) {
+    if (skip_keys(keyName, keyType, err)) {
       continue;
     } else {
       SET_STRING_ELT(gribr_list_names, n, mkChar(keyName));

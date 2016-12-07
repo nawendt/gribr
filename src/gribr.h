@@ -10,7 +10,7 @@
 #define NULL_NAMESPACE  NULL
 #define NO_FILTER       0
 #define MAX_BYTE_LENGTH 512
-#define BITMAP_MASK     0                                      \
+#define BITMAP_MASK     0
 #define INTERRUPT_FREQ  256
 
 /* Functions to be registered */
@@ -36,6 +36,7 @@ SEXP gribr_grib_test(SEXP gribr_fileName);
 void grib_index_rewind(grib_index* index);
 
 /* Internal functions */
+int skip_keys(const char* keyName, int keyType, int err);
 void file_finalizer(SEXP ptr);
 void nfree(void *ptr);
 void grewind(FILE* file);

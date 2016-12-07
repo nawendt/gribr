@@ -54,7 +54,9 @@ SEXP gribr_grib_get_message(SEXP gribr_fileHandle, SEXP gribr_messages, SEXP gri
      * loop through the grib file handles will be necessary
      */
     for (i = 0, n = 0; i < count && n < messagesLength; i++) {
-      R_CheckUserInterrupt();
+      if (i % INTERRUPT_FREQ == 0) {
+        R_CheckUserInterrupt();
+      }
       if ((p_gribr_messages[n] - 1) >= count || p_gribr_messages[n] < 1) {
         error("gribr: message number out of bounds");
       }
@@ -73,7 +75,9 @@ SEXP gribr_grib_get_message(SEXP gribr_fileHandle, SEXP gribr_messages, SEXP gri
       error("gribr: message number out of bounds");
     }
     for (i = 0; i < p_gribr_messages[0]; i++) {
-      R_CheckUserInterrupt();
+      if (i % INTERRUPT_FREQ == 0) {
+        R_CheckUserInterrupt();
+      }
       h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err);
       if (err) {
         gerror("unable to open grib handle", err);
