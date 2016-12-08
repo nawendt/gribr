@@ -28,9 +28,7 @@ SEXP gribr_grib_length(SEXP gribr_fileHandle) {
   /* This rewind is important as neglecting to do so will
    * leave the file handle in a unusable state and cause
    * R to crash */
-  if (fseek(file, 0, SEEK_SET)) {
-    error("gribr: unable to rewind file");
-  }
+  grewind(file);
 
   grib_handle_delete(h);
 
