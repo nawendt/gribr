@@ -30,7 +30,8 @@ void R_init_gribr(DllInfo *info)
                      NULL,
                      NULL);
 
-  R_useDynamicSymbols(info, TRUE);
+  R_useDynamicSymbols(info, FALSE);
+  R_forceSymbols(info, TRUE);
 
   /* Here is where we could export the C routines
    * so that other packages could call them from
