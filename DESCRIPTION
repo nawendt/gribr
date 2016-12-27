@@ -9,7 +9,7 @@ Description: R interface for GRIB files using ECMWF GRIB API. Easily read GRIB d
 License: BSD_2_clause + file LICENSE
 LazyData: TRUE
 RoxygenNote: 5.0.1
-NeedsCompilation: Yes
+NeedsCompilation: yes
 SystemRequirements: ECMWF GRIB API (>= 1.10.0)
-Imports: proj4
+Imports: proj4, methods
 Suggests: testthat

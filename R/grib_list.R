@@ -48,7 +48,7 @@
 #' @param nameSpace optional \code{character} string that can control what
 #'   special, pre-defined group of keys gets return. Defaults to returning all.
 #'   See 'Details' for full description.
-#' @param format optional \code{character} string that controls the output
+#' @param output optional \code{character} string that controls the output
 #'   format. The default is "table" and will display the results in a
 #'   \code{data.frame} for easy subsetting. The other option is "string" which
 #'   will output each messages keys as a \code{character} vector of strings.
@@ -65,8 +65,12 @@
 #' grib_list(g)
 #'
 #' # Use grib_list output to help select messages
-#' msg_loc <- grep("shortName=2t", grib_list(g)) # find 2m temp message
-#' gm <- grib_get_message(g, msg_loc)
+#' msg_loc_df <- which(grib_list(g)$shortName == "u")
+#' gm <- grib_get_message(g, msg_loc_df)
+#'
+#' msg_loc_str <- grep("shortName=2t", grib_list(g, output = "string")) # find 2m temp message
+#' gm <- grib_get_message(g, msg_loc_str)
+#'
 #' grib_close(g)
 
 grib_list <- function(gribObj, filter = "none", nameSpace = "ls", output = "table") {

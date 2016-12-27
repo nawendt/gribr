@@ -17,7 +17,13 @@ test_that("GRIB file attributes are correct", {
   expect_s3_class(g, "grib")
 
   # list contents
+  ## data.frame output
   contents <- grib_list(g)
+  expect_equal(dim(contents)[1], 64)
+  expect_s3_class(contents, "data.frame")
+
+  ## char output
+  contents <- grib_list(g, output = "string")
   expect_equal(length(contents), 64)
   expect_type(contents, "character")
 
