@@ -35,7 +35,7 @@ void R_init_gribr(DllInfo *info)
 
   /* Here is where we could export the C routines
    * so that other packages could call them from
-   * there C routines.
+   * their C routines.
    *
    * E.g,
    *
