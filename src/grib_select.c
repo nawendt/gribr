@@ -40,7 +40,7 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_keyList, SEXP gribr_isMulti) {
   filePath = CHAR(STRING_ELT(gribr_filePath, 0));
   lenKeysList = xlength(gribr_keyList);
   gribr_selected = PROTECT(allocVector(VECSXP, lenKeysList));
-  fileHandle = fopen(filePath, "r");
+  fileHandle = fopen(filePath, "rb");
   if (!fileHandle) {
     error("gribr: unable to open grib file");
   }

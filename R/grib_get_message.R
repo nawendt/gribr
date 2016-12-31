@@ -36,7 +36,7 @@
 #' gm_multi <- grib_get_message(g, c(2, 4, 6))
 #'
 #' # Use grib_list output to help select messages
-#' msg_loc <- grep("shortName=2t", grib_list(g)) # find 2m temp message
+#' msg_loc <- which(grib_list(g)$shortName == "2t") # find 2m temp message
 #' gm_ls <- grib_get_message(g, msg_loc)
 #' grib_close(g)
 
