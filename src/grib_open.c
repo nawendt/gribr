@@ -10,7 +10,7 @@ SEXP gribr_grib_open(SEXP gribr_fileName) {
   FILE *input = NULL;
 
   p_fileName = CHAR(STRING_ELT(gribr_fileName, 0));
-  input = fopen(p_fileName, "r");
+  input = fopen(p_fileName, "rb");
 
   if(input == NULL) {
     error("gribr: unable to open file %s", p_fileName);

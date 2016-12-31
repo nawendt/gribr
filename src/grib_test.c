@@ -11,7 +11,7 @@ SEXP gribr_grib_test(SEXP gribr_fileName) {
   FILE *gribFile = NULL;
 
   p_fileName = CHAR(STRING_ELT(gribr_fileName, 0));
-  gribFile = fopen(p_fileName, "r");
+  gribFile = fopen(p_fileName, "rb");
 
   err = grib_count_in_file(DEFAULT_CONTEXT, gribFile, &count);
 

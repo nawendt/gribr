@@ -29,7 +29,6 @@ test_that("Incorrect message requests are handled correctly", {
   expect_is(cube, "array")
   expect_equal(length(dim(cube)), 3)
 
-
   # keys
   expect_equal(has.key(gm[[1]], "shortName"), TRUE)
   expect_equal(has.key(gm[[1]], "dne"), FALSE)

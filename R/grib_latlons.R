@@ -68,7 +68,7 @@ grib_latlons <- function(gribMessage, expand = FALSE) {
     } else {
       lats <- gribMessage$distinctLatitudes
       if (lat2 < lat1 && lats[length(lats)] > lats[1]) {
-        lats <- reverse(lats)
+        lats <- rev(lats)
       }
       lons <- gribMessage$distinctLongitudes
     }
@@ -86,7 +86,7 @@ grib_latlons <- function(gribMessage, expand = FALSE) {
       lat2 <- gribMessage$latitudeOfLastGridPointInDegrees
       lats <- gribMessage$distinctLatitudes
       if (lat2 < lat1 && lats[length(lats)] > lats[1]) {
-        lats <- reverse(lats)
+        lats <- rev(lats)
       }
       ny <- gribMessage$Nj
       nx <- ny * 2

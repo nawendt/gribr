@@ -40,3 +40,6 @@ void grewind(FILE* file);
 void gerror(const char *str, int err);
 SEXP getListElement(SEXP list, const char *str);
 SEXP gribr_message_from_handle(grib_handle *h, int isMulti);
+
+/* Extra GRIB API prototypes */
+void grib_index_rewind(grib_index* index);
