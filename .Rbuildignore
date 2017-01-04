@@ -3,3 +3,4 @@
 ^configure\.ac$
 ^README\.md$
 ^\.DS_Store$
+^\.Rhistory$

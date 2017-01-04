@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "gribr.h"
+#include "grib_api_extra.h"
 
 SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_keyList, SEXP gribr_isMulti) {
   int err;

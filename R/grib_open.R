@@ -25,8 +25,14 @@
 
 grib_open <- function(file) {
 
-  # test to make sure file is actuall GRIB format
-  if (.Call("gribr_grib_test", path.expand(file))) {
+  # does it exist and is it a file
+  normFile <- normalizePath(file, mustWork = FALSE)
+  if (!file_test("-f", normFile)) {
+    stop("%s is not a valid file", normFile)
+  }
+
+  # test to make sure file is actually in GRIB format
+  if (.Call("gribr_grib_test", file)) {
     stop("File is not GRIB format (0 messages found)")
   }
 
