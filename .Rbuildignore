@@ -5,3 +5,4 @@
 ^\.DS_Store$
 ^\.Rhistory$
 ^\.git_commit_template$
+^\.gitignore
