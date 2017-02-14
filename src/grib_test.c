@@ -13,6 +13,10 @@ SEXP gribr_grib_test(SEXP gribr_fileName) {
   p_fileName = CHAR(STRING_ELT(gribr_fileName, 0));
   gribFile = fopen(p_fileName, "rb");
 
+  if (gribFile == NULL) {
+    error("gribr: Could not open file %s", p_fileName);
+  }
+
   err = grib_count_in_file(DEFAULT_CONTEXT, gribFile, &count);
 
   /*
