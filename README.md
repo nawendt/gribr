@@ -1,6 +1,8 @@
 # gribr
 GRIB interface for R using the [ECMWF GRIB API](https://software.ecmwf.int/wiki/display/GRIB) or the [ECMWF ecCodes package](https://software.ecmwf.int/wiki/display/ECC).
 
+[![Travis-CI Build Status](https://travis-ci.org/nawendt/gribr.svg?branch=master)](https://travis-ci.org/nawendt/gribr)
+
 ### Purpose
 This project was started to address a need to easily read GRIB data into R as has been done in other languages (e.g., Python). Working on this also presents a great opportunity to learn more about R, C, and the interface between the two.
 

@@ -6,3 +6,4 @@
 ^\.Rhistory$
 ^\.git_commit_template$
 ^\.gitignore
+^\.travis\.yml$
