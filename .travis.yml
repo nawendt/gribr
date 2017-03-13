@@ -3,6 +3,7 @@
 language: R
 sudo: false
 cache: packages
+r_build_args: --with-grib-api
 addons:
   apt:
     packages:
