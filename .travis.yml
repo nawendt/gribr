@@ -1,12 +1,18 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
 language: r
+
 sudo: required
+
 dist: trusty
+
 cache: packages
+
 env:
   - GRIB_API_VERSION=1.20.0
+
 warnings_are_errors: true
+
 addons:
   apt:
     packages:
@@ -15,6 +21,7 @@ addons:
       - libjasper-dev
       - libpng-dev
       - zlib1g-dev
+
 before_install:
   - cd $HOME
   - echo Staging dependency files to $(pwd)
@@ -25,9 +32,3 @@ before_install:
   - cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DENABLE_NETCDF=OFF -DENABLE_JPG=ON -DENABLE_PNG=ON -DENABLE_PYTHON=OFF -DENABLE_FORTRAN=OFF -DENABLE_EXAMPLES=OFF
   - make && sudo make install
   - cd $TRAVIS_BUILD_DIR
-before_script:
-  - cd $TRAVIS_BUILD_DIR
-script:
-  - echo Running R CMD INSTALL from $(pwd)
-  - R CMD INSTALL --clean --configure-args="--with-grib-api" .
-  - R CMD check --as-cran .
