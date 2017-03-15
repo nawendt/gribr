@@ -13,6 +13,8 @@ env:
 
 warnings_are_errors: true
 
+r_check_args: --as-cran --install-args="--configure-args='--with-grib-api'"
+
 addons:
   apt:
     packages:
