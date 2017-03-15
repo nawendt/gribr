@@ -58,13 +58,20 @@ grib_select <- function(gribObj, keyPairs) {
   }
 
   if (length(keyPairs) > 1) {
-    keyCombo <- expand.grid(keyPairs, KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
-    keyList <- lapply(1:dim(keyCombo)[1],function(i) as.list(keyCombo[i,]))
-  } else if (length(keyPairs) == 1){
+    keyCombo <- expand.grid(keyPairs, KEEP.OUT.ATTRS = FALSE,
+                            stringsAsFactors = FALSE)
+    keyList <- lapply(1:dim(keyCombo)[1],
+                      function(i) {
+                        as.list(keyCombo[i, ])
+                      })
+  } else if (length(keyPairs) == 1) {
     # needs to be list of lists to be handled correctly
     # in the c routine that grabs the messages
     # Solution below is a bit hacky, but it works
-    keyList <- lapply(keyPairs[[1]],function(x) {names(x) <- names(keyPairs); as.list(x)})
+    keyList <- lapply(keyPairs[[1]],
+                      function(x) {
+                        names(x) <- names(keyPairs); as.list(x)
+                      })
   } else {
     stop("error with keyPairs input")
   }

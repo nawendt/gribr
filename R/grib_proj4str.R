@@ -76,7 +76,7 @@ grib_proj4str <- function(gribMessage, userProj4 = NULL) {
 	      if (scalea != GRIB_MISSING_LONG && scaleb != GRIB_MISSING_LONG) {
 	        scaleb <- 10^(-scaleb)
 	        if (gribMessage$shapeOfTheEarth == 3) {
-	          scalea <- 1000 * scalea
+	          scaleb <- 1000 * scaleb
 	        }
 	      } else {
 	        scaleb <- 1
@@ -85,14 +85,8 @@ grib_proj4str <- function(gribMessage, userProj4 = NULL) {
 	    scalea <- 1
 	    scaleb <- 1
 	  }
-	    apiVersion <- as.numeric(.Call("gribr_api_version"))
-	    if (apiVersion < 10900) {
-	      proj4list$a <- gribMessage$scaledValueOfMajorAxisOfOblateSpheroidEarth * scalea
-	      proj4list$b <- gribMessage$scaledValueOfMajorAxisOfOblateSpheroidEarth * scaleb
-	    } else {
-	      proj4list$a <- gribMessage$scaledValueOfEarthMajorAxis * scalea
-	      proj4list$b <- gribMessage$scaledValueOfEarthMajorAxis * scaleb
-	    }
+	    proj4list$a <- gribMessage$scaledValueOfEarthMajorAxis * scalea
+	    proj4list$b <- gribMessage$scaledValueOfEarthMajorAxis * scaleb
 	  } else if (gribMessage$shapeOfTheEarth == 2) {
 	    proj4list$a <- 6378160
 	    proj4list$b <- 6356775

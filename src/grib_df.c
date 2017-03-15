@@ -3,7 +3,7 @@
 
 #include "gribr.h"
 
-SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_nameSpace, SEXP gribr_isMulti) {
+SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_namespace, SEXP gribr_isMulti) {
   int err;
   int keyType;
   int toggle;
@@ -18,7 +18,7 @@ SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_nameSpac
   int is_multi;
   FILE *file = NULL;
   grib_handle *h = NULL;
-  const char *nameSpace = NULL;
+  const char *namespace = NULL;
   int filter;
   SEXP gribr_grib_df;
   SEXP keyNames;
@@ -27,7 +27,7 @@ SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_nameSpac
   grib_keys_iterator* keyIter = NULL;
 
   filter = asInteger(gribr_filter);
-  nameSpace = CHAR(STRING_ELT(gribr_nameSpace,0));
+  namespace = CHAR(STRING_ELT(gribr_namespace,0));
   is_multi = asLogical(gribr_isMulti);
 
   file = R_ExternalPtrAddr(gribr_fileHandle);
@@ -52,7 +52,7 @@ SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_nameSpac
       R_CheckUserInterrupt();
     }
     n++;
-    keyIter = grib_keys_iterator_new(h, filter, (char*)nameSpace);
+    keyIter = grib_keys_iterator_new(h, filter, (char*)namespace);
     if (keyIter == NULL) {
       error("gribr: unable to create key iterator");
     }
@@ -79,7 +79,7 @@ SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_nameSpac
 
   while((h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err))) {
     i = 0;
-    keyIter = grib_keys_iterator_new(h, filter, (char*)nameSpace);
+    keyIter = grib_keys_iterator_new(h, filter, (char*)namespace);
     while(grib_keys_iterator_next(keyIter)) {
       const char *keyName = grib_keys_iterator_get_name(keyIter);
       SET_STRING_ELT(keyNames, i, mkChar(keyName));
@@ -136,7 +136,7 @@ SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_nameSpac
     if (j % INTERRUPT_FREQ == 0) {
       R_CheckUserInterrupt();
     }
-    keyIter = grib_keys_iterator_new(h, filter, (char*)nameSpace);
+    keyIter = grib_keys_iterator_new(h, filter, (char*)namespace);
     i = 0;
     while(grib_keys_iterator_next(keyIter)) {
       keyType = INTEGER(keyTypes)[i];

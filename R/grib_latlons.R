@@ -75,7 +75,7 @@ grib_latlons <- function(gribMessage, expand = FALSE) {
     if (lon2 < 0) {
       lons <- seq(lon1, lon2, length.out = nx)
     }
-    mg <- meshgrid(lons,lats)
+    mg <- meshgrid(lons, lats)
     lons <- mg$X
     lats <- mg$Y
 
@@ -125,7 +125,7 @@ grib_latlons <- function(gribMessage, expand = FALSE) {
     lat1 <- gribMessage$latitudeOfFirstGridPointInDegrees
     lon1 <- gribMessage$longitudeOfFirstGridPointInDegrees
 
-    if(has.key(gribMessage, "Nx") && has.key(gribMessage, "Ny")) {
+    if (has.key(gribMessage, "Nx") && has.key(gribMessage, "Ny")) {
       nx <- gribMessage$Nx
       ny <- gribMessage$Ny
     } else {
@@ -133,20 +133,20 @@ grib_latlons <- function(gribMessage, expand = FALSE) {
       ny <- gribMessage$Nj
     }
 
-    if(has.key(gribMessage, "xDirectionGridLengthInMetres") &&
+    if (has.key(gribMessage, "xDirectionGridLengthInMetres") &&
        has.key(gribMessage, "yDirectionGridLengthInMetres")) {
-      nx <- gribMessage$xDirectionGridLengthInMetres
-      ny <- gribMessage$yDirectionGridLengthInMetres
+      dx <- gribMessage$xDirectionGridLengthInMetres
+      dy <- gribMessage$yDirectionGridLengthInMetres
     } else {
-      nx <- gribMessage$DxInMetres
-      ny <- gribMessage$DyInMetres
+      dx <- gribMessage$DxInMetres
+      dy <- gribMessage$DyInMetres
     }
 
     prj <- proj4::project(list(lon1, lat1), grib_proj4str(gribMessage))
     llcx <- prj$x
     llcy <- prj$y
-    x <- llcx + dx*seq_len(nx)
-    y <- llcy + dy*seq_len(ny)
+    x <- llcx + dx * seq_len(nx)
+    y <- llcy + dy * seq_len(ny)
     mg <- meshgrid(x, y)
     unprj <- proj4::project(list(mg$X, mg$Y),
                             grib_proj4str(gribMessage),
@@ -159,7 +159,7 @@ grib_latlons <- function(gribMessage, expand = FALSE) {
     lat1 <- gribMessage$latitudeOfFirstGridPointInDegrees
     lon1 <- gribMessage$longitudeOfFirstGridPointInDegrees
 
-    if(has.key(gribMessage, "Nx") && has.key(gribMessage, "Ny")) {
+    if (has.key(gribMessage, "Nx") && has.key(gribMessage, "Ny")) {
       nx <- gribMessage$Nx
       ny <- gribMessage$Ny
     } else {
@@ -172,8 +172,8 @@ grib_latlons <- function(gribMessage, expand = FALSE) {
     prj <- proj4::project(list(lon1, lat1), grib_proj4str(gribMessage))
     llcx <- prj$x
     llcy <- prj$y
-    x <- llcx + dx*seq_len(nx)
-    y <- llcy + dy*seq_len(ny)
+    x <- llcx + dx * seq_len(nx)
+    y <- llcy + dy * seq_len(ny)
     mg <- meshgrid(x, y)
     unprj <- proj4::project(list(mg$X, mg$Y),
                             grib_proj4str(gribMessage),
@@ -186,7 +186,7 @@ grib_latlons <- function(gribMessage, expand = FALSE) {
     lat1 <- gribMessage$latitudeOfFirstGridPointInDegrees
     lon1 <- gribMessage$longitudeOfFirstGridPointInDegrees
 
-    if(has.key(gribMessage, "Nx") && has.key(gribMessage, "Ny")) {
+    if (has.key(gribMessage, "Nx") && has.key(gribMessage, "Ny")) {
       nx <- gribMessage$Nx
       ny <- gribMessage$Ny
     } else {
@@ -200,8 +200,8 @@ grib_latlons <- function(gribMessage, expand = FALSE) {
     prj <- proj4::project(list(lon1, lat1), grib_proj4str(gribMessage))
     llcx <- prj$x
     llcy <- prj$y
-    x <- llcx + dx*seq_len(nx)
-    y <- llcy + dy*seq_len(ny)
+    x <- llcx + dx * seq_len(nx)
+    y <- llcy + dy * seq_len(ny)
     mg <- meshgrid(x, y)
     unprj <- proj4::project(list(mg$X, mg$Y),
                             grib_proj4str(gribMessage),
@@ -217,7 +217,7 @@ grib_latlons <- function(gribMessage, expand = FALSE) {
       stop("unsupported nsper: earth not a perfect sphere")
     }
 
-    if(has.key(gribMessage, "Nx") && has.key(gribMessage, "Ny")) {
+    if (has.key(gribMessage, "Nx") && has.key(gribMessage, "Ny")) {
       nx <- gribMessage$Nx
       ny <- gribMessage$Ny
     } else {
@@ -228,24 +228,22 @@ grib_latlons <- function(gribMessage, expand = FALSE) {
     scale <- as.numeric(gribMessage$grib2divider)
     lon_0 <- pjs$lon_0
     lat_0 <- pjs$lat_0
-    lonmax <- lon_0 + 90 - (180/pi) * asin(scale/gribMessage$Nr)
-    latmax <- lat_0 + 90 - (180/pi) * asin(scale/gribMessage$Nr)
-    lonmax <- integer(lonmax*1000)/1000
-    latmax <- integer(latmax*1000)/1000
+    lonmax <- lon_0 + 90 - (180 / pi) * asin(scale / gribMessage$Nr)
+    latmax <- lat_0 + 90 - (180 / pi) * asin(scale / gribMessage$Nr)
+    lonmax <- integer(lonmax * 1000) / 1000
+    latmax <- integer(latmax * 1000) / 1000
     prj <- proj4::project(list(lon_0, lonmax), grib_proj4str(gribMessage))
-    x1 <- prj$x
     y1 <- prj$y
     prj <- proj4::project(list(lat_0, latmax), grib_proj4str(gribMessage))
     x2 <- prj$x
-    y2 <- prj$y
     width <- x2 * 2
     height <- y1 * 2
-    dx <- width/gribMessage$dx
-    dy <- height/gribMessage$dy
+    dx <- width / gribMessage$dx
+    dy <- height / gribMessage$dy
     xmax <- dx * (nx - 1)
     ymax <- dy * (ny - 1)
-    x <- seq(-0.5*xmax, 0.5*xmax, length.out = nx)
-    y <- seq(-0.5*ymax, 0.5*ymax, length.out = ny)
+    x <- seq(-0.5 * xmax, 0.5 * xmax, length.out = nx)
+    y <- seq(-0.5 * ymax, 0.5 * ymax, length.out = ny)
     mg <- meshgrid(x, y)
     unprj <- proj4::project(list(mg$X, mg$Y),
                             grib_proj4str(gribMessage),
@@ -253,9 +251,9 @@ grib_latlons <- function(gribMessage, expand = FALSE) {
     lons <- unprj$x
     lats <- unprj$y
     abslons <- abs(lons)
-    ablats <- abs(lats)
-    lons[which(lons < 1e+20)] <- NA
-    lats[which(lats < 1e+20)] <- NA
+    abslats <- abs(lats)
+    lons[which(abslons < 1e+20)] <- NA
+    lats[which(abslats < 1e+20)] <- NA
 
   } else if (gribMessage$gridType == "equatorial_azimuthal_equidistant") {
 
@@ -267,7 +265,7 @@ grib_latlons <- function(gribMessage, expand = FALSE) {
     llcx <- prj$x
     llcy <- prj$y
 
-    if(has.key(gribMessage, "Nx") && has.key(gribMessage, "Ny")) {
+    if (has.key(gribMessage, "Nx") && has.key(gribMessage, "Ny")) {
       nx <- gribMessage$Nx
       ny <- gribMessage$Ny
     } else {
@@ -288,15 +286,15 @@ grib_latlons <- function(gribMessage, expand = FALSE) {
 
   } else if (gribMessage$gridType == "lambert_azimuthal_equal_area") {
 
-    dx <- gribMessage$Dx/1e+3
-    dy <- gribMessage$Dy/1e+3
+    dx <- gribMessage$Dx / 1e+3
+    dy <- gribMessage$Dy / 1e+3
     lon1 <- gribMessage$longitudeOfLastGridPointInDegrees
     lat1 <- gribMessage$latitudeOfFirstGridPointInDegrees
     prj <- proj4::project(list(lon1, lat1), grib_proj4str(gribMessage))
     llcx <- prj$x
     llcy <- prj$y
 
-    if(has.key(gribMessage, "Nx") && has.key(gribMessage, "Ny")) {
+    if (has.key(gribMessage, "Nx") && has.key(gribMessage, "Ny")) {
       nx <- gribMessage$Nx
       ny <- gribMessage$Ny
     } else {
@@ -324,8 +322,8 @@ grib_latlons <- function(gribMessage, expand = FALSE) {
       scale <- as.numeric(scale)
     }
 
-    lon1 <- gribMessage$longitudeOfFirstGridPoint/scale
-    lon2 <- gribMessage$longitudeOfLastGridPoint/scale
+    lon1 <- gribMessage$longitudeOfFirstGridPoint / scale
+    lon2 <- gribMessage$longitudeOfLastGridPoint / scale
 
     if (has.key(gribMessage, "truncateDegrees") &&
         gribMessage$truncateDegrees) {
@@ -349,7 +347,7 @@ grib_latlons <- function(gribMessage, expand = FALSE) {
     urcx <- prj$x
     urcy <- prj$y
 
-    if(has.key(gribMessage, "Nx") && has.key(gribMessage, "Ny")) {
+    if (has.key(gribMessage, "Nx") && has.key(gribMessage, "Ny")) {
       nx <- gribMessage$Nx
       ny <- gribMessage$Ny
     } else {
@@ -357,11 +355,11 @@ grib_latlons <- function(gribMessage, expand = FALSE) {
       ny <- gribMessage$Nj
     }
 
-    dx <- (urcx - llcx)/(nx - 1)
-    dy <- (urcy - llcy)/(ny - 1)
+    dx <- (urcx - llcx) / (nx - 1)
+    dy <- (urcy - llcy) / (ny - 1)
     x <- llcx + dx * seq_len(nx)
     y <- llcy + dy * seq_len(ny)
-    mg <- meshgrid(x,y)
+    mg <- meshgrid(x, y)
     x <- mg$X
     y <- mg$Y
     unprj <- proj4::project(list(mg$X, mg$Y),

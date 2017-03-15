@@ -3,14 +3,14 @@
 
 #include "gribr.h"
 
-SEXP gribr_grib_list(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_nameSpace, SEXP gribr_isMulti) {
+SEXP gribr_grib_list(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_namespace, SEXP gribr_isMulti) {
   int err;
   R_xlen_t n;
   int is_multi;
   size_t messageCount = 0;
   FILE *file = NULL;
   grib_handle *h = NULL;
-  const char *nameSpace = NULL;
+  const char *namespace = NULL;
   char *lastComma = NULL;
   char keyString[MAX_VAL_LEN];
   int filter;
@@ -19,7 +19,7 @@ SEXP gribr_grib_list(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_nameSp
   SEXP gribr_grib_vec;
 
   filter = asInteger(gribr_filter);
-  nameSpace = CHAR(STRING_ELT(gribr_nameSpace,0));
+  namespace = CHAR(STRING_ELT(gribr_namespace,0));
   is_multi = asLogical(gribr_isMulti);
 
   file = R_ExternalPtrAddr(gribr_fileHandle);
@@ -55,7 +55,7 @@ SEXP gribr_grib_list(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_nameSp
       gerror("gribr: unable to create grib handle", err);
     }
 
-    keyIter=grib_keys_iterator_new(h, filter, (char*)nameSpace);
+    keyIter=grib_keys_iterator_new(h, filter, (char*)namespace);
     if (keyIter == NULL) {
       error("gribr: unable to create key iterator");
     }

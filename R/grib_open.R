@@ -27,7 +27,7 @@ grib_open <- function(file) {
 
   # does it exist and is it a file
   normFile <- normalizePath(file, mustWork = FALSE)
-  if (!file_test("-f", normFile)) {
+  if (!utils::file_test("-f", normFile)) {
     stop("%s is not a valid file", normFile)
   }
 

@@ -4,8 +4,8 @@ m4_include([m4/gribr_link_grib_api.m4])
 m4_include([m4/gribr_link_eccodes.m4])
 
 # Set globals
-GRIB_API_MIN_VERSION="1.10.0"
-GRIB_API_MIN_VERSION_INT=11000
+GRIB_API_MIN_VERSION="1.13.0"
+GRIB_API_MIN_VERSION_INT=11300
 ECCODES_MIN_VERSION="2.0.0"
 ECCODES_MIN_VERSION_INT=20000
 

@@ -15,7 +15,7 @@ As ECMWF continues to develop their ecCodes package, their plan is to phase out 
 **NOTE:** This is not _natively_ available for Windows at this time due to difficulties compiling the GRIB API on that platform. See below for details.
 
 1. Prerequisites
-  * gribr depends on the ECMWF GRIB API (>= 1.10.0), or the ECMWF ecCodes package (>=2.0.0), and the proj4 R package
+  * gribr depends on the ECMWF GRIB API (>= 1.13.0), or the ECMWF ecCodes package (>=2.0.0), and the proj4 R package
   * The GRIB API can be easily installed via a package manager on Linux (`apt-get`, `yum`, etc.) or MacOS (`port`, `fink`, `brew`). This would be the recommened option. Since some repositories carry versions that are too old, you may have to install from source.
     * To install from source, download the GRIB API [here](https://software.ecmwf.int/wiki/display/GRIB/Releases)
   * To use ecCodes you will have to install from source. It is not available from any package management system as of this writing. Get it [here](https://software.ecmwf.int/wiki/display/ECC/Releases)
