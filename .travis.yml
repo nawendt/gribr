@@ -31,3 +31,8 @@ matrix:
     - env: ECCODES_VERSION=2.1.0
       r_check_args: --as-cran
       before_install: ./install_eccodes.sh
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
