@@ -1,4 +1,4 @@
-AC_INIT([gribr], 1.1.4, [nawendt@ou.edu])
+AC_INIT([gribr], 1.1.10, [nawendt@ou.edu])
 
 m4_include([m4/gribr_link_grib_api.m4])
 m4_include([m4/gribr_link_eccodes.m4])

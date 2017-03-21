@@ -8,3 +8,4 @@
 ^\.gitignore$
 ^\.travis\.yml$
 ^m4$
+^install_.*\.sh$
