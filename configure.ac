@@ -6,7 +6,7 @@ m4_include([m4/gribr_link_eccodes.m4])
 ECCODES_MIN_VERSION="2.0.0"
 ECCODES_MIN_VERSION_INT=20000
 
-# Find R_HOME; set CC/CFLAGS
+# Find R_HOME; set CC/CPPFLAGS
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
   echo "could not determine R_HOME"
@@ -15,7 +15,6 @@ fi
 
 RBIN="${R_HOME}/bin/R"
 CC=`"${RBIN}" CMD config CC`;
-CFLAGS=`"${RBIN}" CMD config CFLAGS`
 CPPFLAGS=`"${RBIN}" CMD config CPPFLAGS`
 
 # Compiler checks

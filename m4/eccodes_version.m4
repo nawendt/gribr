@@ -22,7 +22,7 @@ EOF
 if test "X$1" = "X"; then
   $CC eccodes_version.c -leccodes -o eccodes_version
 else
-  $CC eccodes_version.c $1 $2 -o eccodes_version
+  $CC eccodes_version.c $1 $2 -leccodes -o eccodes_version
 fi
 
 ./eccodes_version

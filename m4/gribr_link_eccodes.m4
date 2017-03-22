@@ -1,6 +1,6 @@
 AC_DEFUN([GRIBR_LINK_ECCODES],[
 m4_include([m4/eccodes_version.m4])
-# Check for grib_api
+# Check for eccodes
 # first try pkg-config
 found_eccodes="no"
 if test "X$ECCODES_LIBS" = "X" && test "X$ECCODES_CPPFLAGS" = "X"; then
@@ -13,9 +13,9 @@ if test "X$ECCODES_LIBS" = "X" && test "X$ECCODES_CPPFLAGS" = "X"; then
                 AC_MSG_ERROR([Minimum eccodes version is ${ECCODES_MIN_VERSION}, but found version ${ECCODES_VERSION}])
             fi
             ECCODES_CPPFLAGS=`"${PKGCONF}" --cflags eccodes`
-            ECCODES_LDFLAGS=`"${PKGCONF}" --libs eccodes`
+            ECCODES_LIBS=`"${PKGCONF}" --libs eccodes`
             CPPFLAGS="${CPPFLAGS} ${ECCODES_CPPFLAGS}"
-            LIBS="${ECCODES_LDFLAGS}"
+            LIBS="${ECCODES_LIBS}"
             found_eccodes="yes"
         else
             AC_MSG_RESULT([no])
@@ -44,7 +44,7 @@ elif test "X$ECCODES_LIBS" != "X" && test "X$ECCODES_CPPFLAGS" != "X"; then
     LIBECCODES_VERSION_TEST($ECCODES_CPPFLAGS, $ECCODES_LIBS)
     if test "$good_version" = "yes"; then
         CPPFLAGS="${CPPFLAGS} ${ECCODES_CPPFLAGS}"
-        LIBS="${ECCODES_LIBS}"
+        LIBS="${ECCODES_LIBS} -leccodes"
     else
         AC_MSG_ERROR([eccodes version does not meet minimum requirement of ${ECCODES_MIN_VERSION}])
     fi
@@ -52,6 +52,6 @@ else
     AC_MSG_ERROR([Error finding eccodes])
 fi
 
-# Make sure grib_api.h can be found
+# Make sure eccodes.h can be found
 AC_CHECK_HEADER([eccodes.h], [HAVE_ECCODES_HEADERS=TRUE], [HAVE_ECCODES_HEADERS=FALSE], [AC_INCLUDES_DEFAULT])
 ])
