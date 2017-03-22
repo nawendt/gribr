@@ -19,16 +19,16 @@ env:
 
 matrix:
   include:
-    - env: GRIB_API_VERSION=1.20.0
-      sudo: required
-      os: linux
-      dist:  trusty
-      r_check_args: --as-cran --install-args="--configure-args='--with-grib-api'"
-      before_install: ./install_grib_api.sh
     - env: ECCODES_VERSION=2.1.0
       sudo: required
       os: linux
       dist: trusty
+      r_check_args: --as-cran
+      before_install: ./install_eccodes.sh
+    - env: ECCODES_VERSION=2.1.0
+      sudo: required
+      os: linux
+      dist: precise
       r_check_args: --as-cran
       before_install: ./install_eccodes.sh
     - env: ECCODES_VERSION=2.1.0

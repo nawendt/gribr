@@ -1,15 +1,15 @@
 Package: gribr
 Type: Package
 Title: Read GRIB Files
-Version: 1.1.10
-Date: 2017-03-20
+Version: 1.2.0
+Date: 2017-03-21
 Author: Nathan Wendt <nawendt@ou.edu>
 Maintainer: Nathan Wendt <nawendt@ou.edu>
-Description: R interface for GRIB files using ECMWF GRIB API. Easily read GRIB data into native R data types.
+Description: R interface for GRIB files using ECMWF ecCodes. Easily read GRIB data into native R data types.
 License: BSD_2_clause + file LICENSE
 LazyData: TRUE
 RoxygenNote: 6.0.1
 NeedsCompilation: yes
-SystemRequirements: ECMWF GRIB API (>= 1.13.0) or ECMWF ecCodes (>= 2.0.0)
+SystemRequirements: ECMWF ecCodes (>= 2.0.0)
 Imports: proj4, methods, utils
 Suggests: testthat, lintr

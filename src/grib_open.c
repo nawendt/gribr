@@ -9,7 +9,7 @@ SEXP gribr_grib_open(SEXP gribr_fileName) {
   const char *p_fileName = NULL;
   SEXP gribr_fileHandle;
   FILE *input = NULL;
-  grib_context *c = NULL;
+  codes_context *c = NULL;
   char *def_path = NULL;
   const char *basename = "boot.def";
 
@@ -18,10 +18,10 @@ SEXP gribr_grib_open(SEXP gribr_fileName) {
   they are not found and some actions are performed
   on a GRIB file, the GRIB API will throw an
   exception and R will crash. */
-  c = grib_context_get_default();
+  c = codes_context_get_default();
   def_path = grib_context_full_defs_path(c, basename);
   if (!def_path) {
-    error("gribr: GRIB definition files not found; Please set the GRIB_DEFINITION_PATH");
+    error("gribr: GRIB definition files not found; Please set the ECCODES_DEFINITION_PATH");
   }
 
   p_fileName = CHAR(STRING_ELT(gribr_fileName, 0));

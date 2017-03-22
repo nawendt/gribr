@@ -1,4 +1,4 @@
-#include <grib_api.h>
+#include <eccodes.h>
 #include <ctype.h>
 
 #define MAX_KEY_LEN     255

@@ -27,9 +27,9 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_keyList, SEXP gribr_isMulti) {
   const char *ks = NULL;
   char *ksc = NULL;
   FILE *fileHandle = NULL;
-  grib_index *index = NULL;
-  grib_handle *h = NULL;
-  grib_handle *hi = NULL;
+  codes_index *index = NULL;
+  codes_handle *h = NULL;
+  codes_handle *hi = NULL;
   SEXP gribr_selected;
   SEXP gribr_temp;
   PROTECT_INDEX pro_temp;
@@ -82,15 +82,15 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_keyList, SEXP gribr_isMulti) {
   }
 
   if (asLogical(gribr_isMulti)) {
-    grib_multi_support_on(DEFAULT_CONTEXT);
+    codes_grib_multi_support_on(DEFAULT_CONTEXT);
   }
 
-  index = grib_index_new(DEFAULT_CONTEXT, keyString, &err);
+  index = codes_index_new(DEFAULT_CONTEXT, keyString, &err);
   if (err) {
     gerror("unable to create index", err);
   }
 
-  err = grib_index_add_file(index, filePath);
+  err = codes_index_add_file(index, filePath);
   if (err) {
     gerror("unable to add file to index", err);
   }
@@ -102,7 +102,7 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_keyList, SEXP gribr_isMulti) {
    * index. Index handles will only work after using
    * the select method
    */
-  h = grib_handle_new_from_file(DEFAULT_CONTEXT, fileHandle, &err);
+  h = codes_grib_handle_new_from_file(DEFAULT_CONTEXT, fileHandle, &err);
   if (err) {
     gerror("unable to create grib handle", err);
   }
@@ -114,16 +114,16 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_keyList, SEXP gribr_isMulti) {
     lenKeys = xlength(VECTOR_ELT(gribr_keyList, i));
     for (j = 0; j < lenKeys; j++) {
       keyName = CHAR(STRING_ELT(getAttrib(VECTOR_ELT(gribr_keyList, i), R_NamesSymbol), j));
-      err = grib_get_native_type(h, keyName, &keyType);
+      err = codes_get_native_type(h, keyName, &keyType);
       if (err) {
         gerror("unable to get native type", err);
       }
       switch (keyType) {
-      case GRIB_TYPE_DOUBLE:
+      case CODES_TYPE_DOUBLE:
         kd = asReal(VECTOR_ELT(VECTOR_ELT(gribr_keyList, i), j));
-        grib_index_select_double(index, keyName, kd);
+        codes_index_select_double(index, keyName, kd);
         break;
-      case GRIB_TYPE_LONG:
+      case CODES_TYPE_LONG:
         /* Need to coerce vector to integer as R list components entered
          * as integers really end up being numeric (double in C). Doing
          * corecion here makes the most sense as the type gets deciced in
@@ -131,22 +131,22 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_keyList, SEXP gribr_isMulti) {
          * typing than the R routines.
          */
         ki = (long)asReal(VECTOR_ELT(VECTOR_ELT(gribr_keyList, i), j));
-        grib_index_select_long(index, keyName, ki);
+        codes_index_select_long(index, keyName, ki);
         break;
-      case GRIB_TYPE_STRING:
+      case CODES_TYPE_STRING:
         ks = CHAR(asChar(VECTOR_ELT(VECTOR_ELT(gribr_keyList, i), j)));
         ksc = calloc(strlen(ks) + 1, sizeof(char));
         strcpy(ksc, ks);
-        grib_index_select_string(index, keyName, ksc);
+        codes_index_select_string(index, keyName, ksc);
         nfree(ksc);
         break;
       default:
-        /* Skip other key types with no grib_select_* methods to handle them */
+        /* Skip other key types with no codes_select_* methods to handle them */
         break;
       }
     }
     index_count = 0;
-    while((hi = grib_handle_new_from_index(index, &err))) {
+    while((hi = codes_handle_new_from_index(index, &err))) {
       if (err) {
         gerror("unable to create grib handle", err);
       }
@@ -162,7 +162,7 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_keyList, SEXP gribr_isMulti) {
     REPROTECT(gribr_temp = allocVector(VECSXP, index_count), pro_temp);
 
     m = 0;
-    while((hi = grib_handle_new_from_index(index, &err)) && m < index_count) {
+    while((hi = codes_handle_new_from_index(index, &err)) && m < index_count) {
       if (err) {
         gerror("unable to create grib handle", err);
       }
@@ -172,9 +172,9 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_keyList, SEXP gribr_isMulti) {
     SET_VECTOR_ELT(gribr_selected, i, gribr_temp);
   }
 
-  grib_handle_delete(h);
-  grib_handle_delete(hi);
-  grib_index_delete(index);
+  codes_handle_delete(h);
+  codes_handle_delete(hi);
+  codes_index_delete(index);
 
   UNPROTECT(2);
   return gribr_selected;

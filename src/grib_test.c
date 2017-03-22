@@ -17,7 +17,7 @@ SEXP gribr_grib_test(SEXP gribr_fileName) {
     error("gribr: Could not open file %s", p_fileName);
   }
 
-  err = grib_count_in_file(DEFAULT_CONTEXT, gribFile, &count);
+  err = codes_count_in_file(DEFAULT_CONTEXT, gribFile, &count);
 
   /*
    * TRUE denotes the file is likely not a GRIB file. TRUE is

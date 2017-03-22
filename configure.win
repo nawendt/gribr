@@ -10,8 +10,8 @@
 
 # PKG_LIBS will contain the LIB directory of your GRIB API build.
 
-PKG_CFLAGS=
+PKG_CPPFLAGS=
 PKG_LIBS=
 
-echo "PKG_CFLAGS=$PKG_CFLAGS" > src/Makevars.win
+echo "PKG_CPPFLAGS=$PKG_CPPFLAGS" > src/Makevars.win
 echo "PKG_LIBS=$PKG_LIBS" >> src/Makevars.win

@@ -9,7 +9,7 @@ SEXP gribr_grib_list(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_namesp
   int is_multi;
   size_t messageCount = 0;
   FILE *file = NULL;
-  grib_handle *h = NULL;
+  codes_handle *h = NULL;
   const char *namespace = NULL;
   char *lastComma = NULL;
   char keyString[MAX_VAL_LEN];
@@ -31,10 +31,10 @@ SEXP gribr_grib_list(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_namesp
   grewind(file);
 
   if (is_multi) {
-    grib_multi_support_on(DEFAULT_CONTEXT);
+    codes_grib_multi_support_on(DEFAULT_CONTEXT);
   }
   n = 0;
-  while((h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err))) {
+  while((h = codes_grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err))) {
     n++;
   }
   if (err) {
@@ -48,24 +48,24 @@ SEXP gribr_grib_list(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_namesp
 
   /* The grib handle is our GRIB message iterator. Each time we call new_from_file,
      we are advancing to the next message in the file. */
-  while((h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err)) != NULL) {
-    grib_keys_iterator* keyIter=NULL;
+  while((h = codes_grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err)) != NULL) {
+    codes_keys_iterator* keyIter=NULL;
 
     if (h == NULL) {
       gerror("gribr: unable to create grib handle", err);
     }
 
-    keyIter=grib_keys_iterator_new(h, filter, (char*)namespace);
+    keyIter = codes_keys_iterator_new(h, filter, (char*)namespace);
     if (keyIter == NULL) {
       error("gribr: unable to create key iterator");
     }
 
     memset(keyString, '\0', MAX_VAL_LEN);
-    while(grib_keys_iterator_next(keyIter)) {
+    while(codes_keys_iterator_next(keyIter)) {
       valueLength = MAX_VAL_LEN;
-      const char *keyName = grib_keys_iterator_get_name(keyIter);
+      const char *keyName = codes_keys_iterator_get_name(keyIter);
       memset(value, '\0', valueLength);
-      err = grib_get_string(h, keyName, value, &valueLength);
+      err = codes_get_string(h, keyName, value, &valueLength);
       if ((strlen(keyString) + strlen(keyName) + strlen(value) + 2) < MAX_VAL_LEN ||
           (strlen(keyString) + NA_KEY_LEN < MAX_VAL_LEN)) {
         if (err) {
@@ -85,8 +85,8 @@ SEXP gribr_grib_list(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_namesp
     *lastComma = '\0';
     SET_STRING_ELT(gribr_grib_vec, messageCount++, mkChar(keyString));
 
-    grib_keys_iterator_delete(keyIter);
-    grib_handle_delete(h);
+    codes_keys_iterator_delete(keyIter);
+    codes_handle_delete(h);
 
   }
   /* Be kind, please rewind. Without this the next call of grib_list will fail */
@@ -94,7 +94,7 @@ SEXP gribr_grib_list(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_namesp
     error("gribr: unable to rewind file");
   }
 
-  grib_handle_delete(h);
+  codes_handle_delete(h);
   UNPROTECT(1);
   return gribr_grib_vec;
 }
