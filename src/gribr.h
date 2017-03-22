@@ -1,4 +1,4 @@
-#include <grib_api.h>
+#include <eccodes.h>
 #include <ctype.h>
 
 #define MAX_KEY_LEN     255
@@ -17,9 +17,9 @@
 SEXP gribr_grib_close(SEXP gribr_fileHandle);
 SEXP gribr_grib_open(SEXP gribr_fileName);
 SEXP gribr_grib_list(SEXP gribr_fileHandle, SEXP gribr_filter,
-                     SEXP gribr_nameSpace, SEXP gribr_isMulti);
+                     SEXP gribr_namespace, SEXP gribr_isMulti);
 SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter,
-                     SEXP gribr_nameSpace, SEXP gribr_isMulti);
+                     SEXP gribr_namespace, SEXP gribr_isMulti);
 
 SEXP gribr_grib_length(SEXP gribr_fileHandle);
 SEXP gribr_is_null_ptr (SEXP gribr_ptr);
@@ -40,6 +40,3 @@ void grewind(FILE* file);
 void gerror(const char *str, int err);
 SEXP getListElement(SEXP list, const char *str);
 SEXP gribr_message_from_handle(grib_handle *h, int isMulti);
-
-/* Extra GRIB API prototypes */
-void grib_index_rewind(grib_index* index);

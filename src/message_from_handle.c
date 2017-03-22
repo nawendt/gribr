@@ -3,7 +3,7 @@
 
 #include "gribr.h"
 
-SEXP gribr_message_from_handle(grib_handle *h, int isMulti) {
+SEXP gribr_message_from_handle(codes_handle *h, int isMulti) {
 
   int err;
   int keyType;
@@ -22,7 +22,7 @@ SEXP gribr_message_from_handle(grib_handle *h, int isMulti) {
   const char *keyName = NULL;
   char intChar;
   char *keyVal_c = NULL;
-  grib_keys_iterator *keyIter = NULL;
+  codes_keys_iterator *keyIter = NULL;
   SEXP gribr_grib_message;
   SEXP gribr_list_names;
   SEXP gribr_char;
@@ -43,26 +43,26 @@ SEXP gribr_message_from_handle(grib_handle *h, int isMulti) {
    * Take care of these now in order to give the option
    * of masking out data with NAs
    */
-  err = grib_get_double(h,"missingValue",&missingValue);
+  err = codes_get_double(h,"missingValue",&missingValue);
   if (err) {
     gerror("unable to get missing value", err);
   }
 
-  err = grib_get_long(h, "bitmapPresent", &bitmapBool);
+  err = codes_get_long(h, "bitmapPresent", &bitmapBool);
   if (err) {
     gerror("unable to get bitmapPresent variable", err);
   } else {
     if (bitmapBool) {
-      grib_get_size(h, "bitmap", &bmp_len);
+      codes_get_size(h, "bitmap", &bmp_len);
       bitmap = malloc(bmp_len*sizeof(long));
-      err = grib_get_long_array(h, "bitmap", bitmap, &bmp_len);
+      err = codes_get_long_array(h, "bitmap", bitmap, &bmp_len);
       if (err) {
         gerror("unable to get bitmap array", err);
       }
     }
   }
 
-  keyIter = grib_keys_iterator_new(h, NO_FILTER, NULL_NAMESPACE);
+  keyIter = codes_keys_iterator_new(h, NO_FILTER, NULL_NAMESPACE);
   if (keyIter == NULL) {
     error("gribr: unable to create key iterator");
   }
@@ -71,12 +71,12 @@ SEXP gribr_message_from_handle(grib_handle *h, int isMulti) {
    * count to then allocate a list to contain them.
    * Will monitor for a better solution. */
   totalKeys = 0;
-  while(grib_keys_iterator_next(keyIter)) {
+  while(codes_keys_iterator_next(keyIter)) {
     if (totalKeys % INTERRUPT_FREQ == 0) {
       R_CheckUserInterrupt();
     }
-    keyName = grib_keys_iterator_get_name(keyIter);
-    err = grib_get_native_type(h, keyName, &keyType);
+    keyName = codes_keys_iterator_get_name(keyIter);
+    err = codes_get_native_type(h, keyName, &keyType);
     if (skip_keys(keyName, keyType, err)) {
       continue;
     } else {
@@ -84,7 +84,7 @@ SEXP gribr_message_from_handle(grib_handle *h, int isMulti) {
     }
   }
 
-  err = grib_keys_iterator_rewind(keyIter);
+  err = codes_keys_iterator_rewind(keyIter);
   if (err) {
     gerror("unable to rewind keys iterator", err);
   }
@@ -93,26 +93,26 @@ SEXP gribr_message_from_handle(grib_handle *h, int isMulti) {
   gribr_list_names = PROTECT(allocVector(STRSXP, totalKeys));
 
   n = 0;
-  while(grib_keys_iterator_next(keyIter)) {
+  while(codes_keys_iterator_next(keyIter)) {
     if (n % INTERRUPT_FREQ == 0) {
       R_CheckUserInterrupt();
     }
-    keyName = grib_keys_iterator_get_name(keyIter);
-    err = grib_get_native_type(h, keyName, &keyType);
+    keyName = codes_keys_iterator_get_name(keyIter);
+    err = codes_get_native_type(h, keyName, &keyType);
     if (skip_keys(keyName, keyType, err)) {
       continue;
     } else {
       SET_STRING_ELT(gribr_list_names, n, mkChar(keyName));
-      err = grib_get_size(h, keyName, &keySize);
+      err = codes_get_size(h, keyName, &keySize);
       if (err) {
         gerror("unable to get key value size", err);
       }
       switch(keyType) {
 
-      case GRIB_TYPE_DOUBLE:
+      case CODES_TYPE_DOUBLE:
         if (keySize > 1) {
           keyVal_d = malloc(keySize*sizeof(double));
-          err = grib_get_double_array(h, keyName, keyVal_d, &keySize);
+          err = codes_get_double_array(h, keyName, keyVal_d, &keySize);
           if (err) {
             gerror("unable to get double array", err);
           }
@@ -131,11 +131,11 @@ SEXP gribr_message_from_handle(grib_handle *h, int isMulti) {
           }
         } else {
           keyVal_d = malloc(sizeof(double));
-          err = grib_get_double(h, keyName, keyVal_d);
+          err = codes_get_double(h, keyName, keyVal_d);
           if (err) {
             gerror("unable to get double scalar", err);
           }
-          if (*keyVal_d == GRIB_MISSING_DOUBLE) {
+          if (*keyVal_d == CODES_MISSING_DOUBLE) {
             REPROTECT(gribr_double = ScalarReal(NA_REAL), pro_double);
             nfree(keyVal_d);
           } else {
@@ -146,13 +146,13 @@ SEXP gribr_message_from_handle(grib_handle *h, int isMulti) {
         SET_VECTOR_ELT(gribr_grib_message, n, gribr_double);
         break;
 /*
- *Since R does not have a native long type, we can keep precision by doing
+ * Since R does not have a native long type, we can keep precision by doing
  * some casting and using doubles instead. Basically, C long --> R numeric
  */
-      case GRIB_TYPE_LONG:
+      case CODES_TYPE_LONG:
         if (keySize > 1) {
           keyVal_l = malloc(keySize*sizeof(long));
-          err = grib_get_long_array(h, keyName, keyVal_l, &keySize);
+          err = codes_get_long_array(h, keyName, keyVal_l, &keySize);
           if (err) {
             gerror("unable to get long array", err);
           }
@@ -171,11 +171,11 @@ SEXP gribr_message_from_handle(grib_handle *h, int isMulti) {
           }
         } else {
           keyVal_l = malloc(sizeof(long));
-          err = grib_get_long(h, keyName, keyVal_l);
+          err = codes_get_long(h, keyName, keyVal_l);
           if (err) {
             gerror("unable to get long scalar", err);
           }
-          if (*keyVal_l == GRIB_MISSING_LONG) {
+          if (*keyVal_l == CODES_MISSING_LONG) {
             REPROTECT(gribr_long = ScalarInteger(NA_INTEGER), pro_long);
             nfree(keyVal_l);
           } else {
@@ -186,40 +186,12 @@ SEXP gribr_message_from_handle(grib_handle *h, int isMulti) {
         }
         SET_VECTOR_ELT(gribr_grib_message, n, gribr_long);
         break;
-/*
- * This is a working version of taking long values to R integers. Will keep
- * for now.
- */
-/*      case GRIB_TYPE_LONG:
-        if (keySize > 1) {
-          keyVal_l = malloc(keySize*sizeof(long));
-          err = grib_get_long_array(h, keyName, keyVal_l, &keySize);
-          if (err) {
-            gerror("unable to get long array", err);
-          }
-          REPROTECT(gribr_long = allocVector(INTSXP, keySize), pro_long);
-          p_rgib_long = INTEGER(gribr_long);
-          for (i = 0; i < keySize; i++) {
-            p_rgib_long[i] = (int)keyVal_l[i];
-          }
-          nfree(keyVal_l);
-        } else {
-          keyVal_l = malloc(sizeof(long));
-          err = grib_get_long(h, keyName, keyVal_l);
-          if (err) {
-            gerror("unable to get long scalar", err);
-          }
-          REPROTECT(gribr_long = ScalarInteger(*keyVal_l), pro_long);
-          nfree(keyVal_l);
-        }
-        SET_VECTOR_ELT(gribr_grib_message, n, gribr_long);
-        break;
-*/
-      case GRIB_TYPE_STRING:
+
+      case CODES_TYPE_STRING:
         keyLength = MAX_VAL_LEN;
         keyVal_c = malloc(keyLength);
         memset(keyVal_c, '\0', keyLength);
-        err = grib_get_string(h, keyName, keyVal_c, &keyLength);
+        err = codes_get_string(h, keyName, keyVal_c, &keyLength);
         if (err) {
           gerror("unable to get string", err);
         } else {
@@ -236,19 +208,7 @@ SEXP gribr_message_from_handle(grib_handle *h, int isMulti) {
         SET_VECTOR_ELT(gribr_grib_message, n, gribr_char);
         nfree(keyVal_c);
         break;
-/* KEEP THIS OLD VERSION JUST IN CASE
-      case GRIB_TYPE_STRING:
-        keyLength = MAX_VAL_LEN;
-        memset(keyVal_c, '\0', keyLength);
-        err = grib_get_string(h, keyName, keyVal_c, &keyLength);
-        if (err) {
-          SET_STRING_ELT(gribr_char, 0, ScalarString(NA_STRING));
-        } else {
-          SET_STRING_ELT(gribr_char, 0, mkChar(keyVal_c));
-        }
-        SET_VECTOR_ELT(gribr_grib_message, n, gribr_char);
-        break;
-*/
+
       default:
         /* Skip others/errors */
         break;

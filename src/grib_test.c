@@ -13,7 +13,11 @@ SEXP gribr_grib_test(SEXP gribr_fileName) {
   p_fileName = CHAR(STRING_ELT(gribr_fileName, 0));
   gribFile = fopen(p_fileName, "rb");
 
-  err = grib_count_in_file(DEFAULT_CONTEXT, gribFile, &count);
+  if (gribFile == NULL) {
+    error("gribr: Could not open file %s", p_fileName);
+  }
+
+  err = codes_count_in_file(DEFAULT_CONTEXT, gribFile, &count);
 
   /*
    * TRUE denotes the file is likely not a GRIB file. TRUE is

@@ -4,12 +4,12 @@ test_that("Incorrect message requests are handled correctly", {
   g <- grib_open(system.file("extdata", "lfpw.grib1", package = "gribr"))
 
   # grib_get_message
-  expect_error(grib_get_message(g,-1), "out of bounds")
-  expect_error(grib_get_message(g,0), "out of bounds")
-  expect_error(grib_get_message(g,999), "out of bounds")
-  gm <- grib_get_message(g,1)
+  expect_error(grib_get_message(g, -1), "out of bounds")
+  expect_error(grib_get_message(g, 0), "out of bounds")
+  expect_error(grib_get_message(g, 999), "out of bounds")
+  gm <- grib_get_message(g, 1)
   expect_s3_class(gm, "gribMessage")
-  gm <- grib_get_message(g, c(1,2))
+  gm <- grib_get_message(g, c(1, 2))
   expect_equal(length(gm), 2)
   expect_equal(all(sapply(gm, class) == "gribMessage"), TRUE)
 

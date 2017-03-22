@@ -38,7 +38,8 @@
 
 grib_cube <- function(gribObj, shortName, typeOfLevel, decreasing = FALSE) {
 
-  cubeSelect <- grib_select(gribObj, list(shortName = shortName, typeOfLevel = typeOfLevel))
+  cubeSelect <- grib_select(gribObj, list(shortName = shortName,
+                                          typeOfLevel = typeOfLevel))
 
   # Not all vertical coordinates increase with height
   levels <- sapply(cubeSelect, function(x) x$level)
@@ -50,7 +51,7 @@ grib_cube <- function(gribObj, shortName, typeOfLevel, decreasing = FALSE) {
   nz <- length(oLevels)
 
   if (length(unique(nx)) > 1 || length(unique(ny)) > 1) {
-    stop('All level dimensions must be equal to create cube')
+    stop("All level dimensions must be equal to create cube")
   } else {
     nx <- unique(nx)
     ny <- unique(ny)
@@ -59,7 +60,7 @@ grib_cube <- function(gribObj, shortName, typeOfLevel, decreasing = FALSE) {
   cube <- array(dim = c(nx, ny, nz))
 
   for (ll in oLevels) {
-    cube[,,ll] <- cubeSelect[[ll]]$values
+    cube[, , ll] <- cubeSelect[[ll]]$values
   }
 
   cube

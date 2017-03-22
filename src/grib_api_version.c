@@ -8,7 +8,7 @@ SEXP gribr_api_version(void) {
   char string[MAX_VAL_LEN];
   SEXP gribr_version;
 
-  version = grib_get_api_version();
+  version = codes_get_api_version();
   sprintf(string, "%ld", version);
 
   gribr_version = PROTECT(mkString(string));

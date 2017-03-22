@@ -25,12 +25,18 @@
 
 grib_open <- function(file) {
 
-  # test to make sure file is actuall GRIB format
-  if (.Call("gribr_grib_test", path.expand(file))) {
+  # does it exist and is it a file
+  normFile <- normalizePath(file, mustWork = FALSE)
+  if (!utils::file_test("-f", normFile)) {
+    stop("%s is not a valid file", normFile)
+  }
+
+  # test to make sure file is actually in GRIB format
+  if (.Call("gribr_grib_test", normFile)) {
     stop("File is not GRIB format (0 messages found)")
   }
 
-  handle <- .Call("gribr_grib_open", path.expand(file))
+  handle <- .Call("gribr_grib_open", normFile)
   if (class(handle) != "externalptr") {
     stop("Problem retrieving grib handle")
   }
@@ -39,7 +45,7 @@ grib_open <- function(file) {
   isMultiMessage <- .Call("gribr_is_multi_message", handle)
 
   # class definition for gribr package
-  gribObj <-  list(file = path.expand(file),
+  gribObj <-  list(file = normFile,
                    handle = handle,
                    isMultiMessage = isMultiMessage
                    )

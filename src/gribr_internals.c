@@ -20,7 +20,7 @@ SEXP gribr_is_null_ptr (SEXP gribr_ptr) {
 }
 
 void gerror(const char *str, int err) {
-  error("gribr: %s\nGRIB ERROR %s", str, grib_get_error_message(err));
+  error("gribr: %s\nGRIB ERROR %s", str, codes_get_error_message(err));
 }
 
 void grewind(FILE* file) {
@@ -43,11 +43,11 @@ int skip_keys(const char* keyName, int keyType, int err) {
         !strcmp(keyName, "7777") ||
         !strcmp(keyName, "oneThousand") ||
         !strcmp(keyName, "hundred") ||
-        keyType == GRIB_TYPE_BYTES ||
-        keyType == GRIB_TYPE_LABEL ||
-        keyType == GRIB_TYPE_MISSING ||
-        keyType == GRIB_TYPE_SECTION ||
-        keyType == GRIB_TYPE_UNDEFINED ||
+        keyType == CODES_TYPE_BYTES ||
+        keyType == CODES_TYPE_LABEL ||
+        keyType == CODES_TYPE_MISSING ||
+        keyType == CODES_TYPE_SECTION ||
+        keyType == CODES_TYPE_UNDEFINED ||
         err) {
       return 1;
     }
@@ -69,20 +69,20 @@ SEXP gribr_is_multi_message(SEXP fileHandle) {
   int err;
   int n_on;
   int n_off;
-  grib_handle *h = NULL;
+  codes_handle *h = NULL;
   FILE *file = NULL;
 
   file = R_ExternalPtrAddr(fileHandle);
 
-  err = grib_count_in_file(DEFAULT_CONTEXT, file, &n_off);
+  err = codes_count_in_file(DEFAULT_CONTEXT, file, &n_off);
   if (err) {
     gerror("unable to count grib messages", err);
   }
 
-  grib_multi_support_on(DEFAULT_CONTEXT);
-  /*err = grib_count_in_file(DEFAULT_CONTEXT, file, &n_on);*/
+  codes_grib_multi_support_on(DEFAULT_CONTEXT);
+
   n_on = 0;
-  while((h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err))) {
+  while((h = codes_grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err))) {
     n_on++;
   }
   if (err) {
@@ -96,7 +96,7 @@ SEXP gribr_is_multi_message(SEXP fileHandle) {
     error("gribr: unable to rewind file");
   }
 
-  grib_handle_delete(h);
+  codes_handle_delete(h);
 
   if (n_on != n_off) {
     return ScalarLogical(TRUE);

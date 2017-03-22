@@ -15,7 +15,7 @@ SEXP gribr_grib_get_message(SEXP gribr_fileHandle, SEXP gribr_messages, SEXP gri
   R_len_t messagesLength;
   R_len_t count;
   FILE *file = NULL;
-  grib_handle *h = NULL;
+  codes_handle *h = NULL;
   PROTECT_INDEX pro_message;
   SEXP gribr_message;
 
@@ -29,11 +29,11 @@ SEXP gribr_grib_get_message(SEXP gribr_fileHandle, SEXP gribr_messages, SEXP gri
   PROTECT_WITH_INDEX(gribr_message = R_NilValue, &pro_message);
 
   if (is_multi) {
-    grib_multi_support_on(DEFAULT_CONTEXT);
+    codes_grib_multi_support_on(DEFAULT_CONTEXT);
   }
 
   count = 0;
-  while((h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err))) {
+  while((h = codes_grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err))) {
     count++;
   }
   if (err) {
@@ -61,7 +61,7 @@ SEXP gribr_grib_get_message(SEXP gribr_fileHandle, SEXP gribr_messages, SEXP gri
         error("gribr: message number out of bounds");
       }
 
-      h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err);
+      h = codes_grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err);
       if (err) {
         gerror("unable to get grib handle", err);
       }
@@ -78,7 +78,7 @@ SEXP gribr_grib_get_message(SEXP gribr_fileHandle, SEXP gribr_messages, SEXP gri
       if (i % INTERRUPT_FREQ == 0) {
         R_CheckUserInterrupt();
       }
-      h = grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err);
+      h = codes_grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err);
       if (err) {
         gerror("unable to open grib handle", err);
       }
@@ -88,7 +88,7 @@ SEXP gribr_grib_get_message(SEXP gribr_fileHandle, SEXP gribr_messages, SEXP gri
     }
   }
 
-  grib_handle_delete(h);
+  codes_handle_delete(h);
   grewind(file);
 
   UNPROTECT(1);

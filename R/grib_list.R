@@ -16,12 +16,12 @@
 #' other keys \item "duplicate: skip duplicate keys \item "func": skip keys that
 #' are functions }
 #'
-#' The \code{nameSpace} parameter is a quick and easy way to grab a subset of
+#' The \code{namespace} parameter is a quick and easy way to grab a subset of
 #' the keys available in a GRIB file using pre-defined groups of related keys.
 #' To get a full set of keys, extract a \code{gribMessage} and view the
 #' \code{names}. More information about GRIB key namespaces can be found
 #' \href{https://software.ecmwf.int/wiki/display/GRIB/GRIB+API+Frequently+Asked+Questions+FAQ}{
-#' here}. The \code{nameSpace} options used in this package are described below:
+#' here}. The \code{namespace} options used in this package are described below:
 #'
 #' \itemize{ \item "ls": most commonly used keys \item "parameter": keys related
 #' to the parameter \item "statistics": keys related to statiscal values of the
@@ -45,7 +45,7 @@
 #' @param filter optional \code{character} string that controls what keys will
 #'   be filtered out of the resulting GRIB message. The default is "none". See
 #'   'Details' for other options
-#' @param nameSpace optional \code{character} string that can control what
+#' @param namespace optional \code{character} string that can control what
 #'   special, pre-defined group of keys gets return. Defaults to returning all.
 #'   See 'Details' for full description.
 #' @param output optional \code{character} string that controls the output
@@ -73,9 +73,10 @@
 #'
 #' grib_close(g)
 
-grib_list <- function(gribObj, filter = "none", nameSpace = "ls", output = "table") {
+grib_list <- function(gribObj, filter = "none", namespace = "ls",
+                      output = "table") {
   # this matches what is defined in the GRIB API
-  gribFilterList = list(
+  gribFilterList <- list(
     none      = 0,
     readonly  = bitwShiftL(1, 0),
     optional  = bitwShiftL(1, 1),
@@ -98,18 +99,18 @@ grib_list <- function(gribObj, filter = "none", nameSpace = "ls", output = "tabl
     stop("Invalid GRIB keys filter")
   }
 
-  if (!(nameSpace %in% c("ls", "parameter","statistics",
+  if (!(namespace %in% c("ls", "parameter", "statistics",
                          "time", "geography", "vertical",
                          "mars"))) {
     stop("Invalid GRIB keys namespace")
   }
 
   if (output == "table") {
-    .Call("gribr_grib_df",gribObj$handle, as.integer(gribFilterList[filter]),
-                          nameSpace, gribObj$isMultiMessage)
+    .Call("gribr_grib_df", gribObj$handle, as.integer(gribFilterList[filter]),
+                          namespace, gribObj$isMultiMessage)
   } else if (output == "string") {
-    .Call("gribr_grib_list",gribObj$handle, as.integer(gribFilterList[filter]),
-          nameSpace, gribObj$isMultiMessage)
+    .Call("gribr_grib_list", gribObj$handle, as.integer(gribFilterList[filter]),
+          namespace, gribObj$isMultiMessage)
   } else {
     stop("Unknown output type")
   }

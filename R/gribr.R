@@ -40,7 +40,6 @@ NULL
 
 #' @useDynLib gribr, .registration = TRUE, .fixes = "rgc_"
 
-.onUnload <- function (libpath = find.package("gribr")) {
+.onUnload <- function(libpath = find.package("gribr")) {
   library.dynam.unload("gribr", libpath)
 }
-

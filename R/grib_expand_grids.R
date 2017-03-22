@@ -37,7 +37,7 @@
 
 grib_expand_grids <- function(gribMessage, vector = FALSE) {
 
-  if(has.key(gribMessage, "Nx") && has.key(gribMessage, "Ny")) {
+  if (has.key(gribMessage, "Nx") && has.key(gribMessage, "Ny")) {
     nx <- gribMessage$Nx
     ny <- gribMessage$Ny
   } else {

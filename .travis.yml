@@ -1,0 +1,47 @@
+# R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
+
+language: r
+
+cache: packages
+
+addons:
+  apt:
+    packages:
+      - libproj-dev
+      - libopenjpeg-dev
+      - libjasper-dev
+      - libpng-dev
+      - zlib1g-dev
+
+env:
+  global:
+    - MAKEFLAGS="j -2"
+
+matrix:
+  include:
+    - env: ECCODES_VERSION=2.1.0
+      sudo: required
+      os: linux
+      dist: trusty
+      r_check_args: --as-cran
+      before_install: ./install_eccodes.sh
+    - env: ECCODES_VERSION=2.1.0
+      latex: false
+      sudo: required
+      os: osx
+      r_check_args: --as-cran
+      before_install:
+        - brew update
+        - brew outdated libpng || brew upgrade libpng
+        - brew outdated lzlib || brew upgrade lzlib
+        - brew outdated jpeg || brew upgrade jpeg
+        - brew install jasper
+        - brew install openjpeg
+        - ./install_eccodes.sh
+
+warnings_are_errors: true
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
