@@ -10,12 +10,12 @@ This project was started to address a need to easily read GRIB data into R as ha
 gribr is functional at this point in time. Several functions exist for reading GRIB messages and extracting them. Functions are also available to help with projecting the data. All of the documentation has been written and some basic examples exist to get you started. I have yet to develop good plotting examples. gribr now works exclusively with ecCodes as all future GRIB API development will occur within that library.
 
 ### Installation
-**NOTE:** This is not _natively_ available for Windows at this time due to difficulties compiling the ecCodes on that platform. See below for details.
+**NOTE:** This is not _natively_ available for Windows at this time due to difficulties compiling ecCodes on that platform. See below for details.
 
 1. Prerequisites
-  * gribr depends onthe ECMWF ecCodes package (>=2.0.0), and the proj4 R package
+  * gribr depends on the ECMWF ecCodes package (>=2.0.0), and the proj4 R package
   * ecCodes can be easily installed via a package manager on Linux (`apt-get`, `yum`, etc.) or MacOS (`port`, `fink`, `brew`). As this library is newer, it may not be widely available yet. However, this would be the recommened option. Since some repositories carry versions that are too old, you may have to install from source.
-    * To install from source, download the ecCodes [here](https://software.ecmwf.int/wiki/display/ECC/Releases)
+    * To install from source, download ecCodes [here](https://software.ecmwf.int/wiki/display/ECC/Releases)
 2. Set up environment (if necessary)
   * _ecCodes installed in a system location_: The the libraries/headers should be found by the linker/compiler without any additional environmental settings.
   * _ecCodes installed in a non-system/user location_: When ecCodes is installed in a non-system location (i.e., a path that is not in the `ld` search paths), there are some extra steps that need to be taken depending on your use case:
@@ -26,11 +26,14 @@ gribr is functional at this point in time. Several functions exist for reading G
 3. Install gribr
   * _From the command line_:
    ```shell
-   R CMD INSTALL /path/to/gribr --configure-vars="ECCODES_CPPFLAGS=-I/path/to/eccodes/include ECCODES_LIBS='-L/path/to/eccodes/lib -leccodes'"
+   R CMD INSTALL /path/to/gribr --configure-vars="ECCODES_CPPFLAGS=-I/path/to/eccodes/include ECCODES_LIBS=-L/path/to/eccodes/lib"
    ```
   * _From within R or RStudio_:
    ```R
-   install.packages("path/to/cloned/gribr/repo", repos = NULL, configure.vars = c("ECCODES_LIBS='-L/path/to/eccodes/lib -leccodes'", "ECCODES_CPPFLAGS=-I/path/to/eccodes/include"))
+   install.packages("path/to/cloned/gribr/repo", repos = NULL, configure.vars = c("ECCODES_LIBS=-L/path/to/eccodes/lib", "ECCODES_CPPFLAGS=-I/path/to/eccodes/include"))
+   ```
+   ```R
+   devtools::install_github("nawendt/gribr", args = "--configure-args='ECCODES_LIBS=-L/path/to/eccodes/lib ECCODES_CPPFLAGS=-I/path/to/eccodes/include'")
    ```
 
 ### Windows Install Options
@@ -45,6 +48,6 @@ __Current Needs__: While all improvements are welcome, here are a few specific n
   * Build GRIB API on Windows to get gribr ported to that platform
   * Plotting wrapper functions to give some quick/easy plotting functionality to the package
 
-####Contact
+#### Contact
 [Nathan Wendt](mailto:nawendt@ou.edu)
 
