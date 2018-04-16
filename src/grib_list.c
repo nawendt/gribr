@@ -16,6 +16,7 @@ SEXP gribr_grib_list(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_namesp
   int filter;
   char value[MAX_VAL_LEN];
   size_t valueLength=MAX_VAL_LEN;
+  codes_keys_iterator* keyIter = NULL;
   SEXP gribr_grib_vec;
 
   filter = asInteger(gribr_filter);
@@ -36,6 +37,7 @@ SEXP gribr_grib_list(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_namesp
   n = 0;
   while((h = codes_grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err))) {
     n++;
+    codes_handle_delete(h);
   }
   if (err) {
     gerror("unable to count grib messages", err);
@@ -49,7 +51,6 @@ SEXP gribr_grib_list(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_namesp
   /* The grib handle is our GRIB message iterator. Each time we call new_from_file,
      we are advancing to the next message in the file. */
   while((h = codes_grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err)) != NULL) {
-    codes_keys_iterator* keyIter=NULL;
 
     if (h == NULL) {
       gerror("gribr: unable to create grib handle", err);
@@ -87,14 +88,12 @@ SEXP gribr_grib_list(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_namesp
 
     codes_keys_iterator_delete(keyIter);
     codes_handle_delete(h);
-
   }
   /* Be kind, please rewind. Without this the next call of grib_list will fail */
   if (fseek(file, GRIB_FILE_START, SEEK_SET)) {
     error("gribr: unable to rewind file");
   }
 
-  codes_handle_delete(h);
   UNPROTECT(1);
   return gribr_grib_vec;
 }

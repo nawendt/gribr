@@ -35,12 +35,13 @@ SEXP gribr_grib_get_message(SEXP gribr_fileHandle, SEXP gribr_messages, SEXP gri
   count = 0;
   while((h = codes_grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err))) {
     count++;
+    codes_handle_delete(h);
   }
   if (err) {
     gerror("unable to count grib messages", err);
   }
 
-  file = R_ExternalPtrAddr(gribr_fileHandle);
+  // file = R_ExternalPtrAddr(gribr_fileHandle);
   if (ftell(file) != 0) {
     fseek(file, 0, SEEK_SET);
   }
@@ -85,10 +86,10 @@ SEXP gribr_grib_get_message(SEXP gribr_fileHandle, SEXP gribr_messages, SEXP gri
       if ((p_gribr_messages[0] - 1) == i) {
         REPROTECT(gribr_message = gribr_message_from_handle(h, is_multi), pro_message);
       }
+      codes_handle_delete(h);
     }
   }
 
-  codes_handle_delete(h);
   grewind(file);
 
   UNPROTECT(1);

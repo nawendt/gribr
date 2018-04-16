@@ -84,6 +84,7 @@ SEXP gribr_is_multi_message(SEXP fileHandle) {
   n_on = 0;
   while((h = codes_grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err))) {
     n_on++;
+    codes_handle_delete(h);
   }
   if (err) {
     gerror("unable to count grib messages", err);
@@ -96,7 +97,7 @@ SEXP gribr_is_multi_message(SEXP fileHandle) {
     error("gribr: unable to rewind file");
   }
 
-  codes_handle_delete(h);
+  codes_grib_multi_support_off(DEFAULT_CONTEXT);
 
   if (n_on != n_off) {
     return ScalarLogical(TRUE);

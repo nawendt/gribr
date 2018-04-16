@@ -151,6 +151,7 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_keyList, SEXP gribr_isMulti) {
         gerror("unable to create grib handle", err);
       }
       index_count++;
+      codes_handle_delete(hi);
     }
 
     if (index_count == 0) {
@@ -168,12 +169,12 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_keyList, SEXP gribr_isMulti) {
       }
       SET_VECTOR_ELT(gribr_temp, m++,
                      gribr_message_from_handle(hi, is_multi));
+      codes_handle_delete(hi);
     }
     SET_VECTOR_ELT(gribr_selected, i, gribr_temp);
   }
 
   codes_handle_delete(h);
-  codes_handle_delete(hi);
   codes_index_delete(index);
 
   UNPROTECT(2);

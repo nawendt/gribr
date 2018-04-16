@@ -217,6 +217,8 @@ SEXP gribr_message_from_handle(codes_handle *h, int isMulti) {
     n++;
   }
 
+  codes_keys_iterator_delete(keyIter);
+
   if (bitmap) {
     nfree(bitmap);
   }
