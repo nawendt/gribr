@@ -60,8 +60,10 @@ SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_namespac
       while(codes_keys_iterator_next(keyIter)) {
         m++;
       }
+      codes_keys_iterator_delete(keyIter);
     }
     toggle++;
+    codes_handle_delete(h);
   }
   if (err) {
     gerror("unable to count grib messages/keys", err);
@@ -90,6 +92,8 @@ SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_namespac
       INTEGER(keyTypes)[i] = keyType;
       i++;
     }
+    codes_keys_iterator_delete(keyIter);
+    codes_handle_delete(h);
   }
   if (err) {
     gerror("unable to process table header", err);
@@ -189,16 +193,17 @@ SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_namespac
       }
     }
     j++;
+    codes_keys_iterator_delete(keyIter);
+    codes_handle_delete(h);
   }
 
-  /* Be kind, please rewind. Without this the next call of grib_list will fail */
+  /* Be kind, please rewind. Without this the next call of grib_df will fail */
   grewind(file);
 
   /* Finalize data.frame attributes and class */
   classgets(gribr_grib_df, mkString("data.frame"));
   setAttrib(gribr_grib_df, R_RowNamesSymbol, rowNames);
 
-  codes_handle_delete(h);
   UNPROTECT(4);
   return gribr_grib_df;
 }

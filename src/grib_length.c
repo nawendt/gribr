@@ -20,6 +20,7 @@ SEXP gribr_grib_length(SEXP gribr_fileHandle) {
   n_on = 0;
   while((h = codes_grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err))) {
     n_on++;
+    codes_handle_delete(h);
   }
   if (err) {
     gerror("unable to count grib messages", err);
@@ -29,8 +30,6 @@ SEXP gribr_grib_length(SEXP gribr_fileHandle) {
    * leave the file handle in a unusable state and cause
    * R to crash */
   grewind(file);
-
-  codes_handle_delete(h);
 
   if (n_on != n_off) {
     return ScalarInteger(n_on);
