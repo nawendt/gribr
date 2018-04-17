@@ -1,10 +1,10 @@
 Package: gribr
 Type: Package
 Title: Read GRIB Files
-Version: 1.2.0
-Date: 2017-03-21
-Author: Nathan Wendt <nawendt@ou.edu>
-Maintainer: Nathan Wendt <nawendt@ou.edu>
+Version: 1.2.1
+Date: 2018-04-16
+Author: Nathan Wendt <nathan.wendt@noaa.gov>
+Maintainer: Nathan Wendt <nathan.wendt@noaa.gov>
 Description: R interface for GRIB files using ECMWF ecCodes. Easily read GRIB data into native R data types.
 License: BSD_2_clause + file LICENSE
 LazyData: TRUE
