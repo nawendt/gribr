@@ -50,5 +50,5 @@ __Current Needs__: While all improvements are welcome, here are a few specific n
   * Plotting wrapper functions to give some quick/easy plotting functionality to the package
 
 #### Contact
-[Nathan Wendt](mailto:nawendt@ou.edu)
+[Nathan Wendt](mailto:nathan.wendt@noaa.gov)
 
