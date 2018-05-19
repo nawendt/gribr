@@ -19,13 +19,161 @@ env:
 
 matrix:
   include:
-    - env: ECCODES_VERSION=2.1.0
+    - env: ECCODES_VERSION=2.0.0
       sudo: required
       os: linux
       dist: trusty
       r_check_args: --as-cran
       before_install: ./install_eccodes.sh
     - env: ECCODES_VERSION=2.1.0
+      sudo: required
+      os: linux
+      dist: trusty
+      r_check_args: --as-cran
+      before_install: ./install_eccodes.sh
+    - env: ECCODES_VERSION=2.2.0
+      sudo: required
+      os: linux
+      dist: trusty
+      r_check_args: --as-cran
+      before_install: ./install_eccodes.sh
+    - env: ECCODES_VERSION=2.3.0
+      sudo: required
+      os: linux
+      dist: trusty
+      r_check_args: --as-cran
+      before_install: ./install_eccodes.sh
+    - env: ECCODES_VERSION=2.4.0
+      sudo: required
+      os: linux
+      dist: trusty
+      r_check_args: --as-cran
+      before_install: ./install_eccodes.sh
+    - env: ECCODES_VERSION=2.5.0
+      sudo: required
+      os: linux
+      dist: trusty
+      r_check_args: --as-cran
+      before_install: ./install_eccodes.sh
+    - env: ECCODES_VERSION=2.6.0
+      sudo: required
+      os: linux
+      dist: trusty
+      r_check_args: --as-cran
+      before_install: ./install_eccodes.sh
+    - env: ECCODES_VERSION=2.7.0
+      sudo: required
+      os: linux
+      dist: trusty
+      r_check_args: --as-cran
+      before_install: ./install_eccodes.sh
+    - env:
+      - ECCODES_VERSION=2.0.0
+      - OPENJPEG_INCLUDE_DIR=/usr/local/include/openjpeg-2.3
+      latex: false
+      sudo: required
+      os: osx
+      r_check_args: --as-cran
+      before_install:
+        - brew update
+        - brew outdated libpng || brew upgrade libpng
+        - brew outdated lzlib || brew upgrade lzlib
+        - brew outdated jpeg || brew upgrade jpeg
+        - brew install openjpeg
+        - ./install_eccodes.sh
+    - env:
+      - ECCODES_VERSION=2.1.0
+      - OPENJPEG_INCLUDE_DIR=/usr/local/include/openjpeg-2.3
+      latex: false
+      sudo: required
+      os: osx
+      r_check_args: --as-cran
+      before_install:
+        - brew update
+        - brew outdated libpng || brew upgrade libpng
+        - brew outdated lzlib || brew upgrade lzlib
+        - brew outdated jpeg || brew upgrade jpeg
+        - brew install jasper
+        - brew install openjpeg
+        - ./install_eccodes.sh
+    - env:
+      - ECCODES_VERSION=2.2.0
+      - OPENJPEG_INCLUDE_DIR=/usr/local/include/openjpeg-2.3
+      latex: false
+      sudo: required
+      os: osx
+      r_check_args: --as-cran
+      before_install:
+        - brew update
+        - brew outdated libpng || brew upgrade libpng
+        - brew outdated lzlib || brew upgrade lzlib
+        - brew outdated jpeg || brew upgrade jpeg
+        - brew install jasper
+        - brew install openjpeg
+        - ./install_eccodes.sh
+    - env:
+      - ECCODES_VERSION=2.3.0
+      - OPENJPEG_INCLUDE_DIR=/usr/local/include/openjpeg-2.3
+      latex: false
+      sudo: required
+      os: osx
+      r_check_args: --as-cran
+      before_install:
+        - brew update
+        - brew outdated libpng || brew upgrade libpng
+        - brew outdated lzlib || brew upgrade lzlib
+        - brew outdated jpeg || brew upgrade jpeg
+        - brew install jasper
+        - brew install openjpeg
+        - ./install_eccodes.sh
+    - env:
+      - ECCODES_VERSION=2.4.0
+      - OPENJPEG_INCLUDE_DIR=/usr/local/include/openjpeg-2.3
+      latex: false
+      sudo: required
+      os: osx
+      r_check_args: --as-cran
+      before_install:
+        - brew update
+        - brew outdated libpng || brew upgrade libpng
+        - brew outdated lzlib || brew upgrade lzlib
+        - brew outdated jpeg || brew upgrade jpeg
+        - brew install jasper
+        - brew install openjpeg
+        - ./install_eccodes.sh
+    - env:
+      - ECCODES_VERSION=2.5.0
+      - OPENJPEG_INCLUDE_DIR=/usr/local/include/openjpeg-2.3
+      latex: false
+      sudo: required
+      os: osx
+      r_check_args: --as-cran
+      before_install:
+        - brew update
+        - brew outdated libpng || brew upgrade libpng
+        - brew outdated lzlib || brew upgrade lzlib
+        - brew outdated jpeg || brew upgrade jpeg
+        - brew install jasper
+        - brew install openjpeg
+        - ./install_eccodes.sh
+    - env:
+      - ECCODES_VERSION=2.6.0
+      - OPENJPEG_INCLUDE_DIR=/usr/local/include/openjpeg-2.3
+      latex: false
+      sudo: required
+      os: osx
+      r_check_args: --as-cran
+      before_install:
+        - brew update
+        - brew outdated libpng || brew upgrade libpng
+        - brew outdated lzlib || brew upgrade lzlib
+        - brew outdated jpeg || brew upgrade jpeg
+        - brew install jasper
+        - brew install openjpeg
+        - ./install_eccodes.sh
+    - env:
+      - ECCODES_VERSION=2.7.0
+      - OPENJPEG_INCLUDE_DIR=/usr/local/include/openjpeg-2.3
       latex: false
       sudo: required
       os: osx
