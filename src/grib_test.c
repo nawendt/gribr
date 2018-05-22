@@ -20,6 +20,14 @@ SEXP gribr_grib_test(SEXP gribr_fileName) {
   err = codes_count_in_file(DEFAULT_CONTEXT, gribFile, &count);
 
   /*
+   * CLOSE THE FILE HERE -- the GRIB file does not have an
+   * file handle for R to use yet. The file descriptor must
+   * be closed or it will leak and cause issues for
+   * large batch processing scripts.
+   */
+  fclose(gribFile);
+
+  /*
    * TRUE denotes the file is likely not a GRIB file. TRUE is
    * returned when there are 0 messages in the file or when
    * some sort of error has occurred trying to read the file
