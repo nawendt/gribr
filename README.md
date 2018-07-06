@@ -14,7 +14,7 @@ gribr is functional at this point in time. Several functions exist for reading G
 **NOTE:** This is not _natively_ available for Windows at this time due to difficulties compiling ecCodes on that platform. See below for details.
 
 ##### Using `conda` (Recommended)
-`gribr` can now be install with `conda` using the `conda-forge` channel. This is the preferred method as it simplifies things greatly and makes it possible to set up a clean environment to work in. RStudio can be pointed to use the R binary in this environment along with its associated libary, if that is what you use. To install, just run the following:
+gribr can now be install with `conda` using the conda-forge channel. This is the preferred method as it simplifies things greatly and makes it possible to set up a clean environment to work in. RStudio can be pointed to use the R binary in this environment along with its associated libary, if that is what you use. To install, just run the following:
 ```shell
 conda install -c conda-forge r-gribr
 ```
