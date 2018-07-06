@@ -13,6 +13,11 @@ gribr is functional at this point in time. Several functions exist for reading G
 ### Installation
 **NOTE:** This is not _natively_ available for Windows at this time due to difficulties compiling ecCodes on that platform. See below for details.
 
+#### Install with `conda` (Recommended)
+`gribr` can now be install with `conda` using the `conda-forge` channel. This is the preferred method as it simplifies things greatly and makes it possible to set up a clean environment to work in. Just run the following:
+`conda install -c conda-forge r-gribr`
+
+#### Installation From Package Managers or Source
 1. Prerequisites
   * gribr depends on the ECMWF ecCodes package (>=2.0.0), and the proj4 R package
   * ecCodes can be easily installed via a package manager on Linux (`apt-get`, `yum`, etc.) or MacOS (`port`, `fink`, `brew`). As this library is newer, it may not be widely available yet. However, this would be the recommened option. Since some repositories carry versions that are too old, you may have to install from source.
