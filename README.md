@@ -15,7 +15,9 @@ gribr is functional at this point in time. Several functions exist for reading G
 
 ##### Using `conda` (Recommended)
 `gribr` can now be install with `conda` using the `conda-forge` channel. This is the preferred method as it simplifies things greatly and makes it possible to set up a clean environment to work in. Just run the following:
-`conda install -c conda-forge r-gribr`
+```shell
+conda install -c conda-forge r-gribr
+```
 
 ##### Using Package Managers or Source
 1. Prerequisites
