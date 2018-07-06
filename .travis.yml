@@ -67,6 +67,12 @@ matrix:
       dist: trusty
       r_check_args: --as-cran
       before_install: ./install_eccodes.sh
+    - env: ECCODES_VERSION=2.8.0
+      sudo: required
+      os: linux
+      dist: trusty
+      r_check_args: --as-cran
+      before_install: ./install_eccodes.sh
     - env:
       - ECCODES_VERSION=2.0.0
       - OPENJPEG_INCLUDE_DIR=/usr/local/include/openjpeg-2.3
@@ -173,6 +179,21 @@ matrix:
         - ./install_eccodes.sh
     - env:
       - ECCODES_VERSION=2.7.0
+      - OPENJPEG_INCLUDE_DIR=/usr/local/include/openjpeg-2.3
+      latex: false
+      sudo: required
+      os: osx
+      r_check_args: --as-cran
+      before_install:
+        - brew update
+        - brew outdated libpng || brew upgrade libpng
+        - brew outdated lzlib || brew upgrade lzlib
+        - brew outdated jpeg || brew upgrade jpeg
+        - brew install jasper
+        - brew install openjpeg
+        - ./install_eccodes.sh
+    - env:
+      - ECCODES_VERSION=2.8.0
       - OPENJPEG_INCLUDE_DIR=/usr/local/include/openjpeg-2.3
       latex: false
       sudo: required
