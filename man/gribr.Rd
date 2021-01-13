@@ -3,7 +3,6 @@
 \docType{package}
 \name{gribr}
 \alias{gribr}
-\alias{gribr-package}
 \title{gribr: GRIB interface for R using the ECMWF GRIB API}
 \description{
 The gribr package provides a simple interface between R and GRIB 1/2 files.

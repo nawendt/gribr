@@ -41,10 +41,7 @@ SEXP gribr_grib_get_message(SEXP gribr_fileHandle, SEXP gribr_messages, SEXP gri
     gerror("unable to count grib messages", err);
   }
 
-  // file = R_ExternalPtrAddr(gribr_fileHandle);
-  if (ftell(file) != 0) {
-    fseek(file, 0, SEEK_SET);
-  }
+  grewind(file);
 
   p_gribr_messages = INTEGER(gribr_messages);
 
