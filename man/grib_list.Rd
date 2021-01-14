@@ -36,7 +36,7 @@ you want when used in conjunction with \code{\link{grep}} and
 The \code{filter} parameter controls which keys will be filtered out of the
 results. More information can be found in the
 \href{https://confluence.ecmwf.int/display/ECC/ecCodes+API+Reference}{
-ECCODES API Reference}. Below are the options used in this package:
+ecCodes Reference}. Below are the options used in this package:
 
 \itemize{ \item "none": no keys filtered \item "readonly": skip readonly keys
 \item "optional": skip optional keys \item "edition": skip edition-specific
@@ -59,8 +59,8 @@ describing levels and layers \item "mars": ECMWF's Meteorological Archive and
 Retrieval System keys }
 
 \strong{NOTE:} The output of \code{grib_list} is predicated on having the
-appropriate GRIB definition files available to the GRIB API. By default that
-location is in \code{share/grib_api/definitions} directory in the GRIB API
+appropriate GRIB definition files available to ecCodes. By default that
+location is in \code{share/grib_api/definitions} directory in the ecCodes
 root. Any locally defined paramters will not likely be displayed correctly
 without first overriding the parameter definitions manually. You can read
 more information about creating your own local definitions

@@ -8,7 +8,7 @@
 #' The \code{filter} parameter controls which keys will be filtered out of the
 #' results. More information can be found in the
 #' \href{https://confluence.ecmwf.int/display/ECC/ecCodes+API+Reference}{
-#' ECCODES API Reference}. Below are the options used in this package:
+#' ecCodes Reference}. Below are the options used in this package:
 #'
 #' \itemize{ \item "none": no keys filtered \item "readonly": skip readonly keys
 #' \item "optional": skip optional keys \item "edition": skip edition-specific
@@ -31,8 +31,8 @@
 #' Retrieval System keys }
 #'
 #' \strong{NOTE:} The output of \code{grib_list} is predicated on having the
-#' appropriate GRIB definition files available to the GRIB API. By default that
-#' location is in \code{share/grib_api/definitions} directory in the GRIB API
+#' appropriate GRIB definition files available to ecCodes. By default that
+#' location is in \code{share/grib_api/definitions} directory in the ecCodes
 #' root. Any locally defined paramters will not likely be displayed correctly
 #' without first overriding the parameter definitions manually. You can read
 #' more information about creating your own local definitions
@@ -75,7 +75,7 @@
 
 grib_list <- function(gribObj, filter = "none", namespace = "ls",
                       output = "table") {
-  # this matches what is defined in the GRIB API
+  # this matches what is defined in ecCodes
   gribFilterList <- list(
     none      = 0,
     readonly  = bitwShiftL(1, 0),

@@ -2,7 +2,6 @@
 #include <Rinternals.h>
 
 #include "gribr.h"
-#include "grib_api_extra.h"
 
 SEXP gribr_grib_open(SEXP gribr_fileName) {
 
@@ -11,15 +10,14 @@ SEXP gribr_grib_open(SEXP gribr_fileName) {
   FILE *input = NULL;
   codes_context *c = NULL;
   char *def_path = NULL;
-  const char *basename = "boot.def";
 
   /* This important step makes sure that the GRIB
-  definition files for the GRIB API are found. If
-  they are not found and some actions are performed
-  on a GRIB file, the GRIB API will throw an
-  exception and R will crash. */
+  definition files for ecCodes are found. If they
+  are not found and some actions are performed
+  on a GRIB file, ecCodes will throw an exception
+  and R will crash. */
   c = codes_context_get_default();
-  def_path = grib_context_full_defs_path(c, basename);
+  def_path = codes_definition_path(c);
   if (!def_path) {
     error("gribr: GRIB definition files not found; Please set the ECCODES_DEFINITION_PATH");
   }

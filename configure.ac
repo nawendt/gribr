@@ -1,10 +1,10 @@
-AC_INIT([gribr], 1.2.0, [nathan.wendt@noaa.gov])
+AC_INIT([gribr], 1.2.3, [nathan.wendt@noaa.gov])
 
 m4_include([m4/gribr_link_eccodes.m4])
 
 # Set globals
-ECCODES_MIN_VERSION="2.0.0"
-ECCODES_MIN_VERSION_INT=20000
+ECCODES_MIN_VERSION="2.19.0"
+ECCODES_MIN_VERSION_INT=21900
 
 # Find R_HOME; set CC/CPPFLAGS
 : ${R_HOME=`R RHOME`}

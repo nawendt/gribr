@@ -2,7 +2,7 @@ Package: gribr
 Type: Package
 Title: Read GRIB Files
 Version: 1.2.3
-Date: 2021-01-13
+Date: 2021-01-14
 Author: Nathan Wendt <nathan.wendt@noaa.gov>
 Maintainer: Nathan Wendt <nathan.wendt@noaa.gov>
 BugReports: https://github.com/nawendt/gribr/issues
@@ -12,6 +12,6 @@ LazyData: TRUE
 RoxygenNote: 7.1.1
 Encoding: UTF-8
 NeedsCompilation: yes
-SystemRequirements: ECMWF ecCodes (>= 2.0.0)
+SystemRequirements: ECMWF ecCodes (>= 2.19.0)
 Imports: proj4, methods, utils
 Suggests: testthat, lintr, covr

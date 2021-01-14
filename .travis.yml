@@ -18,7 +18,7 @@ addons:
       - openjpeg@2.3.1
 
 r_github_packages:
-  - jimhester/covr
+  - r-lib/covr
 
 env:
   global:
