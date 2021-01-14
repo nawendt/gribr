@@ -50,7 +50,7 @@ conda install -c conda-forge r-gribr
    ```
 
 ### Windows Install Options
-While a native Windows ecCodes library that will work with R is not available, there are ways to run gribr on Windows. The first option is to use the [Windows 10 Linux Subsystem](https://msdn.microsoft.com/en-us/commandline/wsl/install_guide). Simply follow the [instructions](https://cran.r-project.org/bin/linux/ubuntu/) to install the latest R as you would on any other Linux system. Any other necessary libraries should be available on the package manager. Build gribr as usual and enjoy using it on Windows.
+While a native Windows ecCodes library that will work with R is not available, there are ways to run gribr on Windows. The first option is to use the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/). Simply follow the [instructions](https://cran.r-project.org/bin/linux/ubuntu/) to install the latest R as you would on any other Linux system. Any other necessary libraries should be available on the package manager. Build gribr as usual and enjoy using it on Windows.
 
 The second option is to use gribr via [Cygwin](https://cygwin.org/). A Cygwin build of R is available through their package manager. Simply make sure to also install the dev versions of the libraries that you will need. This will likely include libraries that the R package proj4 depends on. You will have to install ecCodes from source for this. From there, install gribr from R CMD INSTALL taking care to include all the correct configure-vars. If you build ecCodes with PNG or JPEG support, you'll need to add the appropriate linker flags.
 

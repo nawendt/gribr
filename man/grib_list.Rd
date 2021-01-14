@@ -35,8 +35,8 @@ you want when used in conjunction with \code{\link{grep}} and
 \details{
 The \code{filter} parameter controls which keys will be filtered out of the
 results. More information can be found in the
-\href{https://software.ecmwf.int/wiki/display/GRIB/grib_api.h+File+Reference}{
-GRIB API Reference}. Below are the options used in this package:
+\href{https://confluence.ecmwf.int/display/ECC/ecCodes+API+Reference}{
+ECCODES API Reference}. Below are the options used in this package:
 
 \itemize{ \item "none": no keys filtered \item "readonly": skip readonly keys
 \item "optional": skip optional keys \item "edition": skip edition-specific
@@ -48,7 +48,7 @@ The \code{namespace} parameter is a quick and easy way to grab a subset of
 the keys available in a GRIB file using pre-defined groups of related keys.
 To get a full set of keys, extract a \code{gribMessage} and view the
 \code{names}. More information about GRIB key namespaces can be found
-\href{https://software.ecmwf.int/wiki/display/GRIB/GRIB+API+Frequently+Asked+Questions+FAQ}{
+\href{https://confluence.ecmwf.int/display/UDOC/What+are+namespaces+-+ecCodes+GRIB+FAQ}{
 here}. The \code{namespace} options used in this package are described below:
 
 \itemize{ \item "ls": most commonly used keys \item "parameter": keys related
@@ -63,10 +63,10 @@ appropriate GRIB definition files available to the GRIB API. By default that
 location is in \code{share/grib_api/definitions} directory in the GRIB API
 root. Any locally defined paramters will not likely be displayed correctly
 without first overriding the parameter definitions manually. You can read
-more information about creating your own local definitions in the
-\href{https://software.ecmwf.int/wiki/display/OPTR/GRIB+API\%3A+Library+and+Tools}{
-GRIB API Training Material}. Once your own definitions are created, be sure
-to set the \code{GRIB_DEFINITION_PATH} environment variable to the location
+more information about creating your own local definitions
+\href{https://confluence.ecmwf.int/display/UDOC/Creating+your+own+local+definitions+-+ecCodes+GRIB+FAQ}{
+here}. Once your own definitions are created, be sure
+to set the \code{ECCODES_DEFINITION_PATH} environment variable to the location
 of your local defintions before using this function to display the contents.
 }
 \examples{
