@@ -1,6 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^configure\.ac$
 ^README\.md$
 ^\.DS_Store$
 ^\.Rhistory$
@@ -9,3 +8,5 @@
 ^\.travis\.yml$
 ^m4$
 ^install_.*\.sh$
+^appveyor\.yml$
+^codecov\.yml$

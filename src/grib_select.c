@@ -6,7 +6,7 @@
 #include "gribr.h"
 #include "grib_api_extra.h"
 
-SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_keyList, SEXP gribr_isMulti) {
+SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_fileHandle, SEXP gribr_keyList, SEXP gribr_isMulti) {
   int err;
   int keyType;
   int is_multi;
@@ -26,7 +26,7 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_keyList, SEXP gribr_isMulti) {
   const char *keyName = NULL;
   const char *ks = NULL;
   char *ksc = NULL;
-  FILE *fileHandle = NULL;
+  FILE *file = NULL;
   codes_index *index = NULL;
   codes_handle *h = NULL;
   codes_handle *hi = NULL;
@@ -41,10 +41,12 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_keyList, SEXP gribr_isMulti) {
   filePath = CHAR(STRING_ELT(gribr_filePath, 0));
   lenKeysList = xlength(gribr_keyList);
   gribr_selected = PROTECT(allocVector(VECSXP, lenKeysList));
-  fileHandle = fopen(filePath, "rb");
-  if (!fileHandle) {
-    error("gribr: unable to open grib file");
+  file = R_ExternalPtrAddr(gribr_fileHandle);
+  if (!file) {
+    error("gribr: problem with file handle");
   }
+
+  grewind(file);
 
   keyString = calloc(MAX_VAL_LEN, sizeof(char));
   if (!keyString) {
@@ -102,7 +104,7 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_keyList, SEXP gribr_isMulti) {
    * index. Index handles will only work after using
    * the select method
    */
-  h = codes_grib_handle_new_from_file(DEFAULT_CONTEXT, fileHandle, &err);
+  h = codes_grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err);
   if (err) {
     gerror("unable to create grib handle", err);
   }
@@ -176,6 +178,8 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_keyList, SEXP gribr_isMulti) {
 
   codes_handle_delete(h);
   codes_index_delete(index);
+
+  grewind(file);
 
   UNPROTECT(2);
   return gribr_selected;

@@ -2,6 +2,9 @@
 .Rhistory
 .RData
 .DS_Store
+autom4te.cache
+*.log
+*.status
 src/*.o
 src/*.so
 src/*.dll

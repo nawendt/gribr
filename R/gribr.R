@@ -1,17 +1,14 @@
-#' gribr: GRIB interface for R using the ECMWF GRIB API
+#' gribr: GRIB interface for R using the ECMWF ecCodes
 #'
 #' The gribr package provides a simple interface between R and GRIB 1/2 files.
 #' The package is designed so that data is kept in R's intuitive data structures
 #' and can be easily projected using your preferred plotting package.
 #'
-#' @section Notice: This package depends on installing the
-#'   \href{https://software.ecmwf.int/wiki/display/GRIB/Home}{ECMWF GRIB API}.
-#'   It is important to install the requisite libraries to ensure full
-#'   functionality (e.g., jasper/openjpeg for GRIB2). Be aware that ECMWF has
-#'   plans to move the GRIB API into their
-#'   \href{https://software.ecmwf.int/wiki/display/ECC}{EC CODES} package in the
-#'   future. This package will follow suit once the EC CODES package is out of
-#'   beta testing and ready to supplant the GRIB API.
+#' @section Notice: This package depends on installing the ECMWF library called
+#'   \href{https://confluence.ecmwf.int/display/ECC/ecCodes+Home}{ecCodes}.
+#'   It is important to install the requisite libraries
+#'   (e.g., jasper/openjpeg for GRIB2) prior to building ecCodes to ensure
+#'   full functionality.
 #'
 #' @section gribr Functions:
 #'
@@ -23,11 +20,11 @@
 #'   main tools.
 #'
 #' @section Extensions: gribr was designed to be simple and extensible. Because
-#'   of the use of the GRIB API, this is possible. Using this package as a
+#'   of the use of the ecCodes, this is possible. Using this package as a
 #'   template of sort, one could create new functions that work to expand on the
 #'   current capabilities. The
-#'   \href{https://software.ecmwf.int/wiki/display/GRIB/GRIB+API+examples}{GRIB
-#'   API examples} are good place to see the basic implementations in C. Beyond
+#'   \href{https://confluence.ecmwf.int/display/ECC/GRIB+examples}{ecCodes
+#'   examples} are good place to see the basic implementations in C. Beyond
 #'   that, this package is hosted on
 #'   \href{https://github.com/nawendt/gribr}{GitHub} where you will not only
 #'   find the source for this package, but will be able to submit any of your

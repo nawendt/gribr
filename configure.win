@@ -1,14 +1,13 @@
 #!/bin/sh
 
 # This is the Windows configure script for gribr. This is included
-# for those that would like to build the GRIB API on Windows using
-# MinGW. It is ** HIGHLY ** recommended that you use the provided
-# Windows binaries as this will simplify your efforts considerably.
+# for those that would like to build the ecCodes on Windows using
+# MinGW. This is currently experimental.
 
 # PKG_CFLAGS should at least contain the INCLUDE directory of your
-# GRIB API build. Other pertinent compiler flags will also go here.
+# ecCodes build. Other pertinent compiler flags will also go here.
 
-# PKG_LIBS will contain the LIB directory of your GRIB API build.
+# PKG_LIBS will contain the LIB directory of your ecCodes build.
 
 PKG_CPPFLAGS=
 PKG_LIBS=
