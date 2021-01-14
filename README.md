@@ -15,9 +15,9 @@ Easily read GRIB data into common R data structures.
 ### Status
 gribr is contains most of the functionaily found in the ecCodes library. Several functions exist for reading GRIB messages and extracting them. Functions are also available to help with projecting the data. All of the documentation has been written and some basic examples exist to get you started. 
 
-### Installation
-**NOTE:** This is not _natively_ available for Windows at this time due to the need to compile ecCodes with MinGW. See below for details.
+**NOTE FOR v1.2.3+:** Prior to version 2.19.0 of ecCodes, there was a bug where file handles were not closed after being opened when creating a grib index. This led to potential errors when using `grib_select` on multiple files. Due to this bug, gribr now requires at least ecCodes 2.19.0 beginning with v1.2.3.
 
+### Installation
 ##### Using `conda` (Recommended)
 gribr can now be install with `conda` using the conda-forge channel. This is the preferred method as it simplifies things greatly and makes it possible to set up a clean environment to work in. RStudio can be pointed to use the R binary in this environment along with its associated libary, if that is what you use. To install, just run the following:
 ```shell
