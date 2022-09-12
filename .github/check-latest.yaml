@@ -1,0 +1,69 @@
+# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
+# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+name: R-CMD-check-latest
+
+jobs:
+  R-CMD-check:
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: macOS-latest,   r: 'release'}
+          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
+          - {os: ubuntu-latest,   r: 'release'}
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+      ECCODES_VERSION: 2.27.0
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+          use-public-rspm: true
+
+      - name: Install Linux system dependencies
+        if: ${{ runner.os }} == 'Linux'
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y libproj-dev
+          sudo apt-get install -y libaec-dev
+          sudo apt-get install -y libopenjp2-7-dev
+          sudo apt-get install -y libpng-dev
+
+      - name: Install macOS system dependencies
+        if: ${{ runner.os }} == 'macOS'
+        run: |
+          brew install proj
+          brew install libaec
+          brew install openjpeg
+          brew install zlib
+
+      - name: Build eccodes from source
+        run: ./install_eccodes.sh
+        shell: bash          
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          upload-snapshots: true
