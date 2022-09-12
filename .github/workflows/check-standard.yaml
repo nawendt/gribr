@@ -38,18 +38,14 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      - name: Install Linux system dependencies
-        if: ${{ runner.os }} == 'Linux'
+      - name: Install system dependencies
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y libproj-dev
-          sudo apt-get install -y libeccodes-dev
+          sudo apt-get install -y libproj-dev libeccodes-dev
 
-      - name: Install macOS system dependencies
-        if: ${{ runner.os }} == 'macOS'
-        run: |
-          brew install proj
-          brew install eccodes
+        if: runner.os == 'macOS'
+        run: brew install proj eccodes
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:

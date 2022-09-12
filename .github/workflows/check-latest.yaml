@@ -38,22 +38,15 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      - name: Install Linux system dependencies
-        if: ${{ runner.os }} == 'Linux'
+      - name: Install system dependencies
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y libproj-dev
-          sudo apt-get install -y libaec-dev
-          sudo apt-get install -y libopenjp2-7-dev
-          sudo apt-get install -y libpng-dev
+          sudo apt-get install -y libproj-dev libaec-dev libopenjp2-7-dev libpng-dev
 
-      - name: Install macOS system dependencies
-        if: ${{ runner.os }} == 'macOS'
+        if: runner.os == 'macOS'
         run: |
-          brew install proj
-          brew install libaec
-          brew install openjpeg
-          brew install zlib
+          brew install proj libaec openjpeg zlib
 
       - name: Build eccodes from source
         run: ./install_eccodes.sh
