@@ -51,7 +51,7 @@ grib_cube <- function(gribObj, shortName, typeOfLevel, decreasing = FALSE) {
   nz <- length(oLevels)
 
   if (length(unique(nx)) > 1 || length(unique(ny)) > 1) {
-    stop("All level dimensions must be equal to create cube")
+    stop("all level dimensions must be equal to create cube")
   } else {
     nx <- unique(nx)
     ny <- unique(ny)

@@ -19,7 +19,7 @@
 #' grib_close(g)
 
 is.grib.message <- function(obj) {
-  if (class(obj) == "gribMessage") {
+  if (methods::is(obj, "gribMessage")) {
     TRUE
   } else {
     FALSE

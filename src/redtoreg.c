@@ -43,8 +43,8 @@ SEXP gribr_redtoreg(SEXP gribr_nlons, SEXP gribr_lonsperlat, SEXP gribr_grid) {
       im = zxi;
       zdx = zxi - im;
       if (ilons != 0) {
-        im = (long)(im + ilons)%(long)ilons;
-        ip = (long)(im + 1 + ilons)%(long)ilons;
+        im = (long)(im + ilons) % (long)ilons;
+        ip = (long)(im + 1 + ilons) % (long)ilons;
 
         if (grid_ptr[indx + im] == NA_REAL || grid_ptr[indx + ip] == NA_REAL) {
           if (zdx < 0.5) {

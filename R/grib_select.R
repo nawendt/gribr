@@ -84,7 +84,7 @@ grib_select <- function(gribObj, keyPairs) {
   selected <- unlist(selected, recursive = FALSE)
 
   if (length(selected) < 1) {
-    stop("No messages matched keyPairs")
+    stop("no messages matched keyPairs")
   }
 
   # Just return the gribMessage if only one

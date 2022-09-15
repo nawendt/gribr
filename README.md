@@ -4,8 +4,8 @@ GRIB interface for R using the [ECMWF ecCodes package](https://confluence.ecmwf.
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/r-gribr/badges/version.svg)](https://anaconda.org/conda-forge/r-gribr)
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/r-gribr/badges/downloads.svg)](https://anaconda.org/conda-forge/r-gribr) 
 
-[![Travis-CI Build Status](https://travis-ci.org/nawendt/gribr.svg?branch=master)](https://travis-ci.org/nawendt/gribr)
-[![codecov](https://codecov.io/gh/nawendt/gribr/branch/master/graph/badge.svg?token=MYAJCGkoKO)](https://codecov.io/gh/nawendt/gribr) 
+[![Travis-CI Build Status](https://travis-ci.org/nawendt/gribr.svg?branch=main)](https://travis-ci.org/nawendt/gribr)
+[![codecov](https://codecov.io/gh/nawendt/gribr/branch/main/graph/badge.svg?token=MYAJCGkoKO)](https://codecov.io/gh/nawendt/gribr) 
 
 [![License](https://img.shields.io/badge/License-BSD%202--Clause-blue.svg)](https://opensource.org/licenses/BSD-2-Clause)
 

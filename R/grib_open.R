@@ -37,7 +37,7 @@ grib_open <- function(file) {
   }
 
   handle <- .Call("gribr_grib_open", normFile)
-  if (class(handle) != "externalptr") {
+  if (!methods::is(handle, "externalptr")) {
     stop("Problem retrieving grib handle")
   }
 

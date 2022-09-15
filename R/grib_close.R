@@ -21,7 +21,7 @@
 grib_close <- function(gribObj) {
 
   if (!is.grib(gribObj)) {
-    stop("Object is not of class 'grib'")
+    stop("object is not of class 'grib'")
   }
 
   if (is.null.externalptr(gribObj$handle)) {

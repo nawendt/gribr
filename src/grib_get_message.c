@@ -65,7 +65,7 @@ SEXP gribr_grib_get_message(SEXP gribr_fileHandle, SEXP gribr_messages, SEXP gri
       }
 
       if ((p_gribr_messages[n] - 1) == i) {
-        SET_VECTOR_ELT(gribr_message, n++,gribr_message_from_handle(h, is_multi));
+        SET_VECTOR_ELT(gribr_message, n++,gribr_message_from_handle(h));
       }
     }
   } else {
@@ -81,7 +81,7 @@ SEXP gribr_grib_get_message(SEXP gribr_fileHandle, SEXP gribr_messages, SEXP gri
         gerror("unable to open grib handle", err);
       }
       if ((p_gribr_messages[0] - 1) == i) {
-        REPROTECT(gribr_message = gribr_message_from_handle(h, is_multi), pro_message);
+        REPROTECT(gribr_message = gribr_message_from_handle(h), pro_message);
       }
       codes_handle_delete(h);
     }

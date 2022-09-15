@@ -3,7 +3,7 @@
 
 #include "gribr.h"
 
-SEXP gribr_message_from_handle(codes_handle *h, int isMulti) {
+SEXP gribr_message_from_handle(codes_handle *h) {
 
   int err;
   int keyType;
@@ -13,9 +13,9 @@ SEXP gribr_message_from_handle(codes_handle *h, int isMulti) {
   long *keyVal_l = NULL;
   double *keyVal_d = NULL;
   double missingValue;
-  R_len_t totalKeys;
-  R_len_t i;
-  R_len_t n;
+  size_t totalKeys;
+  size_t i;
+  size_t n;
   size_t keySize;
   size_t keyLength;
   size_t bmp_len;
@@ -26,7 +26,6 @@ SEXP gribr_message_from_handle(codes_handle *h, int isMulti) {
   SEXP gribr_grib_message;
   SEXP gribr_list_names;
   SEXP gribr_char;
-  /* gribr_char = PROTECT(allocVector(STRSXP, 1)); */
   PROTECT_INDEX pro_char;
   PROTECT_WITH_INDEX(gribr_char = R_NilValue, &pro_char);
   SEXP gribr_double;
@@ -43,7 +42,7 @@ SEXP gribr_message_from_handle(codes_handle *h, int isMulti) {
    * Take care of these now in order to give the option
    * of masking out data with NAs
    */
-  err = codes_get_double(h,"missingValue",&missingValue);
+  err = codes_get_double(h, "missingValue", &missingValue);
   if (err) {
     gerror("unable to get missing value", err);
   }
@@ -54,7 +53,7 @@ SEXP gribr_message_from_handle(codes_handle *h, int isMulti) {
   } else {
     if (bitmapBool) {
       codes_get_size(h, "bitmap", &bmp_len);
-      bitmap = malloc(bmp_len*sizeof(long));
+      bitmap = malloc(bmp_len * sizeof(long));
       err = codes_get_long_array(h, "bitmap", bitmap, &bmp_len);
       if (err) {
         gerror("unable to get bitmap array", err);
@@ -111,7 +110,7 @@ SEXP gribr_message_from_handle(codes_handle *h, int isMulti) {
 
       case CODES_TYPE_DOUBLE:
         if (keySize > 1) {
-          keyVal_d = malloc(keySize*sizeof(double));
+          keyVal_d = malloc(keySize * sizeof(double));
           err = codes_get_double_array(h, keyName, keyVal_d, &keySize);
           if (err) {
             gerror("unable to get double array", err);
@@ -121,7 +120,6 @@ SEXP gribr_message_from_handle(codes_handle *h, int isMulti) {
           for (i = 0; i < keySize; i++) {
             p_rgib_double[i] = keyVal_d[i];
           }
-          nfree(keyVal_d);
           if (!strcmp(keyName, "values")) {
             for (i = 0; i < keySize; i++) {
               if (p_rgib_double[i] == missingValue || (bitmapBool && bitmap[i] == BITMAP_MASK)) {
@@ -137,12 +135,11 @@ SEXP gribr_message_from_handle(codes_handle *h, int isMulti) {
           }
           if (*keyVal_d == CODES_MISSING_DOUBLE) {
             REPROTECT(gribr_double = ScalarReal(NA_REAL), pro_double);
-            nfree(keyVal_d);
           } else {
             REPROTECT(gribr_double = ScalarReal(*keyVal_d), pro_double);
-            nfree(keyVal_d);
           }
         }
+        nfree(keyVal_d);
         SET_VECTOR_ELT(gribr_grib_message, n, gribr_double);
         break;
 /*
@@ -151,7 +148,7 @@ SEXP gribr_message_from_handle(codes_handle *h, int isMulti) {
  */
       case CODES_TYPE_LONG:
         if (keySize > 1) {
-          keyVal_l = malloc(keySize*sizeof(long));
+          keyVal_l = malloc(keySize * sizeof(long));
           err = codes_get_long_array(h, keyName, keyVal_l, &keySize);
           if (err) {
             gerror("unable to get long array", err);
@@ -161,7 +158,6 @@ SEXP gribr_message_from_handle(codes_handle *h, int isMulti) {
           for (i = 0; i < keySize; i++) {
             p_rgib_long[i] = (double)keyVal_l[i];
           }
-          nfree(keyVal_l);
           if (!strcmp(keyName, "values")) {
             for (i = 0; i < keySize; i++) {
               if (p_rgib_long[i] == missingValue || (bitmapBool && bitmap[i] == BITMAP_MASK)) {
@@ -177,20 +173,17 @@ SEXP gribr_message_from_handle(codes_handle *h, int isMulti) {
           }
           if (*keyVal_l == CODES_MISSING_LONG) {
             REPROTECT(gribr_long = ScalarInteger(NA_INTEGER), pro_long);
-            nfree(keyVal_l);
           } else {
             REPROTECT(gribr_long = ScalarReal((double)*keyVal_l), pro_long);
-            nfree(keyVal_l);
           }
-
         }
+        nfree(keyVal_l);
         SET_VECTOR_ELT(gribr_grib_message, n, gribr_long);
         break;
 
       case CODES_TYPE_STRING:
-        keyLength = MAX_VAL_LEN;
-        keyVal_c = malloc(keyLength);
-        memset(keyVal_c, '\0', keyLength);
+        codes_get_length(h, keyName, &keyLength);
+        keyVal_c = calloc(keyLength, sizeof(char));
         err = codes_get_string(h, keyName, keyVal_c, &keyLength);
         if (err) {
           gerror("unable to get string", err);
@@ -205,8 +198,8 @@ SEXP gribr_message_from_handle(codes_handle *h, int isMulti) {
             SET_STRING_ELT(gribr_char, 0, mkChar(keyVal_c));
           }
         }
-        SET_VECTOR_ELT(gribr_grib_message, n, gribr_char);
         nfree(keyVal_c);
+        SET_VECTOR_ELT(gribr_grib_message, n, gribr_char);
         break;
 
       default:

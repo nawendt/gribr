@@ -54,7 +54,7 @@ grib_get_message <- function(gribObj, messages) {
   }
 
   if (!is.grib(gribObj)) {
-    stop("Object is not of class 'grib'")
+    stop("object is not of class 'grib'")
   }
 
   if (is.null.externalptr(gribObj$handle)) {
@@ -66,7 +66,7 @@ grib_get_message <- function(gribObj, messages) {
               gribObj$isMultiMessage)
 
   if (length(gm) < 1) {
-    stop("Error retrieving grib message(s)")
+    stop("problem retrieving grib message(s)")
   }
 
   gm

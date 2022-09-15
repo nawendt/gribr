@@ -8,19 +8,21 @@ SEXP gribr_grib_list(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_namesp
   R_xlen_t n;
   int is_multi;
   size_t messageCount = 0;
+  size_t ks_size;
+  size_t concat = 0;
   FILE *file = NULL;
   codes_handle *h = NULL;
   const char *namespace = NULL;
-  char *lastComma = NULL;
-  char keyString[MAX_VAL_LEN];
+  size_t keyLength;
+  const char *keyName = NULL;
+  char *keyString = NULL;
   int filter;
-  char value[MAX_VAL_LEN];
-  size_t valueLength=MAX_VAL_LEN;
+  char *keyVal_c = NULL;
   codes_keys_iterator* keyIter = NULL;
   SEXP gribr_grib_vec;
 
   filter = asInteger(gribr_filter);
-  namespace = CHAR(STRING_ELT(gribr_namespace,0));
+  namespace = CHAR(STRING_ELT(gribr_namespace, 0));
   is_multi = asLogical(gribr_isMulti);
 
   file = R_ExternalPtrAddr(gribr_fileHandle);
@@ -34,6 +36,7 @@ SEXP gribr_grib_list(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_namesp
   if (is_multi) {
     codes_grib_multi_support_on(DEFAULT_CONTEXT);
   }
+  
   n = 0;
   while((h = codes_grib_handle_new_from_file(DEFAULT_CONTEXT, file, &err))) {
     n++;
@@ -61,38 +64,71 @@ SEXP gribr_grib_list(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_namesp
       error("gribr: unable to create key iterator");
     }
 
-    memset(keyString, '\0', MAX_VAL_LEN);
+    /* Loop through the keys to get size of key:value pairs */
+    ks_size = 0;
     while(codes_keys_iterator_next(keyIter)) {
-      valueLength = MAX_VAL_LEN;
-      const char *keyName = codes_keys_iterator_get_name(keyIter);
-      memset(value, '\0', valueLength);
-      err = codes_get_string(h, keyName, value, &valueLength);
-      if ((strlen(keyString) + strlen(keyName) + strlen(value) + 2) < MAX_VAL_LEN ||
-          (strlen(keyString) + NA_KEY_LEN < MAX_VAL_LEN)) {
-        if (err) {
-          strncat(keyString," NA=NA,",NA_KEY_LEN);
-        } else {
-          strncat(keyString ,keyName, strlen(keyName));
-          strncat(keyString, "=", 1);
-          strncat(keyString, value, valueLength);
-          strncat(keyString, ",", 1);
-        }
-      } else {
-        warning("gribr: string overflow, truncating");
+      keyName = codes_keys_iterator_get_name(keyIter);
+      codes_get_length(h, keyName, &keyLength);
+      keyVal_c = malloc(keyLength);
+      if (!keyVal_c) {
+        error("gribr: problem allocating value string");
       }
+      err = codes_get_string(h, keyName, keyVal_c, &keyLength);
+      if (err) {
+        gerror("unable to get value string", err);
+      }
+      /* Add space for '=' and ',' */
+      ks_size += strlen(keyName) + strlen(keyVal_c) + 2;
+      nfree(keyVal_c);
     }
+    /* space for null terminator */
+    ks_size += 1;
+
+    keyString = calloc(ks_size, sizeof(char));
+    if (!keyString) {
+      error("gribr: problem allocating key:value string");
+    }
+
+    err = codes_keys_iterator_rewind(keyIter);
+    if (err) {
+      gerror("could not rewind keys iterator", err);
+    }
+
+    while(codes_keys_iterator_next(keyIter)) {
+      keyName = codes_keys_iterator_get_name(keyIter);
+      codes_get_length(h, keyName, &keyLength);
+      keyVal_c = malloc(keyLength);
+      if (!keyVal_c) {
+        error("gribr: problem allocating value string");
+      }
+      err = codes_get_string(h, keyName, keyVal_c, &keyLength);
+      if (err) {
+        gerror("unable to get value string", err);
+      } else {
+        concat = strlcat(keyString, keyName, ks_size);
+        concat = strlcat(keyString, "=", ks_size);
+        concat = strlcat(keyString, keyVal_c, ks_size);
+        concat = strlcat(keyString, ",", ks_size);
+      }
+      nfree(keyVal_c);
+    }
+
+    if (concat >= ks_size) {
+      warning("gribr: key:value string was truncated");
+    }
+
     /* Clean up the trailing comma */
-    lastComma = strrchr(keyString,',');
-    *lastComma = '\0';
+    keyString[ks_size - 2] = 0;
+
     SET_STRING_ELT(gribr_grib_vec, messageCount++, mkChar(keyString));
 
     codes_keys_iterator_delete(keyIter);
     codes_handle_delete(h);
+    nfree(keyString);
   }
+
   /* Be kind, please rewind. Without this the next call of grib_list will fail */
-  if (fseek(file, GRIB_FILE_START, SEEK_SET)) {
-    error("gribr: unable to rewind file");
-  }
+  grewind(file);
 
   UNPROTECT(1);
   return gribr_grib_vec;
