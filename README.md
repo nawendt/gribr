@@ -2,10 +2,10 @@
 GRIB interface for R using the [ECMWF ecCodes package](https://confluence.ecmwf.int/display/ECC/ecCodes+Home).
 
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/r-gribr/badges/version.svg)](https://anaconda.org/conda-forge/r-gribr)
-[![Anaconda-Server Badge](https://anaconda.org/conda-forge/r-gribr/badges/downloads.svg)](https://anaconda.org/conda-forge/r-gribr)
-[![check-standard](https://github.com/nawendt/gribr/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/nawendt/gribr/actions/workflows/check-standard.yaml)
-[![check-latest](https://github.com/nawendt/gribr/actions/workflows/check-latest.yaml/badge.svg)](https://github.com/nawendt/gribr/actions/workflows/check-latest.yaml)
-[![check-minimum](https://github.com/nawendt/gribr/actions/workflows/check-minimum.yaml/badge.svg)](https://github.com/nawendt/gribr/actions/workflows/check-minimum.yaml)
+[![Anaconda-Server Badge](https://anaconda.org/conda-forge/r-gribr/badges/downloads.svg)](https://anaconda.org/conda-forge/r-gribr)  
+[![check-standard](https://github.com/nawendt/gribr/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/nawendt/gribr/actions/workflows/check-standard.yaml)  
+[![check-latest](https://github.com/nawendt/gribr/actions/workflows/check-latest.yaml/badge.svg)](https://github.com/nawendt/gribr/actions/workflows/check-latest.yaml)  
+[![check-minimum](https://github.com/nawendt/gribr/actions/workflows/check-minimum.yaml/badge.svg)](https://github.com/nawendt/gribr/actions/workflows/check-minimum.yaml)  
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 ### Purpose
