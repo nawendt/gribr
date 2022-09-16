@@ -3,7 +3,7 @@ context("GRIB message retrieval and attributes")
 test_that("Incorrect message requests are handled correctly", {
   g <- grib_open(system.file("extdata", "lfpw.grib1", package = "gribr"))
 
-  # grib_get_message
+#   grib_get_message
   expect_error(grib_get_message(g, -1), "out of bounds")
   expect_error(grib_get_message(g, 0), "out of bounds")
   expect_error(grib_get_message(g, 999), "out of bounds")
@@ -13,7 +13,7 @@ test_that("Incorrect message requests are handled correctly", {
   expect_equal(length(gm), 2)
   expect_equal(all(sapply(gm, class) == "gribMessage"), TRUE)
 
-  # grib_select
+#   grib_select
   expect_error(grib_select(g, list(dne = "dne")), "not found")
   expect_error(grib_select(g, list(shortName = "dne")), "no messages matched")
   expect_error(grib_select(g, list()), "keyPairs input")
@@ -22,14 +22,14 @@ test_that("Incorrect message requests are handled correctly", {
   expect_equal(length(gm), 2)
   expect_equal(all(sapply(gm, class) == "gribMessage"), TRUE)
 
-  # grib_cube
+#   grib_cube
   expect_error(grib_cube(g, "dne", "isobaricInhPa"), "no messages matched")
   expect_error(grib_cube(g, "u", "dne"), "no messages matched")
   cube <- grib_cube(g, "u", "isobaricInhPa", TRUE)
   expect_is(cube, "array")
   expect_equal(length(dim(cube)), 3)
 
-  # keys
+#   keys
   expect_equal(has.key(gm[[1]], "shortName"), TRUE)
   expect_equal(has.key(gm[[1]], "dne"), FALSE)
 

@@ -5,6 +5,7 @@
 autom4te.cache
 *.log
 *.status
+.vscode
 src/*.o
 src/*.so
 src/*.dll

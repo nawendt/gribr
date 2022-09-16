@@ -44,4 +44,3 @@ void R_init_gribr(DllInfo *info)
    */
 
 }
-

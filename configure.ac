@@ -1,4 +1,4 @@
-AC_INIT([gribr], 1.2.3, [nathan.wendt@noaa.gov])
+AC_INIT([gribr],[1.2.3],[nathan.wendt@noaa.gov])
 
 m4_include([m4/gribr_link_eccodes.m4])
 
@@ -18,7 +18,7 @@ CC=`"${RBIN}" CMD config CC`;
 CPPFLAGS=`"${RBIN}" CMD config CPPFLAGS`
 
 # Compiler checks
-AC_PROG_CC_C99
+AC_PROG_CC
 AS_IF([test "x${ac_cv_prog_cc_c99}" = xno],
       [AC_MSG_ERROR([C99 compiler is required])])
 AC_LANG([C])
@@ -28,7 +28,6 @@ AC_ARG_VAR(ECCODES_CPPFLAGS, [Preprocessor flags for the ecCodes installation])
 AC_ARG_VAR(ECCODES_LIBS, [Linker flags for the ecCodes installation])
 
 # Check for system headers
-AC_HEADER_STDC
 AC_CHECK_HEADERS([ctype.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -36,6 +35,13 @@ AC_C_CONST
 
 # Check for pkg-config
 AC_PATH_PROG([PKGCONF],[pkg-config],[],[$PATH:/usr/local/bin:ext/bin:ext:/sw/bin:/opt/bin])
+
+# Check for non-standard functions
+AC_CHECK_FUNC([strlcat], [HAVE_STRLCAT=TRUE], [HAVE_STRLCAT=FALSE])
+
+if test "${HAVE_STRLCAT}" = "TRUE"; then
+    CPPFLAGS="${CPPFLAGS} -DNATIVE_STRLCAT"
+fi
 
 GRIBR_LINK_ECCODES
 

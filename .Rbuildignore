@@ -3,9 +3,12 @@
 ^README\.md$
 ^\.DS_Store$
 ^\.Rhistory$
+^\.git$
+^\.github$
 ^\.git_commit_template$
 ^\.gitignore$
 ^\.travis\.yml$
+^\.vscode$
 ^m4$
 ^install_.*\.sh$
 ^appveyor\.yml$

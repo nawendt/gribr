@@ -1,15 +1,10 @@
 #include <eccodes.h>
 #include <ctype.h>
 
-#define MAX_KEY_LEN     255
-#define MAX_VAL_LEN     1024
-#define NA_KEY_LEN      8
 #define DEFAULT_CONTEXT 0
 #define GRIB_FILE_START 0
-#define NO_ITER_FLAGS   0
 #define NULL_NAMESPACE  NULL
 #define NO_FILTER       0
-#define MAX_BYTE_LENGTH 512
 #define BITMAP_MASK     0
 #define INTERRUPT_FREQ  256
 
@@ -40,4 +35,9 @@ void nfree(void *ptr);
 void grewind(FILE* file);
 void gerror(const char *str, int err);
 SEXP getListElement(SEXP list, const char *str);
-SEXP gribr_message_from_handle(grib_handle *h, int isMulti);
+SEXP gribr_message_from_handle(grib_handle *h);
+
+/* Other functions */
+#ifndef NATIVE_STRLCAT
+size_t strlcat(char *dst, const char *src, size_t dsize);
+#endif

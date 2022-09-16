@@ -46,7 +46,7 @@ grib_expand_grids <- function(gribMessage, vector = FALSE) {
   }
 
   if (is.null(nx) || is.null(ny)) {
-    stop("unsupported grid type: ", gribMessage$gridType)
+    stop("Unsupported grid type: ", gribMessage$gridType)
   }
 
   if (grepl("reduced", gribMessage$gridType)) {

@@ -88,7 +88,7 @@ grib_list <- function(gribObj, filter = "none", namespace = "ls",
     )
 
   if (!is.grib(gribObj)) {
-    stop("Object is not of class 'grib'")
+    stop("object is not of class 'grib'")
   }
 
   if (is.null.externalptr(gribObj$handle)) {
@@ -96,13 +96,13 @@ grib_list <- function(gribObj, filter = "none", namespace = "ls",
   }
 
   if (!(filter %in% names(gribFilterList))) {
-    stop("Invalid GRIB keys filter")
+    stop("invalid GRIB keys filter")
   }
 
   if (!(namespace %in% c("ls", "parameter", "statistics",
                          "time", "geography", "vertical",
                          "mars"))) {
-    stop("Invalid GRIB keys namespace")
+    stop("invalid GRIB keys namespace")
   }
 
   if (output == "table") {
@@ -112,7 +112,7 @@ grib_list <- function(gribObj, filter = "none", namespace = "ls",
     .Call("gribr_grib_list", gribObj$handle, as.integer(gribFilterList[filter]),
           namespace, gribObj$isMultiMessage)
   } else {
-    stop("Unknown output type")
+    stop("unknown output type")
   }
 
 }

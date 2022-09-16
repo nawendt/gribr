@@ -12,20 +12,18 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_fileHandle, SEXP gribr_keyList
   int is_multi;
   long ki;
   double kd;
-  R_xlen_t lenKeysList;
-  R_xlen_t lenKeys;
-  R_xlen_t m;
-  R_xlen_t n;
-  R_xlen_t n_tot;
-  R_xlen_t i;
-  R_xlen_t j;
-  R_xlen_t index_count;
-  size_t reallocLength = MAX_VAL_LEN;
+  size_t lenKeysList;
+  size_t lenKeys;
+  size_t m;
+  size_t i;
+  size_t j;
+  size_t index_count;
+  size_t concat;
+  size_t ks_size;
   char *keyString = NULL;
   const char *filePath = NULL;
   const char *keyName = NULL;
   const char *ks = NULL;
-  char *ksc = NULL;
   FILE *file = NULL;
   codes_index *index = NULL;
   codes_handle *h = NULL;
@@ -34,9 +32,8 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_fileHandle, SEXP gribr_keyList
   SEXP gribr_temp;
   PROTECT_INDEX pro_temp;
 
-  PROTECT_WITH_INDEX(gribr_temp = R_NilValue, &pro_temp);
-
   is_multi = asLogical(gribr_isMulti);
+  PROTECT_WITH_INDEX(gribr_temp = R_NilValue, &pro_temp);
 
   filePath = CHAR(STRING_ELT(gribr_filePath, 0));
   lenKeysList = xlength(gribr_keyList);
@@ -48,42 +45,45 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_fileHandle, SEXP gribr_keyList
 
   grewind(file);
 
-  keyString = calloc(MAX_VAL_LEN, sizeof(char));
-  if (!keyString) {
-    error("gribr: unable to allocate keyString");
-  }
-
-  /* Keep track of number of characters and reallocate the final string
-   * as necessary. The whole idea is to minimize chances of overflow
-   * keeping the code as dynamic as possible. MAX_VAL_LEN is most
-   * likely going to be more than enough in preponderance of cases
-   **********************************************************************/
-  n = 0; n_tot = 0;
+  ks_size = 0;
   lenKeys = xlength(VECTOR_ELT(gribr_keyList, 0));
-  /*
-   * One loop will work since the input list will have all the same
-   * keys
-   */
+
+  /* Loop to figure out keyString size */
   for (i = 0; i < lenKeys; i++) {
     if (i % INTERRUPT_FREQ == 0) {
       R_CheckUserInterrupt();
     }
     keyName = CHAR(STRING_ELT(getAttrib(VECTOR_ELT(gribr_keyList, 0), R_NamesSymbol), i));
-    n = strlen(keyName);
-    if (!n) {
-      error("gribr: unable to get keyString length");
+    ks_size += strlen(keyName);
+  }
+
+  /* Add space for commas and nul (lenKeys - 1 + 1)*/
+  ks_size += lenKeys;
+
+  /* Allocate keyString */
+  keyString = calloc(ks_size, sizeof(char));
+
+  /* Loop to create keyString */
+  for (i = 0; i < lenKeys; i++) {
+    if (i % INTERRUPT_FREQ == 0) {
+      R_CheckUserInterrupt();
     }
-    n_tot += n;
-    if (n_tot > reallocLength - 1) {
-      keyString = realloc(keyString, reallocLength += MAX_KEY_LEN);
+    keyName = CHAR(STRING_ELT(getAttrib(VECTOR_ELT(gribr_keyList, 0), R_NamesSymbol), i));
+    
+    concat = strlcat(keyString, keyName, ks_size);
+    if (concat >= ks_size) {
+      error("gribr: could not add key to index selection");
     }
-    strncat(keyString, keyName, n);
-    if (i != lenKeys - 1) {
-      strncat(keyString, ",", 1);
+
+    if (i != lenKeys - 1 && strlen(keyName)) {
+      concat = strlcat(keyString, ",", ks_size);
+      if (concat >= ks_size) {
+        error("gribr: could not add separator to index selection");
+      }
     }
   }
 
-  if (asLogical(gribr_isMulti)) {
+  if (is_multi) {
     codes_grib_multi_support_on(DEFAULT_CONTEXT);
   }
 
@@ -91,13 +91,12 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_fileHandle, SEXP gribr_keyList
   if (err) {
     gerror("unable to create index", err);
   }
+  nfree(keyString);
 
   err = codes_index_add_file(index, filePath);
   if (err) {
     gerror("unable to add file to index", err);
   }
-
-  nfree(keyString);
 
   /* Have to grab handle from file first in order to get
    * native key types. Will not work with handle from
@@ -137,10 +136,7 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_fileHandle, SEXP gribr_keyList
         break;
       case CODES_TYPE_STRING:
         ks = CHAR(asChar(VECTOR_ELT(VECTOR_ELT(gribr_keyList, i), j)));
-        ksc = calloc(strlen(ks) + 1, sizeof(char));
-        strcpy(ksc, ks);
-        codes_index_select_string(index, keyName, ksc);
-        nfree(ksc);
+        codes_index_select_string(index, keyName, ks);
         break;
       default:
         /* Skip other key types with no codes_select_* methods to handle them */
@@ -170,7 +166,7 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_fileHandle, SEXP gribr_keyList
         gerror("unable to create grib handle", err);
       }
       SET_VECTOR_ELT(gribr_temp, m++,
-                     gribr_message_from_handle(hi, is_multi));
+                     gribr_message_from_handle(hi));
       codes_handle_delete(hi);
     }
     SET_VECTOR_ELT(gribr_selected, i, gribr_temp);

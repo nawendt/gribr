@@ -23,7 +23,7 @@ void gerror(const char *str, int err) {
   error("gribr: %s\nGRIB ERROR %s", str, codes_get_error_message(err));
 }
 
-void grewind(FILE* file) {
+void grewind(FILE *file) {
   if (ftell(file) != GRIB_FILE_START) {
     if (fseek(file, GRIB_FILE_START, SEEK_SET)) {
       error("gribr: unable to rewind file");
@@ -94,7 +94,7 @@ SEXP gribr_is_multi_message(SEXP fileHandle) {
   /* This rewind is important as neglecting to do so will
    * leave the file handle in a unusable state and cause
    * R to crash */
-  if (fseek(file, 0, SEEK_SET)) {
+  if (fseek(file, GRIB_FILE_START, SEEK_SET)) {
     error("gribr: unable to rewind file");
   }
 

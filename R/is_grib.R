@@ -19,7 +19,7 @@
 #' grib_close(g)
 
 is.grib <- function(obj) {
-  if (class(obj) == "grib") {
+  if (methods::is(obj, "grib")) {
     TRUE
   } else {
     FALSE

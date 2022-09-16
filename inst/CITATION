@@ -4,13 +4,13 @@ citEntry(entry = "Manual",
   title        = "{gribr}: GRIB Interface for R using {ECMWF ecCodes}",
   author       = personList(as.person("Nathan Wendt")),
   email        = "nathan.wendt@noaa.gov",
-  year         = "2021",
+  year         = "2022",
   url          = "https://github.com/nawendt/gribr",
-  note         = "R package version 1.2.3",
+  note         = "R package version 1.2.4",
 
   textVersion  =
-  paste("Nathan Wendt (2021).",
+  paste("Nathan Wendt (2022).",
         "gribr: GRIB Interface for R using ECMWF ecCodes.",
-        "R package version 1.2.3.",
+        "R package version 1.2.4.",
         "https://github.com/nawendt/gribr.")
 )

@@ -6,7 +6,7 @@
 SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_namespace, SEXP gribr_isMulti) {
   int err;
   int keyType;
-  int toggle;
+  size_t toggle;
   R_xlen_t n;
   R_xlen_t m;
   R_xlen_t i;
@@ -15,6 +15,7 @@ SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_namespac
   long *keyVal_l = NULL;
   double *keyVal_d = NULL;
   char *keyVal_c = NULL;
+  const char *keyName = NULL;
   int is_multi;
   FILE *file = NULL;
   codes_handle *h = NULL;
@@ -27,7 +28,7 @@ SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_namespac
   codes_keys_iterator* keyIter = NULL;
 
   filter = asInteger(gribr_filter);
-  namespace = CHAR(STRING_ELT(gribr_namespace,0));
+  namespace = CHAR(STRING_ELT(gribr_namespace, 0));
   is_multi = asLogical(gribr_isMulti);
 
   file = R_ExternalPtrAddr(gribr_fileHandle);
@@ -141,13 +142,13 @@ SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_namespac
     keyIter = codes_keys_iterator_new(h, filter, (char*)namespace);
     i = 0;
     while(codes_keys_iterator_next(keyIter)) {
+      keyName = codes_keys_iterator_get_name(keyIter);
       keyType = INTEGER(keyTypes)[i];
       switch(keyType) {
       case CODES_TYPE_STRING:
-        keyLength = MAX_VAL_LEN;
-        keyVal_c = malloc(keyLength);
-        memset(keyVal_c, '\0', keyLength);
-        err = codes_get_string(h, CHAR(STRING_ELT(keyNames,i)), keyVal_c, &keyLength);
+        codes_get_length(h, keyName, &keyLength);
+        keyVal_c = calloc(keyLength, sizeof(char));
+        err = codes_get_string(h, CHAR(STRING_ELT(keyNames, i)), keyVal_c, &keyLength);
         if (err) {
           gerror("unable to get string", err);
         } else {
@@ -159,7 +160,7 @@ SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_namespac
 
       case CODES_TYPE_LONG:
         keyVal_l = malloc(sizeof(long));
-        err = codes_get_long(h, CHAR(STRING_ELT(keyNames,i)), keyVal_l);
+        err = codes_get_long(h, CHAR(STRING_ELT(keyNames, i)), keyVal_l);
         if (err) {
           gerror("unable to get long scalar", err);
         }
@@ -169,7 +170,7 @@ SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_namespac
         break;
       case CODES_TYPE_DOUBLE:
         keyVal_d = malloc(sizeof(double));
-        err = codes_get_double(h, CHAR(STRING_ELT(keyNames,i)), keyVal_d);
+        err = codes_get_double(h, CHAR(STRING_ELT(keyNames, i)), keyVal_d);
         if (err) {
           gerror("unable to get double scalar", err);
         }
@@ -178,10 +179,9 @@ SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter, SEXP gribr_namespac
         i++;
         break;
       default:
-        keyLength = MAX_VAL_LEN;
-        keyVal_c = malloc(keyLength);
-        memset(keyVal_c, '\0', keyLength);
-        err = codes_get_string(h, CHAR(STRING_ELT(keyNames,i)), keyVal_c, &keyLength);
+        codes_get_length(h, keyName, &keyLength);
+        keyVal_c = calloc(keyLength, sizeof(char));
+        err = codes_get_string(h, CHAR(STRING_ELT(keyNames, i)), keyVal_c, &keyLength);
         if (err) {
           gerror("unable to get string", err);
         } else {
