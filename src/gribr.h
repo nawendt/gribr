@@ -34,6 +34,7 @@ void file_finalizer(SEXP ptr);
 void nfree(void *ptr);
 void grewind(FILE* file);
 void gerror(const char *str, int err);
+void gwarn(const char *str, int err);
 SEXP getListElement(SEXP list, const char *str);
 SEXP gribr_message_from_handle(grib_handle *h);
 

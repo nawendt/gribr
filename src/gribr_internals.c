@@ -23,6 +23,10 @@ void gerror(const char *str, int err) {
   error("gribr: %s\nGRIB ERROR %s", str, codes_get_error_message(err));
 }
 
+void gwarn(const char *str, int err) {
+  warning("gribr: %s\nGRIB ERROR %s", str, codes_get_error_message(err));
+}
+
 void grewind(FILE *file) {
   if (ftell(file) != GRIB_FILE_START) {
     if (fseek(file, GRIB_FILE_START, SEEK_SET)) {

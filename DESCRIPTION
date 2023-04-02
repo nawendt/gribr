@@ -1,8 +1,8 @@
 Package: gribr
 Type: Package
 Title: Read GRIB Files
-Version: 1.2.4
-Date: 2022-09-16
+Version: 1.2.5
+Date: 2023-04-02
 Author: Nathan Wendt <nathan.wendt@noaa.gov>
 Maintainer: Nathan Wendt <nathan.wendt@noaa.gov>
 BugReports: https://github.com/nawendt/gribr/issues
