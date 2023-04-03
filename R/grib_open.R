@@ -32,17 +32,17 @@ grib_open <- function(file) {
   }
 
   # test to make sure file is actually in GRIB format
-  if (.Call("gribr_grib_test", normFile)) {
+  if (.Call(gribr_grib_test, normFile)) {
     stop("File is not GRIB format (0 messages found)")
   }
 
-  handle <- .Call("gribr_grib_open", normFile)
+  handle <- .Call(gribr_grib_open, normFile)
   if (!methods::is(handle, "externalptr")) {
     stop("Problem retrieving grib handle")
   }
 
   # Need to know if multiple fields in one GRIB message
-  isMultiMessage <- .Call("gribr_is_multi_message", handle)
+  isMultiMessage <- .Call(gribr_is_multi_message, handle)
 
   # class definition for gribr package
   gribObj <-  list(file = normFile,

@@ -20,6 +20,7 @@ if [[ -z ${OPENJPEG_INCLUDE_DIR} ]]; then
                     -DENABLE_PYTHON=OFF \
                     -DENABLE_FORTRAN=OFF \
                     -DENABLE_EXAMPLES=OFF \
+                    -DENABLE_JPG_LIBJASPER=OFF \
                     -DENABLE_INSTALL_ECCODES_SAMPLES=OFF
 else
     echo "OPENJPEG_INCLUDE_DIR: ${OPENJPEG_INCLUDE_DIR}"

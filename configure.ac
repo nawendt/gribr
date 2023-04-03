@@ -1,6 +1,6 @@
-AC_INIT([gribr],[1.2.3],[nathan.wendt@noaa.gov])
+AC_INIT([gribr],[1.2.5],[nathan.wendt@noaa.gov])
 
-m4_include([m4/gribr_link_eccodes.m4])
+AC_CONFIG_MACRO_DIR([tools/m4])
 
 # Set globals
 ECCODES_MIN_VERSION="2.19.0"

@@ -32,9 +32,7 @@ PROJ4 string to appropriately project the values in the GRIB message. Several
 common grid types are supported at this time, but likely not all.
 
 This function is influenced by the PROJ4 string method used in the pygrib
-Python module (see
-\href{https://github.com/jswhit/pygrib/blob/master/pygrib.pyx}{pygrib
-source}).
+Python module (see \href{https://github.com/jswhit/pygrib}{pygrib source}).
 }
 \examples{
 g <- grib_open(system.file("extdata", "lfpw.grib1", package = "gribr"))

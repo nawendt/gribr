@@ -28,5 +28,5 @@ grib_length <- function(gribObj) {
     stop("GRIB object is closed or unavailable")
   }
 
-  .Call("gribr_grib_length", gribObj$handle)
+  .Call(gribr_grib_length, gribObj$handle)
 }

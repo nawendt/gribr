@@ -1,5 +1,4 @@
 AC_DEFUN([GRIBR_LINK_ECCODES],[
-m4_include([m4/eccodes_version.m4])
 # Check for eccodes
 # first try pkg-config
 found_eccodes="no"

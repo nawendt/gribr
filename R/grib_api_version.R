@@ -10,5 +10,5 @@
 #' grib_api_version()
 
 grib_api_version <- function() {
-    .Call("gribr_api_version")
+    .Call(gribr_api_version)
 }
