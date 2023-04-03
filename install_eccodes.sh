@@ -5,9 +5,10 @@ mkdir src
 cd src
 
 echo "Staging eccodes source files to $(pwd)"
-curl -OL https://github.com/ecmwf/eccodes/archive/refs/tags/${ECCODES_VERSION}.tar.gz
-tar -xzf ${ECCODES_VERSION}.tar.gz
-cd eccodes-${ECCODES_VERSION}
+curl -o eccodes-${ECCODES_VERSION}-Source.tar.gz \
+		https://confluence.ecmwf.int/download/attachments/45757960/eccodes-${ECCODES_VERSION}-Source.tar.gz?api=v2
+tar -xzf eccodes-${ECCODES_VERSION}-Source.tar.gz
+cd eccodes-${ECCODES_VERSION}-Source
 
 mkdir build
 if [[ -z ${OPENJPEG_INCLUDE_DIR} ]]; then
