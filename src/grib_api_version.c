@@ -8,7 +8,8 @@ SEXP gribr_api_version(void) {
   long major;
   long minor;
   long revision;
-  size_t slen = 15;
+  int err;
+  size_t slen = 20;
   char string[slen];
   SEXP gribr_version;
 
@@ -16,7 +17,10 @@ SEXP gribr_api_version(void) {
   major = version / 10000;
   minor = (version - major * 10000) / 100;
   revision = (version - major * 10000) - (minor * 100);
-  snprintf(string, slen, "%ld.%ld.%ld\0", major, minor, revision);
+  err = snprintf(string, slen, "%ld.%ld.%ld", major, minor, revision);
+  if (err) {
+    error("Problem getting ecCodes version.");
+  }
 
   gribr_version = PROTECT(mkString(string));
 
