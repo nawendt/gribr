@@ -31,9 +31,8 @@ use whatever package/work flow to project the data. Not all grid types may be
 supported at this time. New grid types may be added in the future.
 
 This function is influenced by the latitude and longitude extraction method
-used in the pygrib Python module (see
-\href{https://github.com/jswhit/pygrib/blob/master/pygrib.pyx}{pygrib
-source}).
+used in the pygrib Python module 
+(see \href{https://github.com/jswhit/pygrib}{pygrib source}).
 }
 \examples{
 g <- grib_open(system.file("extdata", "lfpw.grib1", package = "gribr"))

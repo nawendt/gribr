@@ -8,9 +8,8 @@
 #' grid, an interpolation will be done to expand the values accordingly.
 #'
 #' This function is influenced by the reduced to regular C interpolation routine
-#' used in the pygrib Python module (see
-#' \href{https://github.com/jswhit/pygrib/blob/master/pygrib.pyx}{pygrib
-#' source}).
+#' used in the pygrib Python module 
+#' (see \href{https://github.com/jswhit/pygrib}{pygrib source}).
 #'
 #' @param gribMessage \code{gribMessage} class object
 #' @param vector optional \code{logical} inidicating whether or not to return as
@@ -51,7 +50,7 @@ grib_expand_grids <- function(gribMessage, vector = FALSE) {
 
   if (grepl("reduced", gribMessage$gridType)) {
     nx <- ny * 2
-    values <- .Call("gribr_redtoreg", nx, gribMessage$pl,
+    values <- .Call(gribr_redtoreg, nx, gribMessage$pl,
                     gribMessage$values)
     values <- matrix(values, nx, ny,
                      byrow = gribMessage$jPointsAreConsecutive)

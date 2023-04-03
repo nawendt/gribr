@@ -106,10 +106,10 @@ grib_list <- function(gribObj, filter = "none", namespace = "ls",
   }
 
   if (output == "table") {
-    .Call("gribr_grib_df", gribObj$handle, as.integer(gribFilterList[filter]),
+    .Call(gribr_grib_df, gribObj$handle, as.integer(gribFilterList[filter]),
                           namespace, gribObj$isMultiMessage)
   } else if (output == "string") {
-    .Call("gribr_grib_list", gribObj$handle, as.integer(gribFilterList[filter]),
+    .Call(gribr_grib_list, gribObj$handle, as.integer(gribFilterList[filter]),
           namespace, gribObj$isMultiMessage)
   } else {
     stop("unknown output type")

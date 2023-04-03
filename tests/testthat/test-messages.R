@@ -33,5 +33,8 @@ test_that("Incorrect message requests are handled correctly", {
   expect_equal(has.key(gm[[1]], "shortName"), TRUE)
   expect_equal(has.key(gm[[1]], "dne"), FALSE)
 
+  bad <- grib_open(system.file("extdata", "bad_key.grib", package = "gribr"))
+  expect_warning(grib_get_message(bad, 1), "gribr: unable to get")
+
   capture_output(grib_close(g))
 })

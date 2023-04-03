@@ -113,7 +113,8 @@ SEXP gribr_message_from_handle(codes_handle *h) {
           keyVal_d = malloc(keySize * sizeof(double));
           err = codes_get_double_array(h, keyName, keyVal_d, &keySize);
           if (err) {
-            gerror("unable to get double array", err);
+            gwarn("unable to get double array", err);
+            break;
           }
           REPROTECT(gribr_double = allocVector(REALSXP, keySize), pro_double);
           p_rgib_double = REAL(gribr_double);
@@ -131,7 +132,8 @@ SEXP gribr_message_from_handle(codes_handle *h) {
           keyVal_d = malloc(sizeof(double));
           err = codes_get_double(h, keyName, keyVal_d);
           if (err) {
-            gerror("unable to get double scalar", err);
+            gwarn("unable to get double scalar", err);
+            break;
           }
           if (*keyVal_d == CODES_MISSING_DOUBLE) {
             REPROTECT(gribr_double = ScalarReal(NA_REAL), pro_double);
@@ -151,7 +153,8 @@ SEXP gribr_message_from_handle(codes_handle *h) {
           keyVal_l = malloc(keySize * sizeof(long));
           err = codes_get_long_array(h, keyName, keyVal_l, &keySize);
           if (err) {
-            gerror("unable to get long array", err);
+            gwarn("unable to get long array", err);
+            break;
           }
           REPROTECT(gribr_long = allocVector(REALSXP, keySize), pro_long);
           p_rgib_long = REAL(gribr_long);
@@ -170,6 +173,7 @@ SEXP gribr_message_from_handle(codes_handle *h) {
           err = codes_get_long(h, keyName, keyVal_l);
           if (err) {
             gerror("unable to get long scalar", err);
+            break;
           }
           if (*keyVal_l == CODES_MISSING_LONG) {
             REPROTECT(gribr_long = ScalarInteger(NA_INTEGER), pro_long);
@@ -186,7 +190,8 @@ SEXP gribr_message_from_handle(codes_handle *h) {
         keyVal_c = calloc(keyLength, sizeof(char));
         err = codes_get_string(h, keyName, keyVal_c, &keyLength);
         if (err) {
-          gerror("unable to get string", err);
+          gwarn("unable to get string", err);
+          break;
         } else {
           intChar = keyVal_c[0];
           if (strlen(keyVal_c) == 1 && isdigit(intChar)) {

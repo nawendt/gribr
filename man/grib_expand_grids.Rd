@@ -25,9 +25,8 @@ values of the GRIB message into a \code{matrix}. In the case of a reduced
 grid, an interpolation will be done to expand the values accordingly.
 
 This function is influenced by the reduced to regular C interpolation routine
-used in the pygrib Python module (see
-\href{https://github.com/jswhit/pygrib/blob/master/pygrib.pyx}{pygrib
-source}).
+used in the pygrib Python module 
+(see \href{https://github.com/jswhit/pygrib}{pygrib source}).
 }
 \examples{
 # expand basic values grid to matrix

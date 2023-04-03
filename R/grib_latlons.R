@@ -13,9 +13,8 @@
 #' supported at this time. New grid types may be added in the future.
 #'
 #' This function is influenced by the latitude and longitude extraction method
-#' used in the pygrib Python module (see
-#' \href{https://github.com/jswhit/pygrib/blob/master/pygrib.pyx}{pygrib
-#' source}).
+#' used in the pygrib Python module 
+#' (see \href{https://github.com/jswhit/pygrib}{pygrib source}).
 #'
 #' @param gribMessage \code{gribMessage} class object.
 #' @param expand optional \code{logical} inidcating whether or not to return
