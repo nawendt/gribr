@@ -16,7 +16,7 @@ SEXP gribr_api_version(void) {
   major = version / 10000;
   minor = (version - major * 10000) / 100;
   revision = (version - major * 10000) - (minor * 100);
-  snprintf(string, "%ld.%ld.%ld\0", slen, major, minor, revision);
+  snprintf(string, slen, "%ld.%ld.%ld\0", major, minor, revision);
 
   gribr_version = PROTECT(mkString(string));
 
