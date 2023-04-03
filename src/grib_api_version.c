@@ -18,7 +18,7 @@ SEXP gribr_api_version(void) {
   minor = (version - major * 10000) / 100;
   revision = (version - major * 10000) - (minor * 100);
   err = snprintf(string, slen, "%ld.%ld.%ld", major, minor, revision);
-  if (err) {
+  if (err >= slen || err < 0) {
     error("Problem getting ecCodes version.");
   }
 
