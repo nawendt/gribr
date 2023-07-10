@@ -65,8 +65,9 @@ SEXP gribr_grib_get_message(SEXP gribr_fileHandle, SEXP gribr_messages, SEXP gri
       }
 
       if ((p_gribr_messages[n] - 1) == i) {
-        SET_VECTOR_ELT(gribr_message, n++,gribr_message_from_handle(h));
+        SET_VECTOR_ELT(gribr_message, n++, gribr_message_from_handle(h));
       }
+      codes_handle_delete(h);
     }
   } else {
     if (p_gribr_messages[0] < 1 || (p_gribr_messages[0] - 1) >= count) {

@@ -1,4 +1,4 @@
-AC_INIT([gribr],[1.2.5],[nathan.wendt@noaa.gov])
+AC_INIT([gribr],[1.2.6],[nathan.wendt@noaa.gov])
 
 AC_CONFIG_MACRO_DIR([tools/m4])
 

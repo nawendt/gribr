@@ -1,12 +1,17 @@
 # Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+
+name: Build (Latest ecCodes)
+
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
 
-name: Build (Latest ecCodes)
+concurrency:
+  group: ${{ github.workflow}}-${{ github.head_ref }}
+  cancel-in-progress: true
 
 jobs:
   R-CMD-check:
@@ -28,7 +33,7 @@ jobs:
       ECCODES_VERSION: 2.29.0
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - uses: r-lib/actions/setup-pandoc@v2
 
