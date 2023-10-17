@@ -40,13 +40,15 @@ conda install -c conda-forge r-gribr
    ```shell
    R CMD INSTALL /path/to/gribr --configure-vars="ECCODES_CPPFLAGS=-I/path/to/eccodes/include ECCODES_LIBS=-L/path/to/eccodes/lib"
    ```
+To install the tests, just add `--install-tests`.
   * _From within R or RStudio_:
    ```R
    install.packages("path/to/cloned/gribr/repo", repos = NULL, configure.vars = c("ECCODES_LIBS=-L/path/to/eccodes/lib", "ECCODES_CPPFLAGS=-I/path/to/eccodes/include"))
    ```
    ```R
-   devtools::install_github("nawendt/gribr", args = "--configure-args='ECCODES_LIBS=-L/path/to/eccodes/lib ECCODES_CPPFLAGS=-I/path/to/eccodes/include'")
+   devtools::install_github("nawendt/gribr", configure.args="ECCODES_LIBS=-L/path/to/eccodes/lib ECCODES_CPPFLAGS=-I/path/to/eccodes/include")
    ```
+Installing the tests through these methods requires adding `INSTALL_opts = "--install-tests"`.
 
 ### Windows Install Options
 While a native Windows ecCodes library that will work with R is not available, there are ways to run gribr on Windows. The first option is to use the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/). Simply follow the [instructions](https://cran.r-project.org/bin/linux/ubuntu/) to install the latest R as you would on any other Linux system. Any other necessary libraries should be available on the package manager. Build gribr as usual and enjoy using it on Windows.
