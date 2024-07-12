@@ -4,7 +4,7 @@
 #include <string.h>
 
 #include "gribr.h"
-#include "grib_api_extra.h"
+// #include "grib_api_extra.h"
 
 SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_fileHandle, SEXP gribr_keyList, SEXP gribr_isMulti) {
   int err;
@@ -156,7 +156,7 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_fileHandle, SEXP gribr_keyList
       error("gribr: no messages matched");
     }
 
-    grib_index_rewind(index);
+    // grib_index_rewind(index);
 
     REPROTECT(gribr_temp = allocVector(VECSXP, index_count), pro_temp);
 
