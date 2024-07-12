@@ -61,8 +61,8 @@ jobs:
 
       - name: Build eccodes from source (macOS)
         if: runner.os == 'macOS'
-        env:
-          OPENJPEG_INCLUDE_DIR: /usr/local/include/openjpeg-2.5
+        # env:
+        #   OPENJPEG_INCLUDE_DIR: /usr/local/include/openjpeg-2.5
         run: ./install_eccodes.sh
         shell: bash          
 
