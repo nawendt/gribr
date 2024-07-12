@@ -4,7 +4,6 @@
 #include <string.h>
 
 #include "gribr.h"
-#include "grib_api_extra.h"
 
 SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_fileHandle, SEXP gribr_keyList, SEXP gribr_isMulti) {
   int err;
@@ -87,15 +86,9 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_fileHandle, SEXP gribr_keyList
     codes_grib_multi_support_on(DEFAULT_CONTEXT);
   }
 
-  index = codes_index_new(DEFAULT_CONTEXT, keyString, &err);
+  index = codes_index_new_from_file(DEFAULT_CONTEXT, filePath, keyString, &err);
   if (err) {
     gerror("unable to create index", err);
-  }
-  nfree(keyString);
-
-  err = codes_index_add_file(index, filePath);
-  if (err) {
-    gerror("unable to add file to index", err);
   }
 
   /* Have to grab handle from file first in order to get
@@ -112,37 +105,42 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_fileHandle, SEXP gribr_keyList
     if (i % INTERRUPT_FREQ == 0) {
       R_CheckUserInterrupt();
     }
+
     lenKeys = xlength(VECTOR_ELT(gribr_keyList, i));
+
     for (j = 0; j < lenKeys; j++) {
       keyName = CHAR(STRING_ELT(getAttrib(VECTOR_ELT(gribr_keyList, i), R_NamesSymbol), j));
       err = codes_get_native_type(h, keyName, &keyType);
+
       if (err) {
         gerror("unable to get native type", err);
       }
+
       switch (keyType) {
-      case CODES_TYPE_DOUBLE:
-        kd = asReal(VECTOR_ELT(VECTOR_ELT(gribr_keyList, i), j));
-        codes_index_select_double(index, keyName, kd);
-        break;
-      case CODES_TYPE_LONG:
-        /* Need to coerce vector to integer as R list components entered
-         * as integers really end up being numeric (double in C). Doing
-         * corecion here makes the most sense as the type gets deciced in
-         * the get_naitve_type call. The C routines know more about the
-         * typing than the R routines.
-         */
-        ki = (long)asReal(VECTOR_ELT(VECTOR_ELT(gribr_keyList, i), j));
-        codes_index_select_long(index, keyName, ki);
-        break;
-      case CODES_TYPE_STRING:
-        ks = CHAR(asChar(VECTOR_ELT(VECTOR_ELT(gribr_keyList, i), j)));
-        codes_index_select_string(index, keyName, ks);
-        break;
-      default:
-        /* Skip other key types with no codes_select_* methods to handle them */
-        break;
-      }
+        case CODES_TYPE_DOUBLE:
+          kd = asReal(VECTOR_ELT(VECTOR_ELT(gribr_keyList, i), j));
+          codes_index_select_double(index, keyName, kd);
+          break;
+        case CODES_TYPE_LONG:
+          /* Need to coerce vector to integer as R list components entered
+          * as integers really end up being numeric (double in C). Doing
+          * corecion here makes the most sense as the type gets deciced in
+          * the get_naitve_type call. The C routines know more about the
+          * typing than the R routines.
+          */
+          ki = (long)asReal(VECTOR_ELT(VECTOR_ELT(gribr_keyList, i), j));
+          codes_index_select_long(index, keyName, ki);
+          break;
+        case CODES_TYPE_STRING:
+          ks = CHAR(asChar(VECTOR_ELT(VECTOR_ELT(gribr_keyList, i), j)));
+          codes_index_select_string(index, keyName, ks);
+          break;
+        default:
+          /* Skip other key types with no codes_select_* methods to handle them */
+          break;
+        }
     }
+
     index_count = 0;
     while((hi = codes_handle_new_from_index(index, &err))) {
       if (err) {
@@ -156,9 +154,40 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_fileHandle, SEXP gribr_keyList
       error("gribr: no messages matched");
     }
 
-    grib_index_rewind(index);
-
     REPROTECT(gribr_temp = allocVector(VECSXP, index_count), pro_temp);
+
+    /* Recreate index and redo selections. This is done as the index will have been
+     * consumed to figure out the size of the vector needed. grib_index_rewind is no
+     * longer available to do this efficiently. This will suffice until a better
+     * approach is developed or exposed in the public API.
+     */
+    index = codes_index_new_from_file(DEFAULT_CONTEXT, filePath, keyString, &err);
+
+    for (j = 0; j < lenKeys; j++) {
+      keyName = CHAR(STRING_ELT(getAttrib(VECTOR_ELT(gribr_keyList, i), R_NamesSymbol), j));
+      err = codes_get_native_type(h, keyName, &keyType);
+
+      if (err) {
+        gerror("unable to get native type", err);
+      }
+
+      switch (keyType) {
+        case CODES_TYPE_DOUBLE:
+          kd = asReal(VECTOR_ELT(VECTOR_ELT(gribr_keyList, i), j));
+          codes_index_select_double(index, keyName, kd);
+          break;
+        case CODES_TYPE_LONG:
+          ki = (long)asReal(VECTOR_ELT(VECTOR_ELT(gribr_keyList, i), j));
+          codes_index_select_long(index, keyName, ki);
+          break;
+        case CODES_TYPE_STRING:
+          ks = CHAR(asChar(VECTOR_ELT(VECTOR_ELT(gribr_keyList, i), j)));
+          codes_index_select_string(index, keyName, ks);
+          break;
+        default:
+          break;
+        }
+    }
 
     m = 0;
     while((hi = codes_handle_new_from_index(index, &err)) && m < index_count) {
@@ -174,6 +203,7 @@ SEXP gribr_select(SEXP gribr_filePath, SEXP gribr_fileHandle, SEXP gribr_keyList
 
   codes_handle_delete(h);
   codes_index_delete(index);
+  nfree(keyString);
 
   grewind(file);
 

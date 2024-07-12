@@ -14,7 +14,7 @@ SEXP gribr_grib_open(SEXP gribr_fileName);
 SEXP gribr_grib_list(SEXP gribr_fileHandle, SEXP gribr_filter,
                      SEXP gribr_namespace, SEXP gribr_isMulti);
 SEXP gribr_grib_df(SEXP gribr_fileHandle, SEXP gribr_filter,
-                     SEXP gribr_namespace, SEXP gribr_isMulti);
+                   SEXP gribr_namespace, SEXP gribr_isMulti);
 
 SEXP gribr_grib_length(SEXP gribr_fileHandle);
 SEXP gribr_is_null_ptr (SEXP gribr_ptr);
