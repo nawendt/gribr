@@ -33,7 +33,7 @@ jobs:
       ECCODES_VERSION: 2.19.0
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: r-lib/actions/setup-pandoc@v2
 
