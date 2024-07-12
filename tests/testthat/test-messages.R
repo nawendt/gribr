@@ -1,6 +1,6 @@
 context("GRIB message retrieval and attributes")
 
-test_that("Incorrect message requests are handled correctly", {
+test_that("Message requests are handled correctly", {
   g <- grib_open(system.file("extdata", "lfpw.grib1", package = "gribr"))
 
 #   grib_get_message
