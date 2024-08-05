@@ -1,0 +1,2 @@
+PKG_LIBS = -L$(LIBRARY_LIB) -leccodes
+PKG_CPPFLAGS = -I$(LIBRARY_INC)
