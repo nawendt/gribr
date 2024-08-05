@@ -47,6 +47,9 @@ jobs:
           pacman -Syu --noconfirm
           pacman -S mingw-w64-x86_64-eccodes --noconfirm
 
+      - name: Show environment
+        run: printenv
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
