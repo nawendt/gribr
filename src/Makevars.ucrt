@@ -1,2 +1,2 @@
-PKG_LIBS = -L$(LIBRARY_LIB) -leccodes
-PKG_CPPFLAGS = -I$(LIBRARY_INC)
+PKG_LIBS = -L$(R_TOOLS_SOFT)/lib -leccodes
+PKG_CPPFLAGS = -I$(R_TOOLS_SOFT)/include
