@@ -45,7 +45,7 @@ jobs:
       - name: Install dependencies
         run: |
           pacman -Syu --noconfirm
-          pacman -S mingw-w64-x86_64-eccodes --noconfirm
+          pacman -S mingw-w64-ucrt-x86_64-eccodes --noconfirm
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
