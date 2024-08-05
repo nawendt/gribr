@@ -1,2 +1,2 @@
-PKG_LIBS="-L$(R_TOOLS_SOFT)/../ucrt64/lib -leccodes"
-PKG_CPPFLAGS="-I$(R_TOOLS_SOFT)/../ucrt64/include"
+PKG_LIBS="-L$(R_TOOLS_SOFT)/../mingw64/lib -leccodes"
+PKG_CPPFLAGS="-I$(R_TOOLS_SOFT)/../mingw64/include"
