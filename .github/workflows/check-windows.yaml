@@ -50,7 +50,7 @@ jobs:
 
           PACMAN="${RTOOLS_PATH}\usr\bin\pacman.exe"
 
-          "$PACMAN" -Syu --noconfirm
+          "$PACMAN" -Sy --noconfirm
           "$PACMAN" -S mingw-w64-ucrt-x86_64-eccodes --noconfirm
 
           UCRT_BIN="${RTOOLS_PATH}\ucrt64\bin"
