@@ -1,0 +1,7 @@
+configure text eol=lf
+cleanup text eol=lf
+configure.ac text eol=lf
+configure.win text eol=lf
+cleanup.win text eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
