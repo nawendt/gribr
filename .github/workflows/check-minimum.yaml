@@ -33,7 +33,7 @@ jobs:
       ECCODES_VERSION: 2.19.0
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -48,7 +48,7 @@ jobs:
         run: |
           sudo apt-get update -y
           sudo apt-get install -y libproj-dev libaec-dev libopenjp2-7-dev libpng-dev
-      
+
       - name: Install macOS dependencies
         if: runner.os == 'macOS'
         run: |
@@ -57,14 +57,14 @@ jobs:
       - name: Build eccodes from source (Linux)
         if: runner.os == 'Linux'
         run: ./install_eccodes.sh
-        shell: bash   
+        shell: bash
 
       - name: Build eccodes from source (macOS)
         if: runner.os == 'macOS'
         env:
           OPENJPEG_INCLUDE_DIR: /opt/homebrew/include/openjpeg-2.5
         run: ./install_eccodes.sh
-        shell: bash          
+        shell: bash
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:

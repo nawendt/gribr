@@ -30,10 +30,8 @@
 #'   find the source for this package, but will be able to submit any of your
 #'   own developments for inclusion in future releases.
 #'
-#' @docType package
-#' @name gribr
-#'
-NULL
+#' @keywords internal
+"_PACKAGE"
 
 #' @useDynLib gribr, .registration = TRUE
 
