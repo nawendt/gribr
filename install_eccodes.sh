@@ -13,6 +13,7 @@ cd eccodes-${ECCODES_VERSION}-Source
 mkdir build
 if [[ -z ${OPENJPEG_INCLUDE_DIR} ]]; then
     cmake . -B build -DCMAKE_BUILD_TYPE=Release \
+                    -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
                     -DENABLE_NETCDF=OFF \
                     -DENABLE_JPG=ON \
                     -DENABLE_PNG=ON \
@@ -25,6 +26,7 @@ if [[ -z ${OPENJPEG_INCLUDE_DIR} ]]; then
 else
     echo "OPENJPEG_INCLUDE_DIR: ${OPENJPEG_INCLUDE_DIR}"
     cmake . -B build -DCMAKE_BUILD_TYPE=Release \
+                    -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
                     -DENABLE_NETCDF=OFF \
                     -DENABLE_JPG=ON \
                     -DENABLE_PNG=ON \
