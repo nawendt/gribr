@@ -48,6 +48,7 @@ jobs:
         run: |
           RTOOLS_PATH="${RTOOLS45_HOME:-${RTOOLS44_HOME}:-${RTOOLS43_HOME}}"
 
+          export MSYS=winsymlinks:nativestrict
           PACMAN="${RTOOLS_PATH}\usr\bin\pacman.exe"
 
           "$PACMAN" -Sy --noconfirm
