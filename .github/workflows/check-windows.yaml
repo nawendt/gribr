@@ -23,9 +23,9 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: windows-latest,   r: '4.3'}
-          - {os: windows-latest,   r: 'release'}
-          - {os: windows-latest,   r: 'devel', http-user-agent: 'release'}
+          - { os: windows-latest, r: "4.3" }
+          - { os: windows-latest, r: "release" }
+          - { os: windows-latest, r: "devel", http-user-agent: "release" }
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -59,7 +59,6 @@ jobs:
           UCRT_DEF=$(echo "$UCRT_DEF" | tr '\\' '/')
 
           echo "$UCRT_BIN" >> $GITHUB_PATH
-          echo "ECCODES_DEFINITION_PATH=$UCRT_DEF" >> $GITHUB_ENV
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
