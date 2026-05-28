@@ -7,7 +7,7 @@ Author: Nathan Wendt <nathan.wendt@noaa.gov>
 Maintainer: Nathan Wendt <nathan.wendt@noaa.gov>
 BugReports: https://github.com/nawendt/gribr/issues
 Description: R interface for GRIB files using ECMWF ecCodes. Easily read GRIB data into native R data types.
-License: BSD_3_clause + file LICENSE
+License: BSD_3_clause
 Encoding: UTF-8
 NeedsCompilation: yes
 Depends: R (>= 4.3.0)
