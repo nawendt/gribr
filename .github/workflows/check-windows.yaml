@@ -1,7 +1,7 @@
 # Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 
-name: Build (System ecCodes)
+name: Build (Windows UCRT)
 
 on:
   push:
@@ -23,10 +23,9 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macOS-latest,   r: 'release'}
-          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
-          - {os: ubuntu-latest,   r: 'oldrel-1'}
+          - { os: windows-latest, r: "4.3" }
+          - { os: windows-latest, r: "release" }
+          - { os: windows-latest, r: "devel", http-user-agent: "release" }
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -43,15 +42,24 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      - name: Install Linux dependencies
-        if: runner.os == 'Linux'
+      - name: Setup ecCodes (MSYS2 Bridge)
+        if: runner.os == 'Windows'
+        shell: bash
         run: |
-          sudo apt-get update -y
-          sudo apt-get install -y libproj-dev libeccodes-dev
+          RTOOLS_PATH="${RTOOLS45_HOME:-${RTOOLS44_HOME}:-${RTOOLS43_HOME}}"
 
-      - name: Install macOS dependencies
-        if: runner.os == 'macOS'
-        run: brew install proj eccodes
+          export MSYS=winsymlinks:nativestrict
+          PACMAN="${RTOOLS_PATH}\usr\bin\pacman.exe"
+
+          "$PACMAN" -Sy --noconfirm
+          "$PACMAN" -S mingw-w64-ucrt-x86_64-eccodes --noconfirm
+
+          UCRT_BIN="${RTOOLS_PATH}\ucrt64\bin"
+          UCRT_DEF="${RTOOLS_PATH}\ucrt64\share\eccodes\definitions"
+
+          UCRT_DEF=$(echo "$UCRT_DEF" | tr '\\' '/')
+
+          echo "$UCRT_BIN" >> $GITHUB_PATH
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:

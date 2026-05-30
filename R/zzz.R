@@ -1,29 +1,34 @@
+.gribr_env <- new.env(parent = emptyenv())
+
 .onLoad <- function(libname, pkgname) {
-  # Windows will be binary distributions most of the time
-  # Need to set ECCODES_DEFINITION_PATH to avoid crash if it
-  # is not already set
-	if (.Platform$OS.type == "windows") {
-		if (Sys.getenv("ECCODES_DEFINITION_PATH") == "") {
-			normPath <- normalizePath(system.file("extdata", "definitions",
-			                                      package = "gribr"), mustWork = FALSE)
-			if (normPath == "") {
-			  warning("R was unable to set ECCODES_DEFINITION_PATH. Please set manually.")
-			} else {
-			  Sys.setenv(ECCODES_DEFINITION_PATH = normPath)
-			  Sys.setenv(GRIBR_MOD = 1)
-			}
-		}
-	}
+  orig_val <- Sys.getenv("ECCODES_DEFINITION_PATH")
+  assign("orig_eccodes_path", orig_val, envir = .gribr_env)
+
+  if (.Platform$OS.type == "windows" && orig_val == "") {
+    env_names <- names(Sys.getenv())
+    rtools_ev <- env_names[grep("^R_RTOOLS[0-9]+_PATH$", env_names)]
+    
+    if (length(rtools_ev) > 0) {
+      full_path_str <- Sys.getenv(rtools_ev[1])
+      first_path <- strsplit(full_path_str, ";")[[1]][1]
+      rtools_root <- sub("/[^/]+/[^/]+$", "", first_path)
+      
+      if (rtools_root != "" && dir.exists(rtools_root)) {
+        def_path <- file.path(rtools_root, "ucrt64", "share", "eccodes", "definitions")
+        if (dir.exists(def_path)) {
+          Sys.setenv(ECCODES_DEFINITION_PATH = normalizePath(def_path, winslash = "/"))
+        }
+      }
+    }
+  }
 }
 
 .onUnload <- function(libpath) {
-	# Clean up if .onLoad made mods to env
-	if (.Platform$OS.type == "windows") {
-		if (Sys.getenv("GRIBR_MOD") == 1) {
-			Sys.unsetenv("ECCODES_DEFINITION_PATH")
-			Sys.unsetenv("GRIBR_MOD")
-		}
-	}
-
-	library.dynam.unload("gribr", libpath)
+  orig_val <- get0("orig_eccodes_path", envir = .gribr_env, ifnotfound = "")
+  
+  if (orig_val == "") {
+    Sys.unsetenv("ECCODES_DEFINITION_PATH")
+  } else {
+    Sys.setenv(ECCODES_DEFINITION_PATH = orig_val)
+  }
 }

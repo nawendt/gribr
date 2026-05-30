@@ -1,5 +1,6 @@
 .Rproj.user
 .Rhistory
+.Renviron
 .RData
 .DS_Store
 autom4te.cache
@@ -10,4 +11,3 @@ src/*.o
 src/*.so
 src/*.dll
 src/Makevars
-src/Makevars.win

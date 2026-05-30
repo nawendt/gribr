@@ -13,3 +13,4 @@
 ^install_.*\.sh$
 ^appveyor\.yml$
 ^codecov\.yml$
+^LICENSE\.md$
